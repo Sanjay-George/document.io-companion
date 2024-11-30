@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { Card, CardBody, CardFooter, CardHeader, Divider, Image, Link } from '@nextui-org/react'
 import { MDXEditor, UndoRedo, BoldItalicUnderlineToggles, toolbarPlugin } from '@mdxeditor/editor'
@@ -13,24 +12,31 @@ import LeftArrowIcon from './components/icons/LeftArrowIcon'
 function App() {
 
   const documentation = {
-    title: 'NextJS Intro',
+    title: 'NextUI Intro',
     url: 'https://nextui.org'
   }
 
   return (
     <div>
 
+      {/* Background website for TESTING */}
+      <div className='w-full h-full absolute top-0 left-0'>
+        <iframe src={documentation.url} style={{ width: '100%', height: '100%' }}></iframe>
+      </div>
+
+      {/* Panel in foreground */}
       <PanelGroup direction="horizontal"
-        className='fixed top-0 left-0'
-        style={{ minHeight: '100%', width: '100vw', }}
+        className='fixed top-0 left-0 pointer-events-none active:pointer-events-auto'
+        style={{
+          minHeight: '100%', width: '100vw', zIndex: 2147483647
+        }}
       >
-        <Panel className="px-7 py-5 w-full min-h-full bg-slate-50 overflow-scroll" defaultSize={25}>
+        <Panel className="px-7 py-5 w-full min-h-full bg-slate-50 overflow-scroll pointer-events-auto" defaultSize={30}>
 
           <div className='flex items-center space-x-4 text-primary'>
             <LeftArrowIcon />
             <H2>{documentation?.title}</H2>
           </div>
-
 
           <Divider className='mb-10 bg-slate-200' />
 
@@ -52,7 +58,6 @@ function App() {
               ]}
             />
             <ButtonPrimary text="Save" icon={<RightArrowIcon />} />
-
 
             <Card className="my-5 shadow-md rounded-xl" shadow='md'>
               <CardHeader className="flex gap-3">
@@ -88,17 +93,13 @@ function App() {
             <p className='text-sm font-light text-slate-400 mt-16 text-center border-1 border-slate-200 px-5 py-5 rounded-xl shadow-sm'>Select an element to annotate it. <br />Or select an annotated element to view the annotation.</p>
 
           </div>
-
-
         </Panel>
 
-        <PanelResizeHandle className="w-1.5 h-full bg-slate-200 hover:bg-slate-300 transition-background duration-150" />
+        <PanelResizeHandle className="w-1.5 h-full bg-slate-200 hover:bg-slate-300 transition-background duration-150 pointer-events-auto" />
 
-        <Panel className='px-2 py-2 w-full h-full bg-slate-50'>
-          <iframe src={documentation.url} style={{ width: '100%', height: '100%' }}></iframe>
-        </Panel>
+        <Panel className='bg-transparent pointer-events-none' />
+
       </PanelGroup>
-
     </div>
 
   )

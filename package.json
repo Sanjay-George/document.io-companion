@@ -2,6 +2,7 @@
   "name": "electron",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "electron . --trace-warnings --inspect=5858",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,6 +12,7 @@
   "description": "",
   "dependencies": {
     "electron": "^33.2.1",
+    "puppeteer": "^23.9.0",
     "puppeteer-core": "^23.9.0",
     "puppeteer-in-electron": "^3.0.5"
   }
