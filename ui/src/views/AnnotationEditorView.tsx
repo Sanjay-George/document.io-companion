@@ -1,11 +1,12 @@
 import { Spinner } from '@nextui-org/react'
 import '@/App.css';
-import '@mdxeditor/editor/style.css';
 import { useAnnotation } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
 import { renderAnnotationId } from '@/utils';
 import AnnotationEditor from '@/components/AnnotationEditor';
 import { useParams } from 'react-router';
+import ButtonPrimary from '@/components/ButtonPrimary';
+import RightArrowIcon from '@/components/icons/RightArrowIcon';
 
 export default function AnnotationEditorView() {
     const { id: annotationId } = useParams();
@@ -28,6 +29,7 @@ export default function AnnotationEditorView() {
         <>
             <SidePanelHeader title={renderAnnotationId(annotation._id)} allowGoBack={true} />
             <AnnotationEditor annotation={annotation} />
+            <ButtonPrimary text="Save" icon={<RightArrowIcon />} />
         </>
     )
 }

@@ -1,31 +1,18 @@
-import { MDXEditor, UndoRedo, BoldItalicUnderlineToggles, toolbarPlugin } from '@mdxeditor/editor'
-import ButtonPrimary from './ButtonPrimary'
-import RightArrowIcon from './icons/RightArrowIcon'
-import { Annotation } from '@/models/annotations'
+import { Annotation } from '@/models/annotations';
+import MDEditor from '@uiw/react-md-editor';
 
 
 export default function AnnotationEditor({ annotation }: { annotation: Annotation }) {
+
     return (
         <>
-            <p>{annotation?.value}</p>
-
-            <MDXEditor
-                className='my-5 shadow-md rounded-xl bg-white min-h-[300px]'
-                markdown={annotation?.value}
-                plugins={[
-                    toolbarPlugin({
-                        toolbarClassName: 'my-classname',
-                        toolbarContents: () => (
-                            <>
-                                {' '}
-                                <UndoRedo />
-                                <BoldItalicUnderlineToggles />
-                            </>
-                        )
-                    })
-                ]}
+            <MDEditor
+                className='my-5 shadow-md rounded-xl bg-white min-h-[calc(100vh-300px)]'
+                value={annotation?.value}
+                // TODO: Implement setAnnotation
+                // onChange={setAnnotation as any}
+                preview='preview'
             />
-            <ButtonPrimary text="Save" icon={<RightArrowIcon />} />
         </>
 
     )

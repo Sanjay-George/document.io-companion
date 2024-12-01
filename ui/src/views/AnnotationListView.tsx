@@ -2,7 +2,6 @@ import { Tabs, Tab, Spinner } from '@nextui-org/react'
 import ButtonPrimary from '@/components/ButtonPrimary'
 import RightArrowIcon from '@/components/icons/RightArrowIcon'
 import '@/App.css';
-import '@mdxeditor/editor/style.css'
 import { useDocumentation } from '@/data_access/documentations';
 import { useAnnotations } from '@/data_access/annotations';
 import AnnotationCard from '@/components/AnnotationCard';
@@ -12,10 +11,10 @@ import { useContext } from 'react';
 import { DocumentationContext } from '@/App';
 
 export default function AnnotationListView() {
-  // const documentationId = useContext(DocumentationContext) as string;
+  const documentationId = useContext(DocumentationContext) as string;
 
   // TODO: Remove hardcoded documentationId
-  const documentationId = "66e8060840dff95980791abd";
+  // const documentationId = "66e8060840dff95980791abd";
 
   // Fetch documentation details
   const { data: documentation, isLoading, error } = documentationId

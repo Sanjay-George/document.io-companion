@@ -5,7 +5,6 @@ import { createContext } from 'react';
 
 // Import CSS files
 import './App.css';
-import '@mdxeditor/editor/style.css'
 import { Outlet } from 'react-router';
 
 export const DocumentationContext = createContext(null as string | null);
