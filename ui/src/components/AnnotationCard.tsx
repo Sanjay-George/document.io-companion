@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { Annotation } from "@/models/annotations";
-import { Card, CardHeader, CardBody, CardFooter, Link, Image, Divider, Chip } from "@nextui-org/react"
+import { Card, CardHeader, CardBody, CardFooter, Image, Divider, Chip, Link as NextLink } from "@nextui-org/react"
 import Markdown from 'react-markdown';
 import RightArrowIcon from "./icons/RightArrowIcon";
 import { renderAnnotationId } from "@/utils";
+import { Link } from "react-router";
 
 
-export default function AnnotationCard({ annotation, handleClick }: { annotation: Annotation, handleClick: (annotation: Annotation) => void }) {
+export default function AnnotationCard({ annotation }: { annotation: Annotation }) {
     const { _id: id, target, value, type, url } = annotation;
 
     useEffect(() => {
@@ -36,7 +37,10 @@ export default function AnnotationCard({ annotation, handleClick }: { annotation
 
                     </div>
 
-                    <p onClick={() => handleClick(annotation)} className="bg-transparent text-accent cursor-pointer hover:text-primary transition duration-150"> <RightArrowIcon /> </p>
+                    {/* <p onClick={() => handleClick(annotation)} className="bg-transparent text-accent cursor-pointer hover:text-primary transition duration-150"> <RightArrowIcon /> </p> */}
+
+                    <Link to={`/editor/${annotation._id}`} className="bg-transparent text-accent cursor-pointer hover:text-primary transition duration-150"> <RightArrowIcon /> </Link>
+
                 </div>
             </CardHeader>
             <Divider />
@@ -45,14 +49,14 @@ export default function AnnotationCard({ annotation, handleClick }: { annotation
             </CardBody>
             <Divider />
             <CardFooter>
-                <Link
+                <NextLink
                     isDisabled={true}
                     // TODO: Implement the link later
                     className='text-primary text-sm'
                     href={url}
                 >
                     {url}
-                </Link>
+                </NextLink>
             </CardFooter>
         </Card>
     )

@@ -17,6 +17,7 @@
     "react-dom": "^18.3.1",
     "react-markdown": "^9.0.1",
     "react-resizable-panels": "^2.1.7",
+    "react-router": "^7.0.1",
     "swr": "^2.2.5"
   },
   "devDependencies": {

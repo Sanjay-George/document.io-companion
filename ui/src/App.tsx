@@ -1,14 +1,14 @@
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
-import SidePanel from './components/SidePanel';
+// import SidePanel from './components/SidePanel';
 import { useEffect, useState } from 'react';
 import { createContext } from 'react';
 
 // Import CSS files
 import './App.css';
 import '@mdxeditor/editor/style.css'
+import { Outlet } from 'react-router';
 
 export const DocumentationContext = createContext(null as string | null);
-
 
 function App() {
   const [documentationId, setDocumentationId] = useState(null as string | null);
@@ -40,7 +40,7 @@ function App() {
         >
           <Panel className="px-7 py-5 w-full min-h-full bg-slate-50
          overflow-scroll pointer-events-auto" defaultSize={30} style={{ overflowY: 'scroll' }}>
-            <SidePanel />
+            <Outlet />
           </Panel>
 
           <PanelResizeHandle className="w-1.5 h-full bg-slate-200 hover:bg-slate-300 transition-background duration-150 pointer-events-auto" />
