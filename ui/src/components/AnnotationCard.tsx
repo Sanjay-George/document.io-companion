@@ -32,12 +32,10 @@ export default function AnnotationCard({ annotation }: { annotation: Annotation 
                         <p className="text-slate-600 text-sm font-bold">{renderAnnotationId(id)}</p>
                         {type && (
                             type === 'page' &&
-                            <Chip size="sm" radius="sm" variant="light" className="border-1 border-sky-500 text-sky-500">{type?.toLocaleUpperCase()}</Chip>
+                            <Chip size="sm" radius="sm" variant="light" className="border-1 border-sky-500 text-sky-500">{type?.toLocaleUpperCase()}-LEVEL</Chip>
                         )}
 
                     </div>
-
-                    {/* <p onClick={() => handleClick(annotation)} className="bg-transparent text-accent cursor-pointer hover:text-primary transition duration-150"> <RightArrowIcon /> </p> */}
 
                     <Link to={`/editor/${annotation._id}`} className="bg-transparent text-accent cursor-pointer hover:text-primary transition duration-150"> <RightArrowIcon /> </Link>
 
