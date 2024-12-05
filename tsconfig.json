@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "target": "ES2020", // Modern JS for Electron & Puppeteer
+        "module": "CommonJS", // Required for Node.js modules
+        "lib": [
+            "ESNext",
+            "DOM"
+        ], // Electron & Puppeteer require DOM support
+        "outDir": "./dist", // Output directory for built files
+        "rootDir": "./", // Start compilation from the project root
+        "strict": true, // Enforce strict typing
+        "esModuleInterop": true, // Allow ES6 import/export in CommonJS
+        "skipLibCheck": true, // Ignore type checks for dependencies
+        "resolveJsonModule": true, // Allows importing JSON
+        "noImplicitAny": false, // Allow implicit any types
+    },
+    "include": [
+        "src/**/*",
+        "index.ts"
+    ], // Include these files for compilation
+    "exclude": [
+        "node_modules",
+        "dist",
+        "ui"
+    ], // Exclude unnecessary folders
+    "ts-node": {
+        "esm": true
+    }
+}

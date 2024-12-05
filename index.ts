@@ -2,10 +2,10 @@
 // const pie = require("puppeteer-in-electron")
 // const puppeteer = require("puppeteer-core");
 
-import puppeteer, { Puppeteer } from 'puppeteer';
+import puppeteer, { Browser, Puppeteer } from 'puppeteer';
 
 const SERVER_URL = 'http://localhost:5000';
-const SINGLE_DOCUMENTATION_URL = (id) => `${SERVER_URL}/pages/${id}/`;
+const SINGLE_DOCUMENTATION_URL = (id: string) => `${SERVER_URL}/pages/${id}/`;
 
 
 // TODO: Switch to electron-puppeteer once POC ready.
@@ -30,14 +30,27 @@ const SINGLE_DOCUMENTATION_URL = (id) => `${SERVER_URL}/pages/${id}/`;
 
 
 (async () => {
+    let browser: Browser | null = null;
+
     try {
-        const browser = await puppeteer.launch({
+        browser = await puppeteer.launch({
             headless: false,
         });
         const page = await browser.newPage();
         await page.setViewport({ width: 1366, height: 768 });
 
-        await setupEditor(page, '66e8060840dff95980791abd');
+        const documentationId = '66ed029c96ef6350fab3ce6d';
+
+        // Inject assets on page reload or navigation
+        page.on('domcontentloaded', async () => {
+            console.log('DOM loaded. Injecting assets...');
+            await injectEditorAssets(page, documentationId);
+        });
+
+        await setupEditor(page, documentationId);
+
+
+
         return;
 
         // Making API calls... 
@@ -61,6 +74,7 @@ const SINGLE_DOCUMENTATION_URL = (id) => `${SERVER_URL}/pages/${id}/`;
 
     } catch (error) {
         console.error(error);
+        browser?.close();
     }
 })();
 
@@ -83,11 +97,15 @@ async function setupEditor(page, documentationId) {
     const documentation = await (await fetch(SINGLE_DOCUMENTATION_URL(documentationId))).json();
     console.log(JSON.stringify(documentation));
 
+    if (!documentation) {
+        throw new Error(`Documentation not found. documentationId: ${documentationId}`);
+    }
+
     const { title, url } = documentation;
     console.log(`Opening documentation: ${title} at ${url}`);
 
     await page.goto(encodeURI(url));
-    await injectEditorAssets(page, documentationId);
+    // await injectEditorAssets(page, documentationId);
 
     console.log(await page.title());
 
@@ -95,13 +113,20 @@ async function setupEditor(page, documentationId) {
 
 
 async function injectEditorAssets(page, documentationId) {
-    await page.evaluate((documentationId) => {
-        const root = document.createElement('div');
-        root.id = 'document-io-root';
-        root.dataset.documentationId = documentationId;
-        document.body.appendChild(root);
-    }, [documentationId]);
+    try {
+        await page.evaluate((documentationId) => {
+            const root = document.createElement('div');
+            root.id = 'document-io-root';
+            root.dataset.documentationId = documentationId;
+            document.body.appendChild(root);
+        }, [documentationId]);
 
-    await page.addScriptTag({ path: './ui/dist/assets/index.js' });
-    await page.addStyleTag({ path: './ui/dist/assets/index.css' });
+        await page.addScriptTag({ path: './ui/dist/assets/index.js' });
+        await page.addStyleTag({ path: './ui/dist/assets/index.css' });
+        await page.addStyleTag({ path: './src/styles/editor.css' });
+
+    }
+    catch (error) {
+        console.error(error);
+    }
 }
