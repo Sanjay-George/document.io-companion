@@ -1,0 +1,62 @@
+.document-io-annotated-element {
+    border: 2px solid rgba(0, 150, 255, 0.5) !important;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.document-io-annotated-element:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 150, 255, 0.5),
+        0 4px 6px -4px rgb(0, 150, 255, 0.5) !important;
+}
+
+.document-io-hovered-element {
+    border: 1px solid rgba(255, 0, 0, 0.5) !important;
+    transition: box-shadow 0.3s ease-in-out;
+
+}
+
+.document-io-hovered-element:hover {
+    box-shadow: 0 10px 15px -3px rgba(255, 0, 0, 0.5),
+        0 4px 6px -4px rgba(255, 0, 0, 0.5) !important;
+}
+
+.document-io-annotated-element-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: rgba(0, 150, 255, 0.5);
+    color: white;
+    padding: 0px;
+    /* z-index: 9998; */
+}
+
+
+#document-io-root div.w-md-editor-area.w-md-editor-input textarea {
+    background: transparent !important;
+    border: 0px none rgb(36, 41, 47) !important;
+    width: 100% !important;
+    height: 100% !important;
+    font-size: 14px !important;
+}
+
+#document-io-root div.w-md-editor-preview {
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    li {
+        color: rgb(36, 41, 47) !important;
+    }
+
+    ul {
+        list-style-type: disc !important;
+    }
+
+    ol {
+        list-style-type: decimal !important;
+    }
+
+}
