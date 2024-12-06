@@ -1,24 +1,7 @@
-import { MouseInputEvent } from "electron";
-
 export const MODAL_ROOT_ID = 'document-io-root';
 export const HOVERED_ELEMENT_CLASS = 'document-io-hovered-element';
 export const ANNOTATED_ELEMENT_CLASS = 'document-io-annotated-element';
 export const ANNOTATED_ELEMENT_ICON_CLASS = 'document-io-annotated-element-icon';
-
-function addEventListeners() {
-    document.addEventListener("mouseover", handleMouseOver);
-    document.addEventListener("mouseout", handleMouseOut);
-    // document.addEventListener("mousedown", handleMouseDown);
-    // document.addEventListener('contextmenu', handleContextMenuClick);
-}
-
-// TODO: Check if not required and remove
-function removeEventListeners() {
-    document.removeEventListener("mouseover", handleMouseOver);
-    document.removeEventListener("mouseout", handleMouseOut);
-    // document.removeEventListener("mousedown", handleMouseDown);
-    // document.removeEventListener('contextmenu', handleContextMenuClick);
-}
 
 /**
  * Handle Mouse Over event
@@ -74,3 +57,24 @@ const handleMouseOut = (event: MouseEvent) => {
 //     console.log('Query selector:', qs);
 //     console.log('Element recorded:', document.querySelector(qs));
 // };
+
+
+
+function addEventListeners() {
+    document.addEventListener("mouseover", handleMouseOver);
+    document.addEventListener("mouseout", handleMouseOut);
+    // document.addEventListener("mousedown", handleMouseDown);
+    // document.addEventListener('contextmenu', handleContextMenuClick);
+}
+
+
+// TODO: Check if not required and remove
+function removeEventListeners() {
+    document.removeEventListener("mouseover", handleMouseOver);
+    document.removeEventListener("mouseout", handleMouseOut);
+    // document.removeEventListener("mousedown", handleMouseDown);
+    // document.removeEventListener('contextmenu', handleContextMenuClick);
+}
+
+
+addEventListeners();

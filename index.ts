@@ -124,6 +124,7 @@ async function injectEditorAssets(page, documentationId) {
         await page.addScriptTag({ path: './ui/dist/assets/index.js' });
         await page.addStyleTag({ path: './ui/dist/assets/index.css' });
         await page.addStyleTag({ path: './styles/editor.css' });
+        await page.addScriptTag({ path: './src/puppeteer/editor.js', type: 'module' });
 
     }
     catch (error) {

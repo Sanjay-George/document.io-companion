@@ -7,7 +7,6 @@ const view_icon_svg = `
 `;
 
 
-
 async function highlightAnnotatedElements(annotations: []) {
     for (let annotation of annotations) {
         const { _id: id, target }: { _id: string, target: string } = annotation;

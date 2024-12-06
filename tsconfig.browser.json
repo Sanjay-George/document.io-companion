@@ -1,0 +1,15 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "module": "ES2020",
+        "moduleResolution": "node",
+        "outDir": "./dist/",
+        "lib": [
+            "DOM",
+            "ES2020"
+        ],
+    },
+    "include": [
+        "src/puppeteer/**/*.ts"
+    ]
+}
