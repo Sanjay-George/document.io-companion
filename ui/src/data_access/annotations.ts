@@ -64,3 +64,9 @@ export const updateAnnotation = async (annotationId: string, annotation: Annotat
         body: JSON.stringify(annotation)
     });
 }
+
+export const deleteAnnotation = async (annotationId: string) => {
+    await fetch(`${API_URL}/annotations/${annotationId}`, {
+        method: 'DELETE'
+    });
+}

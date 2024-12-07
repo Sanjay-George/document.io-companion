@@ -1,6 +1,6 @@
 import { Spinner } from '@nextui-org/react'
 import '@/App.css';
-import { ALL_ANNOTATIONS_KEY, SINGLE_ANNOTATION_KEY, updateAnnotation, useAnnotation } from '@/data_access/annotations';
+import { ALL_ANNOTATIONS_KEY, deleteAnnotation, SINGLE_ANNOTATION_KEY, updateAnnotation, useAnnotation } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
 import { renderAnnotationId } from '@/utils';
 import AnnotationEditor from '@/components/AnnotationEditor';
@@ -40,6 +40,12 @@ export default function AnnotationEditorView() {
         mutate(ALL_ANNOTATIONS_KEY(documentationId));
         mutate(SINGLE_ANNOTATION_KEY(annotationId as string));
         setPreviewMode('preview');
+    }
+
+    const handleDelete = async () => {
+        await deleteAnnotation(annotationId as string);
+        mutate(ALL_ANNOTATIONS_KEY(documentationId));
+        navigate(-1);
     }
 
     // Highlight annotated element
@@ -82,7 +88,7 @@ export default function AnnotationEditorView() {
                 (
                     <div className='space-x-2'>
                         <ButtonPrimary text="Edit" icon={<EditIcon />} onClick={() => { setPreviewMode('live') }} />
-                        <ButtonDanger text="Delete" icon={<DeleteIcon />} />
+                        <ButtonDanger text="Delete" icon={<DeleteIcon />} onClick={handleDelete} />
                     </div>
                 )
             }
