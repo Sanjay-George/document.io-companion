@@ -11,7 +11,6 @@ import { DocumentationContext } from '@/App';
 import AddIcon from '@/components/icons/AddIcon';
 import { Annotation } from '@/models/annotations';
 import { useNavigate, useSearchParams } from 'react-router';
-import { encode } from 'querystring';
 
 export default function AnnotationListView() {
   const documentationId = useContext(DocumentationContext) as string;
@@ -34,7 +33,6 @@ export default function AnnotationListView() {
     console.log("Add annotation clicked");
 
     if (isFiltered) {
-      // Just create
       navigate(`/add?target=${encodeURIComponent(target as any)}`);
     }
 
@@ -64,11 +62,19 @@ export default function AnnotationListView() {
       {isLoadingAnnotations && <Spinner label="Fetching annotations..." />}
       {errorAnnotations && <div className='text-red-700'>Failed to load annotations. Error: {errorAnnotations?.message}</div>}
 
-      {annotations && annotations.map((annotation: Annotation) => (
+      {annotations && annotations.slice(0, 2).map((annotation: Annotation) => (
         <AnnotationCard key={annotation._id} annotation={annotation} />
       ))}
 
-      <ButtonPrimary text="Add" icon={<AddIcon />} onClick={handleAddAnnotationClick} />
+      {/* Adding an `Add` button in between for better UX */}
+      {annotations?.length >= 6 && <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} />}
+
+      {annotations && annotations.slice(2).map((annotation: Annotation) => (
+        <AnnotationCard key={annotation._id} annotation={annotation} />
+      ))}
+
+      <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} />
+
 
       {/* <p className='text-sm font-light text-slate-400 mt-10 text-center border-1 border-slate-200 px-5 py-5 rounded-xl shadow-sm'>
         Select an element to annotate it.

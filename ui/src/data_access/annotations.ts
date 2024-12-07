@@ -1,4 +1,4 @@
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import { fetcher } from "./fetcher";
 import { Annotation } from "@/models/annotations";
 

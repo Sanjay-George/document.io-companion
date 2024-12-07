@@ -1,10 +1,10 @@
 import { Code, Spinner } from '@nextui-org/react'
 import '@/App.css';
-import { addAnnotation, useAnnotation } from '@/data_access/annotations';
+import { addAnnotation } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
 import AnnotationEditor from '@/components/AnnotationEditor';
-import { useNavigate, useParams, useSearchParams } from 'react-router';
-import { useContext, useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router';
+import { useContext, useEffect } from 'react';
 import { highlight, removeHighlight } from '@/utils/annotations';
 import { DocumentationContext } from '@/App';
 import { Annotation } from '@/models/annotations';

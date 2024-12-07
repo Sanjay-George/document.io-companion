@@ -6,7 +6,6 @@ import { renderAnnotationId } from '@/utils';
 import AnnotationEditor from '@/components/AnnotationEditor';
 import { useNavigate, useParams } from 'react-router';
 import ButtonPrimary from '@/components/ButtonPrimary';
-import RightArrowIcon from '@/components/icons/RightArrowIcon';
 import { useContext, useEffect, useState } from 'react';
 import { highlight, removeHighlight } from '@/utils/annotations';
 import ButtonDanger from '@/components/ButtonDanger';
