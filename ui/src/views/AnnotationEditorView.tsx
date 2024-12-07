@@ -46,9 +46,8 @@ export default function AnnotationEditorView() {
     }
     return (
         <>
-            <SidePanelHeader title={renderAnnotationId(annotation._id)} allowGoBack={true} />
-            <AnnotationEditor annotation={annotation} />
-            <ButtonPrimary text="Save" icon={<RightArrowIcon />} />
+            <SidePanelHeader title={renderAnnotationId(annotation._id)} shouldGoBack={true} />
+            <AnnotationEditor content={annotation?.value} />
         </>
     )
 }

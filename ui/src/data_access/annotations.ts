@@ -1,5 +1,6 @@
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { fetcher } from "./fetcher";
+import { Annotation } from "@/models/annotations";
 
 // TODO: setup vite env variables
 const API_URL = 'http://localhost:5000';
@@ -42,4 +43,14 @@ export const useAnnotation = (annotationId: string): { data: any, isLoading: boo
         return { data: null, isLoading: false, error: 'Annotation ID not provided' };
     }
     return useSWR(SINGLE_ANNOTATION_KEY(annotationId), fetcher);
+}
+
+export const addAnnotation = async (annotation: Annotation) => {
+    await fetch(`${API_URL}/annotations/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(annotation)
+    });
 }

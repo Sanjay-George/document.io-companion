@@ -10,7 +10,8 @@ import { useContext, useMemo, } from 'react';
 import { DocumentationContext } from '@/App';
 import AddIcon from '@/components/icons/AddIcon';
 import { Annotation } from '@/models/annotations';
-import { useSearchParams } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
+import { encode } from 'querystring';
 
 export default function AnnotationListView() {
   const documentationId = useContext(DocumentationContext) as string;
@@ -18,6 +19,8 @@ export default function AnnotationListView() {
   const [searchParams] = useSearchParams();
   const target = searchParams.get('target');
   const isFiltered = useMemo(() => !!target && target.length > 0, [target]);
+
+  const navigate = useNavigate();
 
   // Fetch documentation details
   const { data: documentation, isLoading, error } = useDocumentation(documentationId);
@@ -27,14 +30,20 @@ export default function AnnotationListView() {
 
   sortAnnotations(annotations);
 
-  // const handleAddClick = () => {
-  //   console.log("Add annotation clicked");
+  const handleAddAnnotationClick = () => {
+    console.log("Add annotation clicked");
 
-  //   /*
-  //     1. Hide side panel
-  //     2. Start highlighting elements
-  //   */
-  // }
+    if (isFiltered) {
+      // Just create
+      navigate(`/add?target=${encodeURIComponent(target as any)}`);
+    }
+
+
+    /*
+      1. Hide side panel
+      2. Start highlighting elements
+    */
+  }
 
   if (!documentationId) {
     return <Spinner label="Loading editor..." />;
@@ -50,7 +59,7 @@ export default function AnnotationListView() {
 
   return (
     <>
-      <SidePanelHeader title={documentation?.title} allowGoBack={isFiltered} />
+      <SidePanelHeader title={documentation?.title} shouldGoBack={isFiltered} />
 
       {isLoadingAnnotations && <Spinner label="Fetching annotations..." />}
       {errorAnnotations && <div className='text-red-700'>Failed to load annotations. Error: {errorAnnotations?.message}</div>}
@@ -59,7 +68,7 @@ export default function AnnotationListView() {
         <AnnotationCard key={annotation._id} annotation={annotation} />
       ))}
 
-      <ButtonPrimary text="Add" icon={<AddIcon />} />
+      <ButtonPrimary text="Add" icon={<AddIcon />} onClick={handleAddAnnotationClick} />
 
       <p className='text-sm font-light text-slate-400 mt-10 text-center border-1 border-slate-200 px-5 py-5 rounded-xl shadow-sm'>
         Select an element to annotate it.

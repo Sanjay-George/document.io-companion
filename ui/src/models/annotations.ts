@@ -1,9 +1,9 @@
 export interface Annotation {
-    _id: string;
+    _id?: string;
     value: string;
     target: string;
     url: string;
-    pageId: string;
+    documentationId: string;
     created: Date;
     updated: Date;
     type: 'page' | 'component';
