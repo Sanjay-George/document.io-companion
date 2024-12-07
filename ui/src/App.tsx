@@ -19,18 +19,15 @@ function App() {
       const id = rootElement.getAttribute('data-documentation-id');
       setDocumentationId(id);
     }
+
+    // TODO: Remove after testing
+    setDocumentationId('67534ea8a1a84a18f6e3d9df');
   }, []);
 
 
   return (
     <DocumentationContext.Provider value={documentationId}>
       <div>
-
-        {/* TODO: (Remove) Background website for TESTING */}
-        {/* <div className='w-full h-full absolute top-0 left-0'>
-        <iframe src={documentation.url} style={{ width: '100%', height: '100%' }}></iframe>
-      </div> */}
-
         <PanelGroup direction="horizontal"
           className='fixed top-0 left-0 pointer-events-none active:pointer-events-auto'
           style={{

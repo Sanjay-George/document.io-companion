@@ -6,7 +6,19 @@ import { NextUIProvider } from "@nextui-org/react";
 import { MemoryRouter, Route, Routes } from "react-router";
 import AnnotationEditorView from './views/AnnotationEditorView.tsx';
 import AnnotationListView from './views/AnnotationListView.tsx';
+import SampleSite from '../samples/SampleSite.tsx';
 
+// If in development mode, render the sample website for testing
+if (import.meta.env.VITE_APP_ENV === 'development') {
+  document.getElementById('document-io-root')?.insertAdjacentHTML(
+    "beforebegin",
+    `<div id="sample-site"></div>`
+  );
+
+  createRoot(document.getElementById('sample-site')!).render(
+    <SampleSite />
+  )
+}
 
 createRoot(document.getElementById('document-io-root')!).render(
   <StrictMode>
@@ -15,10 +27,11 @@ createRoot(document.getElementById('document-io-root')!).render(
         <Routes>
           <Route element={<App />}>
             <Route path="/" element={<AnnotationListView />} />
-            <Route path="/editor/:id" element={<AnnotationEditorView />} />
+            <Route path="/edit/:id" element={<AnnotationEditorView />} />
           </Route>
         </Routes>
       </MemoryRouter>
     </NextUIProvider>
   </StrictMode>,
 )
+

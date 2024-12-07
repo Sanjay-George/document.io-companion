@@ -1,41 +1,30 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.document-io-annotated-element {
+  border: 2px solid rgba(0, 150, 255, 0.5) !important;
+  transition: box-shadow 0.3s ease-in-out;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.document-io-annotated-element:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 150, 255, 0.5),
+    0 4px 6px -4px rgb(0, 150, 255, 0.5) !important;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.document-io-hovered-element {
+  border: 1px solid rgba(255, 0, 0, 0.5) !important;
+  transition: box-shadow 0.3s ease-in-out;
+
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.document-io-hovered-element:hover {
+  box-shadow: 0 10px 15px -3px rgba(255, 0, 0, 0.5),
+    0 4px 6px -4px rgba(255, 0, 0, 0.5) !important;
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.document-io-annotated-element-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(0, 150, 255, 0.5);
+  color: white;
+  padding: 0px;
+  /* z-index: 9998; */
 }
