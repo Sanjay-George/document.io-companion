@@ -27,7 +27,7 @@ export default function AnnotationEditorView() {
             console.error('Element not found:', annotation.target);
             return;
         }
-        highlight(element, false);
+        highlight(element, false, null, true);
 
         return () => {
             removeHighlight(element);

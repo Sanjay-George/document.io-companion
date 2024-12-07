@@ -20,8 +20,10 @@ function App() {
       setDocumentationId(id);
     }
 
-    // TODO: Remove after testing
-    setDocumentationId('67534ea8a1a84a18f6e3d9df');
+    // Set documentation id for development
+    if (import.meta.env.VITE_APP_ENV === 'development') {
+      setDocumentationId(import.meta.env.VITE_TEST_DOCUMENTATION_ID);
+    }
   }, []);
 
 
