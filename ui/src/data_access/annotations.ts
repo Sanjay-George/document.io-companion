@@ -6,7 +6,7 @@ const API_URL = 'http://localhost:5000';
 
 
 export const ALL_ANNOTATIONS_KEY = (documentationId: string) =>
-    `${API_URL}/pages/${documentationId}/annotations`;
+    `${API_URL}/documentations/${documentationId}/annotations`;
 
 export const SINGLE_ANNOTATION_KEY = (annotationId: string) =>
     `${API_URL}/annotations/${annotationId}`;
