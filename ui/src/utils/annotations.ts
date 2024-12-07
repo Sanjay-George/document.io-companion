@@ -1,17 +1,21 @@
-import { ANNOTATED_ELEMENT_CLASS, ANNOTATED_ELEMENT_ICON_CLASS } from "./constants";
+import { ANNOTATED_ELEMENT_CLASS, ANNOTATED_ELEMENT_ICON_CLASS, ANNOTATED_ELEMENT_WITH_SHADOW_CLASS } from "./constants";
 
 const VIEW_ICON = `
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="size-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 3.75H6A2.25 2.25 0 0 0 3.75 6v1.5M16.5 3.75H18A2.25 2.25 0 0 1 20.25 6v1.5m0 9V18A2.25 2.25 0 0 1 18 20.25h-1.5m-9 0H6A2.25 2.25 0 0 1 3.75 18v-1.5M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+  <path fill-rule="evenodd" d="M4.25 2A2.25 2.25 0 0 0 2 4.25v11.5A2.25 2.25 0 0 0 4.25 18h11.5A2.25 2.25 0 0 0 18 15.75V4.25A2.25 2.25 0 0 0 15.75 2H4.25Zm4.03 6.28a.75.75 0 0 0-1.06-1.06L4.97 9.47a.75.75 0 0 0 0 1.06l2.25 2.25a.75.75 0 0 0 1.06-1.06L6.56 10l1.72-1.72Zm4.5-1.06a.75.75 0 1 0-1.06 1.06L13.44 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06l2.25-2.25a.75.75 0 0 0 0-1.06l-2.25-2.25Z" clip-rule="evenodd" />
 </svg>
 `;
+
 
 /**
  * Highlights the annotated element
  * Adds a view icon to the element to view the annotation
- * @param element 
+ * @param element Element to highlight
+ * @param showIcon If true, shows an icon to view the annotation
+ * @param iconCallback Callback function to call when the icon is clicked
+ * @param withShadow If true, adds a shadow to the element
  */
-export function highlight(element: HTMLElement, showTooltip = true) {
+export function highlight(element: HTMLElement, showIcon = true, iconCallback: Function | null = null, withShadow = false) {
     if (!element || isAnnotated(element)) {
         return;
     }
@@ -19,18 +23,20 @@ export function highlight(element: HTMLElement, showTooltip = true) {
     // const element = document.querySelector(target) as HTMLElement;
 
     element.classList.add(ANNOTATED_ELEMENT_CLASS);
+    withShadow && element.classList.add(ANNOTATED_ELEMENT_WITH_SHADOW_CLASS);
     // TODO: Add annotation id to the element only if needed
     // element.dataset.annotationId = id;
 
-    showTooltip && addViewIcon(element);
+    showIcon && addViewIcon(element, iconCallback);
 }
 
 /**
  * Adds the view icon to the element
- * @param element 
+ * @param element Element to add the icon to
+ * @param callback Callback function to call when the icon is clicked
  * @returns 
  */
-function addViewIcon(element: HTMLElement) {
+function addViewIcon(element: HTMLElement, callback: Function | null = null) {
     const elementStyle = window.getComputedStyle(element);
 
     if (hasViewIcon(element)) {
@@ -44,9 +50,7 @@ function addViewIcon(element: HTMLElement) {
     icon.onclick = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        // TODO: Open in editor
-        // TODO: check how to use react router here.
-        // openInEditor(getQuerySelector(element), id);
+        callback && callback();
     };
     // Assign height and width based on element size
     icon.style.height = `min(20px, ${element.offsetHeight - 5}px)`;
@@ -66,6 +70,7 @@ export function removeHighlight(element: HTMLElement) {
         return;
     }
     element.classList.remove(ANNOTATED_ELEMENT_CLASS);
+    element.classList.remove(ANNOTATED_ELEMENT_WITH_SHADOW_CLASS);
     removeViewIcon(element);
 }
 

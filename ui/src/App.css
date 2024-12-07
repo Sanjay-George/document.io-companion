@@ -1,6 +1,11 @@
 .document-io-annotated-element {
-  border: 2px solid rgba(0, 150, 255, 0.5) !important;
+  outline: 1px solid rgba(0, 150, 255, 0.5) !important;
   transition: box-shadow 0.3s ease-in-out;
+}
+
+.document-io-annotated-element-shadow {
+  box-shadow: 0 10px 15px -3px rgba(0, 150, 255, 0.5),
+    0 4px 6px -4px rgb(0, 150, 255, 0.5) !important;
 }
 
 .document-io-annotated-element:hover {
@@ -9,7 +14,7 @@
 }
 
 .document-io-hovered-element {
-  border: 1px solid rgba(255, 0, 0, 0.5) !important;
+  outline: 1px solid rgba(255, 0, 0, 0.5) !important;
   transition: box-shadow 0.3s ease-in-out;
 
 }
@@ -26,5 +31,10 @@
   background-color: rgba(0, 150, 255, 0.5);
   color: white;
   padding: 0px;
-  /* z-index: 9998; */
+  cursor: pointer;
 }
+
+/* 
+.document-io-annotated-element-icon:hover {
+  background-color: rgba(0, 150, 255, 0.5);
+} */
