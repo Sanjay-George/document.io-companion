@@ -54,3 +54,13 @@ export const addAnnotation = async (annotation: Annotation) => {
         body: JSON.stringify(annotation)
     });
 }
+
+export const updateAnnotation = async (annotationId: string, annotation: Annotation) => {
+    await fetch(`${API_URL}/annotations/${annotationId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(annotation)
+    });
+}

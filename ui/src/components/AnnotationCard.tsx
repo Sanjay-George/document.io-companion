@@ -49,7 +49,7 @@ export default function AnnotationCard({ annotation }: { annotation: Annotation 
                     />
                     <div className="w-full flex items-center justify-between">
                         <div className="flex space-x-3 items-center">
-                            <p className="text-slate-600 text-sm font-bold">{renderAnnotationId(id)}</p>
+                            <p className="text-slate-600 text-sm font-bold">{renderAnnotationId(id as string)}</p>
                             {type && (
                                 type === 'page' &&
                                 <Chip size="sm" radius="sm" variant="light" className="border-1 border-sky-500 text-sky-500">{type?.toLocaleUpperCase()}-LEVEL</Chip>

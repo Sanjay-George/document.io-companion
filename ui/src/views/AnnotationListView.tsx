@@ -70,11 +70,11 @@ export default function AnnotationListView() {
 
       <ButtonPrimary text="Add" icon={<AddIcon />} onClick={handleAddAnnotationClick} />
 
-      <p className='text-sm font-light text-slate-400 mt-10 text-center border-1 border-slate-200 px-5 py-5 rounded-xl shadow-sm'>
+      {/* <p className='text-sm font-light text-slate-400 mt-10 text-center border-1 border-slate-200 px-5 py-5 rounded-xl shadow-sm'>
         Select an element to annotate it.
         <br />
         Or select an annotated element to view the annotation.
-      </p>
+      </p> */}
     </>
 
   )

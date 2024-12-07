@@ -1,21 +1,46 @@
 import { Spinner } from '@nextui-org/react'
 import '@/App.css';
-import { useAnnotation } from '@/data_access/annotations';
+import { ALL_ANNOTATIONS_KEY, SINGLE_ANNOTATION_KEY, updateAnnotation, useAnnotation } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
 import { renderAnnotationId } from '@/utils';
 import AnnotationEditor from '@/components/AnnotationEditor';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import ButtonPrimary from '@/components/ButtonPrimary';
 import RightArrowIcon from '@/components/icons/RightArrowIcon';
-import { useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { highlight, removeHighlight } from '@/utils/annotations';
+import ButtonDanger from '@/components/ButtonDanger';
+import EditIcon from '@/components/icons/EditIcon';
+import DeleteIcon from '@/components/icons/DeleteIcon';
+import { DocumentationContext } from '@/App';
+import { Annotation } from '@/models/annotations';
+import { PreviewType } from '@uiw/react-md-editor';
+import { mutate } from 'swr';
 
 export default function AnnotationEditorView() {
     const { id: annotationId } = useParams();
+    const documentationId = useContext(DocumentationContext) as string;
+
+    const [previewMode, setPreviewMode] = useState('preview');
+    const navigate = useNavigate();
 
     const { data: annotation, isLoading, error } = annotationId
         ? useAnnotation(annotationId as string)
         : { data: null, isLoading: false, error: null };
+
+    const handleSave = async (value: string) => {
+        const updatedAnnotation: Annotation = {
+            ...annotation,
+            value,
+            updated: new Date(),
+        };
+
+        await updateAnnotation(annotationId as string, updatedAnnotation);
+        // TODO: mutate if data is not updated
+        mutate(ALL_ANNOTATIONS_KEY(documentationId));
+        mutate(SINGLE_ANNOTATION_KEY(annotationId as string));
+        setPreviewMode('preview');
+    }
 
     // Highlight annotated element
     useEffect(() => {
@@ -47,7 +72,24 @@ export default function AnnotationEditorView() {
     return (
         <>
             <SidePanelHeader title={renderAnnotationId(annotation._id)} shouldGoBack={true} />
-            <AnnotationEditor content={annotation?.value} />
+            <AnnotationEditor
+                content={annotation?.value}
+                handleSave={handleSave}
+                preview={previewMode as PreviewType} />
+
+            {
+                previewMode === 'preview' &&
+                (
+                    <div className='space-x-2'>
+                        <ButtonPrimary text="Edit" icon={<EditIcon />} onClick={() => { setPreviewMode('live') }} />
+                        <ButtonDanger text="Delete" icon={<DeleteIcon />} />
+                    </div>
+                )
+            }
+
+
+
+
         </>
     )
 }

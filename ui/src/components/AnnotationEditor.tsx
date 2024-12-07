@@ -1,5 +1,5 @@
 import MDEditor, { PreviewType } from '@uiw/react-md-editor';
-import { useContext, useState } from 'react';
+import { useMemo, useState } from 'react';
 import ButtonPrimary from './ButtonPrimary';
 import RightArrowIcon from './icons/RightArrowIcon';
 
@@ -16,6 +16,9 @@ export default function AnnotationEditor({
 
     const [value, setValue] = useState(content || '');
 
+    const showSaveButton = useMemo(() =>
+        !!handleSave && !!value.length && preview != 'preview', [handleSave, value, preview]);
+
     return (
         <>
             <MDEditor
@@ -25,7 +28,11 @@ export default function AnnotationEditor({
                 preview={preview}
             />
 
-            {handleSave && !!value.length && < ButtonPrimary text="Save" icon={<RightArrowIcon />} onClick={() => handleSave(value)} />}
+            {showSaveButton &&
+                < ButtonPrimary
+                    text="Save"
+                    icon={<RightArrowIcon />}
+                    onClick={() => handleSave && handleSave(value)} />}
 
         </>
 

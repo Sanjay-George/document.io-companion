@@ -15,6 +15,8 @@ export default {
         // 'secondary': '#00c9d0',
         'secondary': '#e6f4f1',
         'accent': '#ff8749',
+        'danger': "#B74606",
+
       },
       container: {
         center: true,
