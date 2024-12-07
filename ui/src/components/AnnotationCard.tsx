@@ -5,22 +5,24 @@ import Markdown from 'react-markdown';
 import RightArrowIcon from "./icons/RightArrowIcon";
 import { renderAnnotationId } from "@/utils";
 import { Link } from "react-router";
+import { highlight, removeHighlight } from "@/utils/annotations";
 
 
 export default function AnnotationCard({ annotation }: { annotation: Annotation }) {
     const { _id: id, target, value, type, url } = annotation;
 
+    // Highlight annotated element
     useEffect(() => {
-        console.log('Highlighting element:', target);
         const element = document.querySelector(target) as HTMLElement;
-
         if (!element) {
             console.error('Element not found:', target);
             return;
         }
-        // TODO: Highlight the element
-        element.classList.add('document-io-annotated-element');
+        highlight(element);
 
+        return () => {
+            removeHighlight(element);
+        }
     }, [annotation]);
 
     return (

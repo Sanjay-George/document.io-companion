@@ -7,6 +7,8 @@ import AnnotationEditor from '@/components/AnnotationEditor';
 import { useParams } from 'react-router';
 import ButtonPrimary from '@/components/ButtonPrimary';
 import RightArrowIcon from '@/components/icons/RightArrowIcon';
+import { useEffect } from 'react';
+import { highlight, removeHighlight } from '@/utils/annotations';
 
 export default function AnnotationEditorView() {
     const { id: annotationId } = useParams();
@@ -14,6 +16,23 @@ export default function AnnotationEditorView() {
     const { data: annotation, isLoading, error } = annotationId
         ? useAnnotation(annotationId as string)
         : { data: null, isLoading: false, error: null };
+
+    // Highlight annotated element
+    useEffect(() => {
+        if (!annotation) {
+            return;
+        }
+        const element = document.querySelector(annotation.target) as HTMLElement;
+        if (!element) {
+            console.error('Element not found:', annotation.target);
+            return;
+        }
+        highlight(element, false);
+
+        return () => {
+            removeHighlight(element);
+        }
+    }, [annotation]);
 
 
     if (!annotationId) {

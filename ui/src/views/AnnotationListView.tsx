@@ -1,6 +1,5 @@
 import { Tabs, Tab, Spinner } from '@nextui-org/react'
 import ButtonPrimary from '@/components/ButtonPrimary'
-import RightArrowIcon from '@/components/icons/RightArrowIcon'
 import '@/App.css';
 import { useDocumentation } from '@/data_access/documentations';
 import { useAnnotations } from '@/data_access/annotations';
