@@ -11,11 +11,16 @@ export default function AnnotationCard({ annotation }: { annotation: Annotation 
     const { _id: id, target, value, type, url } = annotation;
 
     useEffect(() => {
-        const element = document.querySelector(target);
+        console.log('Highlighting element:', target);
+        const element = document.querySelector(target) as HTMLElement;
+
         if (!element) {
+            console.error('Element not found:', target);
             return;
         }
         // TODO: Highlight the element
+        element.classList.add('document-io-annotated-element');
+
     }, [annotation]);
 
     return (
@@ -37,7 +42,7 @@ export default function AnnotationCard({ annotation }: { annotation: Annotation 
 
                     </div>
 
-                    <Link to={`/editor/${annotation._id}`} className="bg-transparent text-accent cursor-pointer hover:text-primary transition duration-150"> <RightArrowIcon /> </Link>
+                    <Link to={`/edit/${annotation._id}`} className="bg-transparent text-accent cursor-pointer hover:text-primary transition duration-150"> <RightArrowIcon /> </Link>
 
                 </div>
             </CardHeader>

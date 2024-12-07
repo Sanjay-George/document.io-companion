@@ -9,6 +9,7 @@ import SidePanelHeader from '@/components/SidePanelHeader';
 import { sortAnnotations } from '@/utils';
 import { useContext } from 'react';
 import { DocumentationContext } from '@/App';
+import AddIcon from '@/components/icons/AddIcon';
 
 export default function AnnotationListView() {
   const documentationId = useContext(DocumentationContext) as string;
@@ -27,6 +28,15 @@ export default function AnnotationListView() {
     : { data: [], isLoading: false, error: null };
 
   sortAnnotations(annotations);
+
+  const handleAddClick = () => {
+    console.log("Add annotation clicked");
+
+    /*
+      1. Hide side panel
+      2. Start highlighting elements
+    */
+  }
 
   let tabs = [
     {
@@ -76,7 +86,7 @@ export default function AnnotationListView() {
         <AnnotationCard key={annotation._id} annotation={annotation} />
       ))}
 
-      <ButtonPrimary text="Add" icon={<RightArrowIcon />} />
+      <ButtonPrimary text="Add" icon={<AddIcon />} />
 
       <p className='text-sm font-light text-slate-400 mt-10 text-center border-1 border-slate-200 px-5 py-5 rounded-xl shadow-sm'>
         Select an element to annotate it.
