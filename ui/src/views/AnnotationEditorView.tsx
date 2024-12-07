@@ -19,7 +19,7 @@ export default function AnnotationEditorView() {
 
     // Highlight annotated element
     useEffect(() => {
-        if (!annotation) {
+        if (!annotation || annotation.type === 'page') {
             return;
         }
         const element = document.querySelector(annotation.target) as HTMLElement;

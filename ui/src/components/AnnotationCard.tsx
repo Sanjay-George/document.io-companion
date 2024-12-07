@@ -12,20 +12,26 @@ export default function AnnotationCard({ annotation }: { annotation: Annotation 
     const { _id: id, target, value, type, url } = annotation;
 
     const navigate = useNavigate();
-    // TODO: update the callback to filter AnnotationList to this element, 
-    //      and not open the annotation directly.
-    const openInEditor = (annotationId: string) => {
-        navigate(`/edit/${annotationId}`);
+    const openInEditor = (target: string) => {
+        if (!target || !target.length) {
+            console.error('No target provided');
+            return;
+        }
+        const t = encodeURIComponent(target);
+        navigate(`/?target=${t}`);
     };
 
     // Highlight annotated element
     useEffect(() => {
+        if (type === 'page') {
+            return;
+        }
         const element = document.querySelector(target) as HTMLElement;
         if (!element) {
             console.error('Element not found:', target);
             return;
         }
-        highlight(element, true, () => openInEditor(id));
+        highlight(element, true, () => openInEditor(target));
         return () => {
             removeHighlight(element);
         }
