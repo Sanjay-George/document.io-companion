@@ -6,16 +6,18 @@ import { useAnnotationsByTarget } from '@/data_access/annotations';
 import AnnotationCard from '@/components/AnnotationCard';
 import SidePanelHeader from '@/components/SidePanelHeader';
 import { sortAnnotations } from '@/utils';
-import { useContext, } from 'react';
+import { useContext, useMemo, } from 'react';
 import { DocumentationContext } from '@/App';
 import AddIcon from '@/components/icons/AddIcon';
 import { Annotation } from '@/models/annotations';
 import { useSearchParams } from 'react-router';
 
 export default function AnnotationListView() {
+  const documentationId = useContext(DocumentationContext) as string;
+
   const [searchParams] = useSearchParams();
   const target = searchParams.get('target');
-  const documentationId = useContext(DocumentationContext) as string;
+  const isFiltered = useMemo(() => !!target && target.length > 0, [target]);
 
   // Fetch documentation details
   const { data: documentation, isLoading, error } = useDocumentation(documentationId);
@@ -34,8 +36,6 @@ export default function AnnotationListView() {
   //   */
   // }
 
-
-
   if (!documentationId) {
     return <Spinner label="Loading editor..." />;
   }
@@ -50,7 +50,7 @@ export default function AnnotationListView() {
 
   return (
     <>
-      <SidePanelHeader title={documentation?.title} allowGoBack={target != null && target.length > 0} />
+      <SidePanelHeader title={documentation?.title} allowGoBack={isFiltered} />
 
       {isLoadingAnnotations && <Spinner label="Fetching annotations..." />}
       {errorAnnotations && <div className='text-red-700'>Failed to load annotations. Error: {errorAnnotations?.message}</div>}
