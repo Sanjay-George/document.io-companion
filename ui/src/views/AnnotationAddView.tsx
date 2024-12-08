@@ -85,7 +85,7 @@ export default function AnnotationAddView() {
             <>
                 <SidePanelHeader title="Add Annotation" shouldGoBack={true} />
                 <p className='text-sm font-light text-slate-400 mt-10 text-center border-1 border-slate-200 px-5 py-5 rounded-xl shadow-sm'>
-                    Right-click a highlighted element to be annotated and open it in the editor.
+                    Right-click a highlighted element to annotate it.
                 </p>
 
                 <ContextMenu

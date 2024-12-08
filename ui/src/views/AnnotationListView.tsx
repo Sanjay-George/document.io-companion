@@ -30,18 +30,14 @@ export default function AnnotationListView() {
   sortAnnotations(annotations);
 
   const handleAddAnnotationClick = () => {
+    // Add annotation for existing target
     if (isFiltered) {
       navigate(`/add?target=${encodeURIComponent(target as any)}`);
       return;
     }
 
+    // Add annotation for a new target
     navigate(`/add`);
-
-
-    /*
-      1. Hide side panel
-      2. Start highlighting elements
-    */
   }
 
   if (!documentationId) {
@@ -75,13 +71,6 @@ export default function AnnotationListView() {
       ))}
 
       <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} />
-
-
-      {/* <p className='text-sm font-light text-slate-400 mt-10 text-center border-1 border-slate-200 px-5 py-5 rounded-xl shadow-sm'>
-        Select an element to annotate it.
-        <br />
-        Or select an annotated element to view the annotation.
-      </p> */}
     </>
 
   )
