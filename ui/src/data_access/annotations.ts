@@ -5,7 +5,7 @@ import { Annotation } from "@/models/annotations";
 // TODO: setup vite env variables
 const API_URL = 'http://localhost:5000';
 
-
+// Keys
 export const ALL_ANNOTATIONS_KEY = (documentationId: string) =>
     `${API_URL}/documentations/${documentationId}/annotations`;
 

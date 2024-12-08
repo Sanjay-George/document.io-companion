@@ -30,11 +30,12 @@ export default function AnnotationListView() {
   sortAnnotations(annotations);
 
   const handleAddAnnotationClick = () => {
-    console.log("Add annotation clicked");
-
     if (isFiltered) {
       navigate(`/add?target=${encodeURIComponent(target as any)}`);
+      return;
     }
+
+    navigate(`/add`);
 
 
     /*
