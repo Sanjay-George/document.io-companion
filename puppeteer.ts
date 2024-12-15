@@ -30,8 +30,8 @@ export const SINGLE_DOCUMENTATION_URL = (id) => `${SERVER_URL}/documentations/${
 
 
 (async () => {
-    // let browser: Browser | null = null;
-    let browser = null;
+    let browser: Browser | null = null;
+    // let browser = null;
 
     try {
         browser = await puppeteer.launch({
@@ -55,23 +55,23 @@ export const SINGLE_DOCUMENTATION_URL = (id) => `${SERVER_URL}/documentations/${
         return;
 
         // Making API calls... 
-        setTimeout(async () => {
-            // Make API calls directly from the backend
-            const response = await fetch('http://localhost:5000/pages/66e8060840dff95980791abd/annotations/');
-            const data = await response.json();
-            console.log(`Data from backend: ${JSON.stringify(data)}`);
+        // setTimeout(async () => {
+        //     // Make API calls directly from the backend
+        //     const response = await fetch('http://localhost:5000/pages/66e8060840dff95980791abd/annotations/');
+        //     const data = await response.json();
+        //     console.log(`Data from backend: ${JSON.stringify(data)}`);
 
-            // Make API calls from the browser (use this method)
-            try {
-                await page.evaluate(async () => {
-                    const response = await fetch('http://localhost:5000/pages/66e8060840dff95980791abd/annotations/');
-                    const data = await response.json();
-                    console.log(`Data from frontend: ${JSON.stringify(data)}`);
-                });
-            } catch (error) {
-                console.error(error);
-            }
-        }, 5000);
+        //     // Make API calls from the browser (use this method)
+        //     try {
+        //         await page.evaluate(async () => {
+        //             const response = await fetch('http://localhost:5000/pages/66e8060840dff95980791abd/annotations/');
+        //             const data = await response.json();
+        //             console.log(`Data from frontend: ${JSON.stringify(data)}`);
+        //         });
+        //     } catch (error) {
+        //         console.error(error);
+        //     }
+        // }, 5000);
 
     } catch (error) {
         console.error(error);
