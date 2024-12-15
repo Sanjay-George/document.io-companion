@@ -16,13 +16,14 @@
     },
     "include": [
         "src/**/*",
+        "puppeteer.ts",
         "index.ts"
-    ], // Include these files for compilation
+    ],
     "exclude": [
         "node_modules",
         "dist",
         "ui"
-    ], // Exclude unnecessary folders
+    ],
     "ts-node": {
         "esm": true
     }

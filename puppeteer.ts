@@ -5,7 +5,7 @@
 import puppeteer, { Browser, Puppeteer } from 'puppeteer';
 
 const SERVER_URL = 'http://localhost:5000';
-const SINGLE_DOCUMENTATION_URL = (id: string) => `${SERVER_URL}/documentations/${id}/`;
+export const SINGLE_DOCUMENTATION_URL = (id) => `${SERVER_URL}/documentations/${id}/`;
 
 
 // TODO: Switch to electron-puppeteer once POC ready.
@@ -30,7 +30,8 @@ const SINGLE_DOCUMENTATION_URL = (id: string) => `${SERVER_URL}/documentations/$
 
 
 (async () => {
-    let browser: Browser | null = null;
+    // let browser: Browser | null = null;
+    let browser = null;
 
     try {
         browser = await puppeteer.launch({
@@ -79,7 +80,7 @@ const SINGLE_DOCUMENTATION_URL = (id: string) => `${SERVER_URL}/documentations/$
 })();
 
 
-async function setupEditor(page, documentationId) {
+export async function setupEditor(page, documentationId) {
     /*
         1. Get the documentation id from the URL
         2. Fetch documentation from server
@@ -112,7 +113,7 @@ async function setupEditor(page, documentationId) {
 }
 
 
-async function injectEditorAssets(page, documentationId) {
+export async function injectEditorAssets(page, documentationId) {
     try {
         await page.evaluate((documentationId) => {
             const root = document.createElement('div');
@@ -123,7 +124,6 @@ async function injectEditorAssets(page, documentationId) {
 
         await page.addScriptTag({ path: './ui/dist/assets/index.js' });
         await page.addStyleTag({ path: './ui/dist/assets/index.css' });
-        await page.addStyleTag({ path: './styles/editor.css' });
         // await page.addScriptTag({ path: './src/puppeteer/editor.js', type: 'module' });
 
     }
