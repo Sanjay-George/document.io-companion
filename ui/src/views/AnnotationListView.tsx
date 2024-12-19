@@ -64,7 +64,7 @@ export default function AnnotationListView() {
       ))}
 
       {/* Adding an `Add` button in between for better UX */}
-      {annotations?.length >= 6 && <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} />}
+      {annotations?.length >= 4 && <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} />}
 
       {annotations && annotations.slice(2).map((annotation: Annotation) => (
         <AnnotationCard key={annotation._id} annotation={annotation} />

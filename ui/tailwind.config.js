@@ -25,7 +25,7 @@ export default {
       },
     },
   },
-  darkMode: "class",
+  darkMode: "selector",
   plugins: [nextui({
     themes: {
       light: {
