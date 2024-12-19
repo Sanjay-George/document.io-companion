@@ -16,7 +16,7 @@ const VIEW_ICON = `
  * @param withShadow If true, adds a shadow to the element
  */
 export function highlight(element: HTMLElement, showIcon = true, iconCallback: Function | null = null, withShadow = false) {
-    if (!element || isAnnotated(element)) {
+    if (!element || !isHighlightable(element) || isAnnotated(element)) {
         return;
     }
     // const { _id: id, target }: { _id: string, target: string } = annotation;
@@ -80,7 +80,7 @@ function removeViewIcon(element: HTMLElement) {
         return;
     }
     const icon = element.querySelector(`.${ANNOTATED_ELEMENT_ICON_CLASS}`);
-    if (icon) {
+    if (icon && icon.parentNode === element) {
         element.removeChild(icon);
     }
 }
@@ -124,4 +124,15 @@ function hasViewIcon(element: HTMLElement) {
     const lastChild = element.children[element.children.length - 1];
     return lastChild.tagName.toLowerCase() === 'div'
         && lastChild.classList.contains(ANNOTATED_ELEMENT_ICON_CLASS);
+}
+
+export function isHighlightable(element: HTMLElement) {
+    // disallow svg elements
+    const blockedElements = new Set([
+        'svg', 'path', 'circle', 'rect', 'ellipse', 'line', 'polyline', 'polygon',
+        'script', 'style', 'link', 'meta', 'head', 'title', 'base', 'noscript',
+        'iframe', 'object', 'embed', 'param', 'source', 'track', 'canvas', 'map',
+        'area', 'audio', 'video', 'picture', 'portal', 'template', 'slot', 'img'
+    ]);
+    return !blockedElements.has(element.tagName.toLowerCase());
 }

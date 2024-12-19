@@ -5,7 +5,7 @@ import SidePanelHeader from '@/components/SidePanelHeader';
 import AnnotationEditor from '@/components/AnnotationEditor';
 import { useNavigate, useSearchParams } from 'react-router';
 import { useContext, useEffect, useState } from 'react';
-import { highlight, removeHighlight } from '@/utils/annotations';
+import { highlight, isHighlightable, removeHighlight } from '@/utils/annotations';
 import { DocumentationContext } from '@/App';
 import { Annotation } from '@/models/annotations';
 import { ANNOTATED_ELEMENT_CLASS, ANNOTATED_ELEMENT_ICON_CLASS, HOVERED_ELEMENT_CLASS, MODAL_ROOT_ID } from '@/utils/constants';
@@ -42,7 +42,6 @@ export default function AnnotationAddView() {
         if (!target) {
             // TODO: Adding annotation without target. Show target picker menu
             setShouldHighlight(true);
-
             return;
         }
         const element = document.querySelector(target) as HTMLElement;
@@ -115,6 +114,10 @@ export default function AnnotationAddView() {
  */
 const handleMouseOver = (event: MouseEvent) => {
     if ((event.target as HTMLElement)?.closest(`#${MODAL_ROOT_ID}`)) {
+        return;
+    }
+
+    if (!isHighlightable(event.target as HTMLElement)) {
         return;
     }
 
