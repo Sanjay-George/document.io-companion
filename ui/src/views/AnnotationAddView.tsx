@@ -84,7 +84,7 @@ export default function AnnotationAddView() {
         return (
             <>
                 <SidePanelHeader title="Add Annotation" shouldGoBack={true} />
-                <p className='text-sm font-light text-slate-400 mt-10 text-center border-1 border-slate-200 px-5 py-5 rounded-xl shadow-sm'>
+                <p className='text-sm font-light text-slate-500 mt-10 text-center border-1 border-slate-300 px-5 py-5 rounded-xl shadow-sm'>
                     Right-click a highlighted element to annotate it.
                 </p>
 
