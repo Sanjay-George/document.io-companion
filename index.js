@@ -8,6 +8,7 @@ const SERVER_URL = 'http://localhost:5000';
 const SINGLE_DOCUMENTATION_URL = (id) => `${SERVER_URL}/documentations/${id}/`;
 
 let mainWindow;
+let documentationId;
 
 // Register the custom protocol
 if (process.defaultApp) {
@@ -18,46 +19,68 @@ if (process.defaultApp) {
     app.setAsDefaultProtocolClient('document-io')
 }
 
-// Handling for Windows and Linux
+// Handling deeplink for Windows and Linux (when app is already running)
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
     app.quit()
 } else {
-
-    app.on('second-instance', (event, commandLine, workingDirectory) => {
-        // Someone tried to run a second instance, we should focus our window.
+    app.on('second-instance', async (event, argv, workingDirectory) => {
+        // App already running, focus the window
         if (mainWindow) {
-            if (mainWindow.isMinimized()) mainWindow.restore()
+            if (mainWindow.isMinimized())  {
+                mainWindow.restore()
+            }
             mainWindow.focus()
         }
+        const url = argv.pop();
+        console.error('Welcome Back', `You arrived from: ${url}`);
 
-        console.error('Welcome Back', `You arrived from: ${commandLine.pop().slice(0, -1)}`)
-    })
-
-    // // Create mainWindow, load the rest of the app, etc...
-    // app.whenReady().then(async () => {
-    //     await createWindow();
-
-
-    // })
-
-    // Specific handling for Mac OS
-    app.on('open-url', (event, url) => {
-        console.error('Welcome Back', `You arrived from: ${url}`)
-    })
+        documentationId = fetchDocId(url);
+        console.log('Opening documentation:', documentationId);
+        await openDocumentation(documentationId);
+    })   
 }
 
-app.on('ready', async () => {
-    await createWindow();
+ // Handling deeplink for Windows and Linux (when app is closed)
+ const url = process.argv.pop();
+ console.error('Welcome', `You arrived from: ${url}`);
+ documentationId = fetchDocId(url);
 
+app.on('ready', async () => {
+    createWindow();
+
+    // If app was opened from a deeplink, open the documentation
+    if(documentationId) {
+        console.log('Opening documentation:', documentationId);
+        await openDocumentation(documentationId);
+    }
+
+    // Re-create window on app activation (macOS)
+    // https://www.electronjs.org/docs/latest/tutorial/tutorial-first-app#open-a-window-if-none-are-open-macos
     app.on('activate', async () => {
         if (BrowserWindow.getAllWindows().length === 0) {
-            await createWindow();
+            createWindow();
         }
     });
 });
 
-async function createWindow() {
+
+// Handling deeplink for macOS
+app.on('open-url', async (event, url) => {
+    console.error('Welcome Back', `You arrived from: ${url}`);
+    documentationId = fetchDocId(url);
+    console.log('Opening documentation:', documentationId);
+    await openDocumentation(documentationId);
+});
+
+
+function fetchDocId(url) {
+    const regex = /document-io:\/\/documentations\/([a-f0-9]+)/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+}
+
+function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1366,
         height: 768,
@@ -67,14 +90,18 @@ async function createWindow() {
             nodeIntegration: false,
         },
     });
-    // TODO: make this configurable
-    mainWindow.webContents.openDevTools();
-    const documentationId = '67534ea8a1a84a18f6e3d9df';
+    // TODO: build home page
+    mainWindow.loadURL('http://localhost:3000');
+}
 
+async function openDocumentation(documentationId) {
     // Fetch documentation details and open the URL
     try {
         const documentation = await fetchDocumentation(documentationId);
         console.log(`Opening documentation: ${documentation.title} at ${documentation.url}`);
+
+        // TODO
+        mainWindow.webContents.openDevTools();
 
         // Load the target URL
         mainWindow.loadURL(documentation.url);
@@ -90,6 +117,8 @@ async function createWindow() {
         app.quit();
     }
 }
+
+
 
 // Fetch documentation details from the server
 async function fetchDocumentation(documentationId) {
@@ -129,9 +158,11 @@ async function injectEditorAssets(window, documentationId) {
     }
 }
 
-// Clean up on app close
+
+// Clean up on app close (Windows and Linux)
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
     }
 });
+
