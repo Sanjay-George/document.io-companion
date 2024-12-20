@@ -81,8 +81,8 @@ export default function ContextMenu({ onContextMenuOpen, onContextMenuClose }: {
 
     return (
         <>
-            <Menu id={CONTEXT_MENU_ID} onVisibilityChange={trackVisibility}>
-                <Item disabled>DOCUMENT.IO</Item>
+            <Menu id={CONTEXT_MENU_ID} onVisibilityChange={trackVisibility} className="text-sm">
+                <Item disabled className="font-bold">DOCUMENT.IO</Item>
                 <Separator />
                 <Item id="annotate" onClick={handleItemClick as any}> <span className="pr-4">✍️</span> Annotate</Item>
             </Menu>

@@ -53,25 +53,30 @@ export default function AnnotationListView() {
   }
 
   return (
-    <>
+    <div className='@container'>
       <SidePanelHeader title={documentation?.title} shouldGoBack={isFiltered} />
 
       {isLoadingAnnotations && <Spinner label="Fetching annotations..." />}
       {errorAnnotations && <div className='text-red-700'>Failed to load annotations. Error: {errorAnnotations?.message}</div>}
 
-      {annotations && annotations.slice(0, 2).map((annotation: Annotation) => (
-        <AnnotationCard key={annotation._id} annotation={annotation} />
-      ))}
+      <div className='grid gap-5 grid-cols-1 @xl:grid-cols-2 @3xl:grid-cols-3 @6xl:grid-cols-4'>
+        {annotations && annotations.slice(0, 2).map((annotation: Annotation) => (
+          <AnnotationCard key={annotation._id} annotation={annotation} />
+        ))}
 
-      {/* Adding an `Add` button in between for better UX */}
-      {annotations?.length >= 6 && <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} />}
+        {/* Adding an `Add` button in between for better UX */}
+        {annotations?.length >= 6 && <div className='@xl:hidden'><ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>}
 
-      {annotations && annotations.slice(2).map((annotation: Annotation) => (
-        <AnnotationCard key={annotation._id} annotation={annotation} />
-      ))}
+        {annotations && annotations.slice(2).map((annotation: Annotation) => (
+          <AnnotationCard key={annotation._id} annotation={annotation} />
+        ))}
 
-      <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} />
-    </>
+
+      </div>
+      <div className='my-5'> <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>
+
+
+    </div>
 
   )
 }

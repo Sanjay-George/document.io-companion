@@ -38,7 +38,7 @@ export default function AnnotationCard({ annotation }: { annotation: Annotation 
     }, [annotation]);
 
     return (
-        <Card className="my-5 shadow-md rounded-xl text-slate-400 hover:text-slate-600" shadow='md'>
+        <Card className="shadow-md rounded-xl text-slate-400 hover:text-slate-600" shadow='md'>
             <Link to={`/edit/${annotation._id}`} >
                 <CardHeader className="flex gap-3">
                     <Image
