@@ -27,7 +27,7 @@ if (!gotTheLock) {
     app.on('second-instance', async (event, argv, workingDirectory) => {
         // App already running, focus the window
         if (mainWindow) {
-            if (mainWindow.isMinimized())  {
+            if (mainWindow.isMinimized()) {
                 mainWindow.restore()
             }
             mainWindow.focus()
@@ -38,19 +38,19 @@ if (!gotTheLock) {
         documentationId = fetchDocId(url);
         console.log('Opening documentation:', documentationId);
         await openDocumentation(documentationId);
-    })   
+    })
 }
 
- // Handling deeplink for Windows and Linux (when app is closed)
- const url = process.argv.pop();
- console.error('Welcome', `You arrived from: ${url}`);
- documentationId = fetchDocId(url);
+// Handling deeplink for Windows and Linux (when app is closed)
+const url = process.argv.pop();
+console.error('Welcome', `You arrived from: ${url}`);
+documentationId = fetchDocId(url);
 
 app.on('ready', async () => {
     createWindow();
 
     // If app was opened from a deeplink, open the documentation
-    if(documentationId) {
+    if (documentationId) {
         console.log('Opening documentation:', documentationId);
         await openDocumentation(documentationId);
     }
@@ -101,7 +101,7 @@ async function openDocumentation(documentationId) {
         console.log(`Opening documentation: ${documentation.title} at ${documentation.url}`);
 
         // TODO
-        mainWindow.webContents.openDevTools();
+        // mainWindow.webContents.openDevTools();
 
         // Load the target URL
         mainWindow.loadURL(documentation.url);
@@ -141,6 +141,12 @@ async function injectEditorAssets(window, documentationId) {
         // Inject a root element and set its data attributes
         await window.webContents.executeJavaScript(`
             (function() {
+                if(document.getElementById('document-io-root')) {
+                    document.getElementById('document-io-root').dataset.documentationId 
+                        = '${documentationId}';
+                    return;
+                }
+
                 const root = document.createElement('div');
                 root.id = 'document-io-root';
                 root.dataset.documentationId = '${documentationId}';

@@ -11,17 +11,28 @@ export const PanelPositionContext = createContext(null as object | null);
 
 function App() {
   const [documentationId, setDocumentationId] = useState(null as string | null);
-  const [panelPosition, setPanelPosition] = useState('left');
+  const [panelPosition, setPanelPosition] = useState('');
+
+  // When panel position changes, store in local storage
+  useEffect(() => {
+    if (!panelPosition) return;
+
+    localStorage.setItem('panelPosition', panelPosition as string);
+  }, [panelPosition]);
 
   // On mount, get documentation id from root element
   useEffect(() => {
     const rootElement = document.getElementById('document-io-root');
-    if (rootElement) {
-      const id = rootElement.getAttribute('data-documentation-id');
-      setDocumentationId(id);
+    if (!rootElement) {
+      return;
     }
 
-    // Set documentation id for development
+    const id = rootElement.getAttribute('data-documentation-id');
+    setDocumentationId(id);
+    setPanelPosition(localStorage.getItem('panelPosition') ?? 'left');
+
+    // Hardcode documentation id for development
+    // TODO: check if there is a better way to do this
     if (import.meta.env.VITE_APP_ENV === 'development') {
       setDocumentationId(import.meta.env.VITE_TEST_DOCUMENTATION_ID);
     }
