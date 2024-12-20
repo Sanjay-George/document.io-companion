@@ -42,6 +42,11 @@ export default function AnnotationEditorView() {
     }
 
     const handleDelete = async () => {
+        // show confirmation dialog
+        if (!window.confirm('Are you sure you want to delete this annotation?')) {
+            return;
+        }
+
         await deleteAnnotation(annotationId as string);
         mutate(ALL_ANNOTATIONS_KEY(documentationId));
         navigate(-1);
@@ -57,6 +62,8 @@ export default function AnnotationEditorView() {
             console.error('Element not found:', annotation.target);
             return;
         }
+
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         highlight(element, false, null, true);
 
         return () => {

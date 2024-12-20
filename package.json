@@ -5,31 +5,36 @@
   "type": "commonjs",
   "scripts": {
     "clean": "rimraf dist",
-    "build": "tsc --project tsconfig.node.json && tsc --project tsconfig.browser.json",
-    "build:ui": "npm --prefix ./ui run build",
-    "copy-ui": "copyfiles -u 1 ui/dist/** ui/dist/**/* dist/ui",
-    "copy-styles": "copyfiles -u 1 styles/** dist/styles",
-    "prestart": "npm run clean && npm run build && npm run copy-styles && npm run build:ui && npm run copy-ui",
-    "start": "cd dist && node index.js",
-    "start:skip-ui-build": "npm run build && npm run copy-styles && cd dist && node index.js",
-    "dev": "electron . --trace-warnings --inspect=5858",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm --prefix ./ui run build",
+    "dev": "electron -iv index.js --trace-warnings --inspect=5858",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "electron": "^33.2.1",
+    "electron-squirrel-startup": "^1.0.1",
     "puppeteer": "^23.9.0",
     "puppeteer-core": "^23.9.0",
     "puppeteer-in-electron": "^3.0.5",
     "rimraf": "^6.0.1"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.6.0",
+    "@electron-forge/maker-deb": "^7.6.0",
+    "@electron-forge/maker-rpm": "^7.6.0",
+    "@electron-forge/maker-squirrel": "^7.6.0",
+    "@electron-forge/maker-zip": "^7.6.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
+    "@electron-forge/plugin-fuses": "^7.6.0",
+    "@electron/fuses": "^1.8.0",
     "@types/electron": "^1.6.12",
     "@types/node": "^22.10.1",
     "@types/puppeteer": "^7.0.4",
     "copyfiles": "^2.4.1",
+    "electron": "^33.2.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
   }

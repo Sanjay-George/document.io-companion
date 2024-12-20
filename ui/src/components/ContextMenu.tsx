@@ -5,7 +5,6 @@ import {
     Menu,
     Item,
     Separator,
-    Submenu,
     useContextMenu
 } from "react-contexify";
 
@@ -72,7 +71,7 @@ export default function ContextMenu({ onContextMenuOpen, onContextMenuClose }: {
     }
 
     // Handle context menu item click
-    function handleItemClick({ id, event, triggerEvent }: { id: string, event: Event, triggerEvent: Event }) {
+    function handleItemClick({ id, triggerEvent }: { id: string, triggerEvent: Event }) {
         if (id === "annotate") {
             const target = getQuerySelector(triggerEvent?.target as HTMLElement);
             console.log("Annotate clicked on: " + target);
