@@ -30,9 +30,9 @@
   --var-slate-950: #020617;
 
   /* Font */
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  font-weight: 400;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
   font-synthesis: none;
   color-scheme: light;
   text-rendering: optimizeLegibility;
