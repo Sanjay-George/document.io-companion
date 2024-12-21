@@ -1,31 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
   color-scheme: light;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Add this in markdown editor / renderer styling */
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+#document-io-root {
+  --var-primary: #007d7e;
+  --var-accent: #ff8749;
+  --var-danger: #B74606;
+
+  --var-slate-50: #f8fafc;
+  --var-slate-100: #f1f5f9;
+  --var-slate-200: #e2e8f0;
+  --var-slate-300: #cbd5e1;
+  --var-slate-400: #94a3b8;
+  --var-slate-500: #64748b;
+  --var-slate-600: #475569;
+  --var-slate-700: #334155;
+  --var-slate-800: #1e293b;
+  --var-slate-900: #0f172a;
+  --var-slate-950: #020617;
+
+  /* Font */
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  font-synthesis: none;
+  color-scheme: light;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Typography */
+  h1 {
+    margin-bottom: 1rem;
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 500;
+
+    @container (min-width: 768px) {
+      font-size: 3rem;
+      line-height: 1;
+    }
+  }
+
+  h2 {
+    margin-bottom: 1rem;
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 500;
+    line-height: 1;
+
+    @container (min-width: 768px) {
+      font-size: 2.25rem;
+      line-height: 2.5rem;
+    }
+  }
+
+  h3 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    line-height: 1;
+    font-weight: 500;
+
+
+    @container (min-width: 768px) {
+      font-size: 1.875rem;
+      line-height: 2.25rem;
+    }
+  }
+
+  h4 {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 500;
+
+    @container (min-width: 768px) {
+      font-size: 1.5rem;
+      line-height: 2;
+    }
+  }
+
+  h5 {
+    margin-bottom: 1rem;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+    line-height: 1;
+
+    @container (min-width: 768px) {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+  }
+
+  h6 {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    line-height: 1;
+
+    @container (min-width: 768px) {
+      font-size: 1.125rem;
+      line-height: 1.75rem;
+    }
+  }
+
+
+
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-}
