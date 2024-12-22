@@ -40,85 +40,93 @@ ANNOTATION HIGHLIGHTING
 }
 
 
-/* 
-----------------------
-MARKDOWN EDITOR STYLES
----------------------- 
-*/
-#document-io-root div.w-md-editor-preview {
-  * {
-    color: var(--var-slate-900);
-    font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  }
 
-  ul {
-    list-style-type: disc !important;
+@scope (#document-io-root) {
+  /* 
+  ----------------------
+  MARKDOWN EDITOR STYLES
+  ---------------------- 
+  */
+  div.w-md-editor-preview {
+    * {
+      color: var(--var-slate-900);
+      font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    }
 
     ul {
-      list-style-type: circle !important;
+      margin-left: 0 !important;
+      list-style-type: disc !important;
 
       ul {
-        list-style-type: square !important;
+        list-style-type: circle !important;
 
         ul {
-          list-style-type: disc !important;
+          list-style-type: square !important;
 
           ul {
-            list-style-type: circle !important;
+            list-style-type: disc !important;
 
             ul {
-              list-style-type: square !important;
+              list-style-type: circle !important;
+
+              ul {
+                list-style-type: square !important;
+              }
             }
           }
         }
       }
     }
-  }
 
-  ol {
-    list-style-type: decimal !important;
     ol {
-      list-style-type: lower-alpha !important;
+      margin-left: 0 !important;
+      list-style-type: decimal !important;
       ol {
-        list-style-type: lower-roman !important;
+        list-style-type: lower-alpha !important;
         ol {
-          list-style-type: upper-alpha !important;
+          list-style-type: lower-roman !important;
           ol {
-            list-style-type: upper-roman !important;
+            list-style-type: upper-alpha !important;
+            ol {
+              list-style-type: upper-roman !important;
+            }
           }
         }
       }
     }
+
   }
 
-}
-
-#document-io-root div.w-md-editor-area.w-md-editor-input {
-  * {
-    color: var(--var-slate-900);
-    font-size: 1rem !important;
+  div.w-md-editor-area.w-md-editor-input {
+    * {
+      color: var(--var-slate-900);
+      font-size: var(--var-text-base) !important;
+    }
+  
+    .w-md-editor-text, 
+    .w-md-editor-text pre,
+    .w-md-editor-text code
+     {
+      min-height: 100% !important;
+    }
+  
+    textarea {
+      background: transparent !important;
+      border: 0px none rgb(36, 41, 47) !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
   }
 
-  /* .w-md-editor-text {
-    height: 100%;
-  } */
-
-  textarea {
-    background: transparent !important;
-    border: 0px none rgb(36, 41, 47) !important;
-    width: 100% !important;
-    height: 100% !important;
+  /* 
+  ----------------------
+  MARKDOWN RENDERER STYLES
+  ---------------------- 
+  */
+  .md-renderer {
+    p {
+      margin-bottom: 0.5rem;
+    }
   }
-}
 
-
-/* 
-----------------------
-MARKDOWN RENDERER STYLES
----------------------- 
-*/
-#document-io-root .md-renderer {
-  p {
-    margin-bottom: 0.5rem;
-  }
 }
