@@ -40,7 +40,7 @@ export default function AnnotationCard({ annotation }: { annotation: Annotation 
     return (
         <Card className="shadow-md rounded-xl text-slate-400 hover:text-slate-600" shadow='md'>
             <Link to={`/edit/${annotation._id}`} >
-                <CardHeader className="flex gap-3 !items-center">
+                <CardHeader className="flex gap-3 items-center">
                     <div className="flex justify-center items-center bg-slate-700 text-white px-3 w-7 h-7 rounded-lg text-xs font-extralight mx-auto">
                         {renderAnnotationId(id as string)?.slice(-3)}
                     </div>

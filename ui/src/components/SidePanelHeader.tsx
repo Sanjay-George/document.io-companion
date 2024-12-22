@@ -19,7 +19,7 @@ export default function SidePanelHeader({ title, shouldGoBack }
 
     return (
         <>
-            <div className='flex items-center space-x-4 text-primary justify-between'>
+            <div className='flex items-center space-x-4 text-primary justify-between @xl:mb-2'>
                 <div className="inline-flex space-x-2">
                     {
                         shouldGoBack
@@ -48,7 +48,6 @@ export default function SidePanelHeader({ title, shouldGoBack }
 
                 </div>
             </div>
-            <Divider className='mb-5 bg-slate-200' />
         </>
     );
 }
