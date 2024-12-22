@@ -1,6 +1,5 @@
-const { app, BrowserWindow, shell } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const path = require('path');
-// const fetch = require('node-fetch');
 const fs = require('fs/promises');
 
 
@@ -131,7 +130,7 @@ async function fetchDocumentation(documentationId) {
 
 // Inject editor assets into the loaded page
 async function injectEditorAssets(window, documentationId) {
-    const assetsPath = path.join(__dirname, 'ui', 'dist', 'assets');
+    const assetsPath = path.join(__dirname, 'dist', 'assets');
 
     try {
         // Read CSS and JS files

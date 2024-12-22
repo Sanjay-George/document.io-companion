@@ -5,7 +5,9 @@
   "type": "commonjs",
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm --prefix ./ui run build",
+    "build:ui": "npm --prefix ./ui run build",
+    "copy:ui": "copyfiles -u 1 ui/dist/** ui/dist/**/* .",
+    "build": "npm run clean && npm run build:ui && npm run copy:ui",
     "dev": "electron -iv index.js --trace-warnings --inspect=5858",
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -15,11 +17,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.1",
-    "puppeteer": "^23.9.0",
-    "puppeteer-core": "^23.9.0",
-    "puppeteer-in-electron": "^3.0.5",
-    "rimraf": "^6.0.1"
+    "electron-squirrel-startup": "^1.0.1"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.6.0",
@@ -36,6 +34,7 @@
     "copyfiles": "^2.4.1",
     "electron": "^33.2.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "rimraf": "^6.0.1"
   }
 }

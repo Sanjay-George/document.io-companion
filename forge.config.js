@@ -6,12 +6,11 @@ module.exports = {
     name: 'document-io',
     asar: true,
     // TODO: Fix this later. Only include ui/dist folder
-    // ignore: [
-    //   // Ignore everything in ui except the dist folder
-    //   // /^\/ui(?!\/dist\/)/,
-    //   /^\/ui/
+    // https://electron.github.io/packager/main/interfaces/Options.html#ignore
+    ignore: [
+      /^\/ui/
 
-    // ]
+    ]
   },
   rebuildConfig: {},
   makers: [
