@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import './App.css';
 
 import {
@@ -32,6 +33,26 @@ export const AcmeLogo = () => {
 };
 
 export default function App() {
+    const div = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        setTimeout(() => {
+            const newDiv = document.createElement('div');
+            newDiv.innerHTML = 'Hello there';
+            newDiv.classList.add('w-full', 'h-10', 'text-center', 'border-2', 'border-red-500');
+            newDiv.style.marginTop = '1000px';
+            newDiv.style.marginBottom = '50px';
+            div.current?.appendChild(newDiv);
+        }, 2000);
+
+        return () => {
+            // remove all children
+            // @ts-expect-error Not null
+            div.current.innerHTML = '';
+        }
+    }, []);
+
+
     return (
         <div className="container mx-auto" style={{ maxWidth: '960px', margin: '0 auto' }}>
             <Navbar>
@@ -98,6 +119,10 @@ export default function App() {
                 </TableBody>
             </Table>
 
+            <div ref={div}>
+
+            </div>
         </div>
+
     );
 }
