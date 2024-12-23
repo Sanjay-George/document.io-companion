@@ -78,7 +78,7 @@ export function getQuerySelector(element: HTMLElement): string {
  * @param immediate If true, the function will be called immediately
  * @returns
  */
-export function debounce(func: Function, wait: number, immediate: boolean) {
+export function debounce(func: Function, wait: number, immediate: boolean = false) {
     let timeout: any;
     return function () {
         // @ts-ignore

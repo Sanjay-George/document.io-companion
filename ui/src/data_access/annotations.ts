@@ -10,7 +10,7 @@ export const ALL_ANNOTATIONS_KEY = (documentationId: string) =>
     `${API_URL}/documentations/${documentationId}/annotations`;
 
 export const ANNOTATIONS_BY_TARGET_KEY = (documentationId: string, target: string) =>
-    `${API_URL}/documentations/${documentationId}/annotations?target=${target}`;
+    `${API_URL}/documentations/${documentationId}/annotations?target=${encodeURIComponent(target)}`;
 
 export const SINGLE_ANNOTATION_KEY = (annotationId: string) =>
     `${API_URL}/annotations/${annotationId}`;
@@ -26,7 +26,7 @@ export const useAnnotations = (documentationId: string): { data: any[], isLoadin
     return useSWR(ALL_ANNOTATIONS_KEY(documentationId), fetcher);
 }
 
-export const useAnnotationsByTarget = (documentationId: string, target: string | null): { data: any[], isLoading: boolean, error: any } => {
+export const useAnnotationsByTarget = (documentationId: string, target: string | null): { data: Annotation[], isLoading: boolean, error: any } => {
     if (!documentationId) {
         useSWR(null);
         return { data: [], isLoading: false, error: 'Documentation ID not provided' };
@@ -34,7 +34,7 @@ export const useAnnotationsByTarget = (documentationId: string, target: string |
     if (!target) {
         return useAnnotations(documentationId);
     }
-    return useSWR(ANNOTATIONS_BY_TARGET_KEY(documentationId, encodeURIComponent(target)), fetcher)
+    return useSWR(ANNOTATIONS_BY_TARGET_KEY(documentationId, target), fetcher)
 };
 
 export const useAnnotation = (annotationId: string): { data: any, isLoading: boolean, error: any } => {

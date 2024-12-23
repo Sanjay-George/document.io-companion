@@ -24,7 +24,7 @@ export default function AnnotationListView() {
   // Fetch documentation details
   const { data: documentation, isLoading, error } = useDocumentation(documentationId);
 
-  // // Fetch annotations
+  // Fetch annotations
   const { data: annotations, isLoading: isLoadingAnnotations, error: errorAnnotations } = useAnnotationsByTarget(documentationId, target);
 
   sortAnnotations(annotations);

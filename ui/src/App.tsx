@@ -32,7 +32,6 @@ function App() {
     setPanelPosition(localStorage.getItem('panelPosition') ?? 'left');
 
     // Hardcode documentation id for development
-    // TODO: check if there is a better way to do this
     if (import.meta.env.VITE_APP_ENV === 'development') {
       setDocumentationId(import.meta.env.VITE_TEST_DOCUMENTATION_ID);
     }

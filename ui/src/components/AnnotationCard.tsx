@@ -23,19 +23,19 @@ export default function AnnotationCard({ annotation }: { annotation: Annotation 
 
     // Highlight annotated element
     useEffect(() => {
-        if (type === 'page') {
-            return;
-        }
         const element = document.querySelector(target) as HTMLElement;
         if (!element) {
-            console.error('Element not found:', target);
+            // TODO: wait for element to be rendered
+            // console.log('Element not found:', target);
             return;
         }
+
         highlight(element, true, () => openInEditor(target));
         return () => {
             removeHighlight(element);
         }
     }, [annotation]);
+
 
     return (
         <Card className="shadow-md rounded-xl text-slate-400 hover:text-slate-600" shadow='md'>

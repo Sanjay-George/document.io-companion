@@ -1,4 +1,3 @@
-import { Divider } from "@nextui-org/react";
 import H2 from "./H2";
 import LeftArrowIcon from "./icons/LeftArrowIcon";
 import { useNavigate } from "react-router";
