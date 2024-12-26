@@ -35,6 +35,10 @@ function App() {
     if (import.meta.env.VITE_APP_ENV === 'development') {
       setDocumentationId(import.meta.env.VITE_TEST_DOCUMENTATION_ID);
     }
+
+    return () => {
+      setDocumentationId(null);
+    }
   }, []);
 
 

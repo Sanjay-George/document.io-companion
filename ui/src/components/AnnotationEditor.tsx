@@ -38,7 +38,8 @@ export default function AnnotationEditor({
                 < ButtonPrimary
                     text="Save"
                     icon={<RightArrowIcon />}
-                    onClick={() => handleSave && handleSave(value)} />}
+                    onClick={() => handleSave && handleSave(value)} />
+            }
 
         </>
 

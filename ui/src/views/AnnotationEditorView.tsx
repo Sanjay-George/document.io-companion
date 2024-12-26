@@ -1,4 +1,4 @@
-import { Spinner } from '@nextui-org/react'
+import { Code, Spinner } from '@nextui-org/react'
 import '@/App.css';
 import { ALL_ANNOTATIONS_KEY, deleteAnnotation, SINGLE_ANNOTATION_KEY, updateAnnotation, useAnnotation } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
@@ -6,7 +6,7 @@ import { renderAnnotationId } from '@/utils';
 import AnnotationEditor from '@/components/AnnotationEditor';
 import { useNavigate, useParams } from 'react-router';
 import ButtonPrimary from '@/components/ButtonPrimary';
-import { useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { highlight, removeHighlight } from '@/utils/annotations';
 import ButtonDanger from '@/components/ButtonDanger';
 import EditIcon from '@/components/icons/EditIcon';
@@ -15,12 +15,14 @@ import { DocumentationContext } from '@/App';
 import { Annotation } from '@/models/annotations';
 import { PreviewType } from '@uiw/react-md-editor';
 import { mutate } from 'swr';
+import { Tooltip } from 'react-tooltip';
 
 export default function AnnotationEditorView() {
     const { id: annotationId } = useParams();
     const documentationId = useContext(DocumentationContext) as string;
 
-    const [previewMode, setPreviewMode] = useState('preview');
+    const [previewMode, setPreviewMode]: [PreviewType, Dispatch<SetStateAction<PreviewType>>] = useState<PreviewType>("preview");
+
     const navigate = useNavigate();
 
     const { data: annotation, isLoading, error } = annotationId
@@ -35,10 +37,9 @@ export default function AnnotationEditorView() {
         };
 
         await updateAnnotation(annotationId as string, updatedAnnotation);
-        // TODO: mutate if data is not updated
         mutate(ALL_ANNOTATIONS_KEY(documentationId));
         mutate(SINGLE_ANNOTATION_KEY(annotationId as string));
-        setPreviewMode('preview');
+        setPreviewMode("preview");
     }
 
     const handleDelete = async () => {
@@ -84,6 +85,42 @@ export default function AnnotationEditorView() {
     return (
         <>
             <SidePanelHeader title={renderAnnotationId(annotation._id)} shouldGoBack={true} />
+
+
+            {
+                (annotation.url !== window.location.href) && (
+                    <div className='text-xs'>
+                        <div className="py-2 px-4 mb-4 text-xs text-yellow-800 rounded-lg bg-yellow-50 border-1 border-yellow-200 cursor-pointer" role="alert">
+                            <a href={annotation.url} rel="noreferrer">
+
+                                This annotation exists on a different url. <span className="font-medium underline">Click here</span> to navigate.
+                            </a>
+                        </div>
+                    </div>
+                )
+            }
+
+            <div className='mb-2'>
+                <Tooltip
+                    id="code-tooltip"
+                    className="!z-10 !rounded-md !m-0 max-w-lg"
+                    offset={2}
+                    style={{ padding: '4px 8px', fontSize: '12px', lineHeight: '1.5' }}
+                />
+
+                <Code
+                    color="default"
+                    className='text-xs max-w-full overflow-x-clip overflow-ellipsis' data-tooltip-id="code-tooltip"
+                    data-tooltip-content={annotation.target}
+                    data-tooltip-place="bottom">
+                    <span className='font-semibold'>Target: </span> {annotation.target}
+                </Code>
+            </div>
+
+
+
+
+
             <AnnotationEditor
                 content={annotation?.value}
                 handleSave={handleSave}
@@ -93,14 +130,11 @@ export default function AnnotationEditorView() {
                 previewMode === 'preview' &&
                 (
                     <div className='space-x-2'>
-                        <ButtonPrimary text="Edit" icon={<EditIcon />} onClick={() => { setPreviewMode('live') }} />
+                        <ButtonPrimary text="Edit" icon={<EditIcon />} onClick={() => { setPreviewMode("live") }} />
                         <ButtonDanger text="Delete" icon={<DeleteIcon />} onClick={handleDelete} />
                     </div>
                 )
             }
-
-
-
 
         </>
     )
