@@ -6,7 +6,6 @@ import { PanelPositionContext } from "@/App";
 import { ReloadIcon } from "./icons/ReloadIcon";
 import MoveDownIcon from "./icons/MoveDownIcon";
 import MoveLeftIcon from "./icons/MoveLeftIcon";
-import RightArrowIcon from "./icons/RightArrowIcon";
 import { Tooltip } from 'react-tooltip'
 
 
@@ -20,12 +19,12 @@ export default function SidePanelHeader({ title, shouldGoBack }
     const handleReloadClick = () => {
         window.location.reload();
     }
-    const handleBackClick = () => {
-        window.history.back();
-    }
-    const handleForwardClick = () => {
-        window.history.forward();
-    }
+    // const handleBackClick = () => {
+    //     window.history.back();
+    // }
+    // const handleForwardClick = () => {
+    //     window.history.forward();
+    // }
 
     return (
         <>

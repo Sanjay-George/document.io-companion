@@ -42,6 +42,7 @@ ANNOTATION HIGHLIGHTING
 
 
 @scope (#document-io-root) {
+
   /* 
   ----------------------
   MARKDOWN EDITOR STYLES
@@ -81,12 +82,16 @@ ANNOTATION HIGHLIGHTING
     ol {
       margin-left: 0 !important;
       list-style-type: decimal !important;
+
       ol {
         list-style-type: lower-alpha !important;
+
         ol {
           list-style-type: lower-roman !important;
+
           ol {
             list-style-type: upper-alpha !important;
+
             ol {
               list-style-type: upper-roman !important;
             }
@@ -102,14 +107,13 @@ ANNOTATION HIGHLIGHTING
       color: var(--var-slate-900);
       font-size: var(--var-text-base) !important;
     }
-  
-    .w-md-editor-text, 
+
+    .w-md-editor-text,
     .w-md-editor-text pre,
-    .w-md-editor-text code
-     {
+    .w-md-editor-text code {
       min-height: 100% !important;
     }
-  
+
     textarea {
       background: transparent !important;
       border: 0px none rgb(36, 41, 47) !important;
@@ -132,14 +136,17 @@ ANNOTATION HIGHLIGHTING
 }
 
 @keyframes pulsing {
-  0%, 100% {
-      background-color: var(--var-slate-200)
+
+  0%,
+  100% {
+    background-color: var(--var-slate-100)
   }
+
   50% {
-      background-color: var(--var-slate-400);
+    background-color: var(--var-slate-300);
   }
 }
 
 .pulsing-animation {
-  animation: pulsing 2s infinite;
+  animation: pulsing 1.5s infinite;
 }
