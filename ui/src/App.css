@@ -130,3 +130,16 @@ ANNOTATION HIGHLIGHTING
   }
 
 }
+
+@keyframes pulsing {
+  0%, 100% {
+      background-color: var(--var-slate-200)
+  }
+  50% {
+      background-color: var(--var-slate-400);
+  }
+}
+
+.pulsing-animation {
+  animation: pulsing 2s infinite;
+}

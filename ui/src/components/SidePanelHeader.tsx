@@ -3,17 +3,28 @@ import LeftArrowIcon from "./icons/LeftArrowIcon";
 import { useNavigate } from "react-router";
 import { useContext } from "react";
 import { PanelPositionContext } from "@/App";
+import { ReloadIcon } from "./icons/ReloadIcon";
+import MoveDownIcon from "./icons/MoveDownIcon";
+import MoveLeftIcon from "./icons/MoveLeftIcon";
+import RightArrowIcon from "./icons/RightArrowIcon";
+import { Tooltip } from 'react-tooltip'
+
 
 export type PanelPosition = 'left' | 'bottom';
 
 export default function SidePanelHeader({ title, shouldGoBack }
     : { title: string, shouldGoBack?: boolean }) {
     const navigate = useNavigate();
-
     const { panelPosition, setPanelPosition } = useContext(PanelPositionContext) as any;
 
     const handleReloadClick = () => {
         window.location.reload();
+    }
+    const handleBackClick = () => {
+        window.history.back();
+    }
+    const handleForwardClick = () => {
+        window.history.forward();
     }
 
     return (
@@ -28,25 +39,67 @@ export default function SidePanelHeader({ title, shouldGoBack }
                     <H2>{title}</H2>
                 </div>
 
-                <div className="inline-flex items-center justify-end space-x-1">
+                <Tooltip
+                    id="side-panel-tooltip"
+                    className="!z-10 !rounded-md !m-0"
+                    offset={2}
+                    style={{ padding: '0px 8px', fontSize: '12px' }}
+                />
 
-                    <div className="text-slate-500 hover:text-slate-900 cursor-pointer transition duration-150 ease-in-out p-1" onClick={handleReloadClick}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-rotate-ccw size-4"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>
+                <div className="inline-flex items-center justify-end space-x-1">
+                    {/* <div
+                        data-tooltip-id="side-panel-tooltip"
+                        data-tooltip-content="Go back"
+                        data-tooltip-place="bottom"
+                        className="text-slate-400 hover:text-slate-900 cursor-pointer transition duration-150 ease-in-out p-1"
+                        onClick={handleBackClick}>
+                        <LeftArrowIcon />
+                    </div>
+
+                    <div
+                        data-tooltip-id="side-panel-tooltip"
+                        data-tooltip-content="Go forward"
+                        data-tooltip-place="bottom"
+                        className="text-slate-400 hover:text-slate-900 cursor-pointer transition duration-150 ease-in-out p-1"
+                        onClick={handleForwardClick}>
+                        <RightArrowIcon />
+                    </div> */}
+
+                    <div
+                        data-tooltip-id="side-panel-tooltip"
+                        data-tooltip-content="Reload page"
+                        data-tooltip-place="bottom"
+                        className="text-slate-400 hover:text-slate-900 cursor-pointer transition duration-150 ease-in-out p-1"
+                        onClick={handleReloadClick}>
+                        <ReloadIcon />
                     </div>
                     {
-                        panelPosition === 'left' && (<div className="text-slate-500 hover:text-slate-900 cursor-pointer transition duration-150 ease-in-out p-1" onClick={() => setPanelPosition('bottom')}>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-panel-bottom-close size-4"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M3 15h18" /><path d="m15 8-3 3-3-3" /></svg>
-                        </div>)
+                        panelPosition === 'left' && (
+                            <div
+                                data-tooltip-id="side-panel-tooltip"
+                                data-tooltip-content="Move panel to bottom"
+                                data-tooltip-place="bottom"
+                                className="text-slate-400 hover:text-slate-900 cursor-pointer transition duration-150 ease-in-out p-1"
+                                onClick={() => setPanelPosition('bottom')}>
+                                <MoveDownIcon />
+                            </div>
+                        )
                     }
 
                     {
-                        panelPosition === 'bottom' && (<div className="text-slate-500 hover:text-slate-900 cursor-pointer transition duration-150 ease-in-out p-1" onClick={() => setPanelPosition('left')}>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-panel-left-close size-4"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="M9 3v18" /><path d="m16 15-3-3 3-3" /></svg>
-                        </div>)
+                        panelPosition === 'bottom' && (
+                            <div
+                                data-tooltip-id="side-panel-tooltip"
+                                data-tooltip-content="Move panel to left"
+                                data-tooltip-place="bottom"
+                                className="text-slate-400 hover:text-slate-900 cursor-pointer transition duration-150 ease-in-out p-1" onClick={() => setPanelPosition('left')}>
+                                <MoveLeftIcon />
+                            </div>
+                        )
                     }
 
                 </div>
-            </div>
+            </div >
         </>
     );
 }

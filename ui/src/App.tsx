@@ -69,7 +69,8 @@ function App() {
                   <Outlet />
                 </Panel>
 
-                <PanelResizeHandle className="w-1.5 h-full bg-slate-200 hover:bg-slate-300 transition-background duration-150 pointer-events-auto" />
+                {/* TODO: Add pulsing animation when minimized */}
+                <PanelResizeHandle className="w-1.5 h-full bg-slate-200 hover:bg-slate-300 transition-background duration-150 pointer-events-auto pulsing-animation" />
 
                 <Panel className='bg-transparent pointer-events-none' />
               </>
@@ -81,7 +82,7 @@ function App() {
                 <>
                   <Panel className='bg-transparent pointer-events-none' />
 
-                  <PanelResizeHandle className="h-1.5 w-full bg-slate-200 hover:bg-slate-300 transition-background duration-150 pointer-events-auto" />
+                  <PanelResizeHandle className="h-1.5 w-full bg-slate-200 hover:bg-slate-300 transition-background duration-150 pointer-events-auto pulsing-animation" />
 
                   <Panel
                     className="py-2 px-20 min-w-full h-full bg-slate-50 overflow-scroll pointer-events-auto"
