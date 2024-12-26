@@ -113,7 +113,7 @@ export default function AnnotationEditorView() {
                     className='text-xs max-w-full overflow-x-clip overflow-ellipsis' data-tooltip-id="code-tooltip"
                     data-tooltip-content={annotation.target}
                     data-tooltip-place="bottom">
-                    <span className='font-semibold'>Target: </span> {annotation.target}
+                    <span className='font-semibold font-sans'>Target: </span> {annotation.target}
                 </Code>
             </div>
 

@@ -1,5 +1,5 @@
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createContext } from 'react';
 
 // Import CSS files
@@ -12,6 +12,7 @@ export const PanelPositionContext = createContext(null as object | null);
 function App() {
   const [documentationId, setDocumentationId] = useState(null as string | null);
   const [panelPosition, setPanelPosition] = useState('');
+  const [highlightResizeHandle, setHighlightResizeHandle] = useState(false);
 
   // When panel position changes, store in local storage
   useEffect(() => {
@@ -40,6 +41,14 @@ function App() {
       setDocumentationId(null);
     }
   }, []);
+
+  const handlePanelResize = (size: number) => {
+    if (size < 10) {
+      setHighlightResizeHandle(true);
+      return;
+    }
+    setHighlightResizeHandle(false);
+  }
 
 
   return (
@@ -71,12 +80,13 @@ function App() {
                   scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent
                   "
                   defaultSize={30}
-                  style={{ overflowY: 'scroll' }}>
+                  style={{ overflowY: 'scroll' }}
+                  onResize={handlePanelResize}
+                >
                   <Outlet />
                 </Panel>
 
-                {/* TODO: Add pulsing animation when minimized */}
-                <PanelResizeHandle className="w-1.5 h-full bg-slate-200 hover:bg-slate-300 transition-background duration-150 pointer-events-auto pulsing-animation" />
+                <PanelResizeHandle className={`w-1.5 h-full bg-slate-200 hover:bg-slate-300 transition-background duration-150 pointer-events-auto ${highlightResizeHandle ? 'pulsing-animation' : ''}`} />
 
                 <Panel className='bg-transparent pointer-events-none' />
               </>
@@ -88,14 +98,16 @@ function App() {
                 <>
                   <Panel className='bg-transparent pointer-events-none' />
 
-                  <PanelResizeHandle className="h-1.5 w-full bg-slate-200 hover:bg-slate-300 transition-background duration-150 pointer-events-auto pulsing-animation" />
+                  <PanelResizeHandle className={`h-1.5 w-full bg-slate-200 hover:bg-slate-300 transition-background duration-150 pointer-events-auto ${highlightResizeHandle ? 'pulsing-animation' : ''}`} />
 
                   <Panel
                     className="py-2 px-20 min-w-full h-full bg-slate-50 overflow-scroll pointer-events-auto
                     scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent
                     "
                     defaultSize={60}
-                    style={{ overflowY: 'scroll' }}>
+                    style={{ overflowY: 'scroll' }}
+                    onResize={handlePanelResize}
+                  >
                     <Outlet />
                   </Panel>
 

@@ -13,6 +13,7 @@ import ContextMenu from '@/components/ContextMenu';
 
 export default function AnnotationAddView() {
     const documentationId = useContext(DocumentationContext) as string;
+
     const [searchParams] = useSearchParams();
     const target = searchParams.get('target');
     const redirectTo = searchParams.get('redirectTo') || null;
@@ -44,7 +45,6 @@ export default function AnnotationAddView() {
     // Highlight annotated element
     useEffect(() => {
         if (!target) {
-            // TODO: Adding annotation without target. Show target picker menu
             setShouldHighlight(true);
             return;
         }
@@ -75,7 +75,6 @@ export default function AnnotationAddView() {
             document.removeEventListener('mouseover', handleMouseOver);
             document.removeEventListener('mouseout', handleMouseOut);
         }
-
     }, [shouldHighlight]);
 
 
@@ -83,7 +82,7 @@ export default function AnnotationAddView() {
         return <Spinner label="Could not load editor..." />;
     }
 
-    // Adding new annotation on a new target (element)
+    // Adding annotation on a new target (element)
     if (!target) {
         return (
             <>
@@ -102,7 +101,7 @@ export default function AnnotationAddView() {
 
     }
 
-    // Adding new annotation on an already annotated target (element)
+    // Adding annotation on an already annotated target (element)
     return (
         <>
             <SidePanelHeader title="Add Annotation" shouldGoBack={true} />
