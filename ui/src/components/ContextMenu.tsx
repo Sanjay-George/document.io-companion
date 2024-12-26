@@ -18,9 +18,10 @@ export default function ContextMenu({ onContextMenuOpen, onContextMenuClose }: {
     const { show } = useContextMenu({
         id: CONTEXT_MENU_ID
     });
-    const [isVisible, setIsVisible] = useState(false);
-    const [target, setTarget] = useState<HTMLElement | null>(null);
     const navigate = useNavigate();
+    const [isVisible, setIsVisible] = useState(false);
+    // target is the element on which the context menu is triggered
+    const [target, setTarget] = useState<HTMLElement | null>(null);
 
     // Add event listener to show context menu
     useEffect(() => {
@@ -74,8 +75,7 @@ export default function ContextMenu({ onContextMenuOpen, onContextMenuClose }: {
     function handleItemClick({ id, triggerEvent }: { id: string, triggerEvent: Event }) {
         if (id === "annotate") {
             const target = getQuerySelector(triggerEvent?.target as HTMLElement);
-            console.log("Annotate clicked on: " + target);
-            navigate(`/add?target=${encodeURIComponent(target)}`);
+            navigate(`/add?target=${encodeURIComponent(target)}&redirectTo=/`);
         }
     }
 

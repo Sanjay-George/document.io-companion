@@ -15,12 +15,10 @@ export default function AnnotationAddView() {
     const documentationId = useContext(DocumentationContext) as string;
     const [searchParams] = useSearchParams();
     const target = searchParams.get('target');
+    const redirectTo = searchParams.get('redirectTo') || null;
 
     const navigate = useNavigate();
     const [shouldHighlight, setShouldHighlight] = useState(false);
-
-    // // Fetch documentation details
-    // const { data: documentation, isLoading, error } = useDocumentation(documentationId);
 
     const handleSave = async (value: string) => {
         const annotation: Annotation = {
@@ -34,7 +32,13 @@ export default function AnnotationAddView() {
         };
 
         await addAnnotation(annotation);
-        navigate(-1);
+
+        // Redirect
+        if (!redirectTo) {
+            navigate(-1);
+            return;
+        }
+        navigate(redirectTo);
     }
 
     // Highlight annotated element
@@ -56,10 +60,11 @@ export default function AnnotationAddView() {
         }
     }, [target]);
 
+    // Add event listeners for mouse over and mouse out events
     useEffect(() => {
         if (shouldHighlight) {
-            document.addEventListener('mouseover', handleMouseOver);
-            document.addEventListener('mouseout', handleMouseOut);
+            document.addEventListener('mouseover', handleMouseOver, { passive: true });
+            document.addEventListener('mouseout', handleMouseOut, { passive: true });
         }
         else {
             document.removeEventListener('mouseover', handleMouseOver);
@@ -78,7 +83,7 @@ export default function AnnotationAddView() {
         return <Spinner label="Could not load editor..." />;
     }
 
-    // No target, show target picker menu
+    // Adding new annotation on a new target (element)
     if (!target) {
         return (
             <>
@@ -97,7 +102,7 @@ export default function AnnotationAddView() {
 
     }
 
-    // Target exists. Directly open the editor
+    // Adding new annotation on an already annotated target (element)
     return (
         <>
             <SidePanelHeader title="Add Annotation" shouldGoBack={true} />
@@ -106,6 +111,9 @@ export default function AnnotationAddView() {
         </>
     )
 }
+
+
+// Helper functions
 
 /**
  * Handle Mouse Over event

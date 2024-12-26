@@ -74,15 +74,13 @@ export function removeHighlight(element: HTMLElement) {
     removeViewIcon(element);
 }
 
-
 function removeViewIcon(element: HTMLElement) {
     if (!hasViewIcon(element)) {
         return;
     }
-    const icon = element.querySelector(`.${ANNOTATED_ELEMENT_ICON_CLASS}`);
-    if (icon && icon.parentNode === element) {
-        element.removeChild(icon);
-    }
+    // Icon is the last child
+    const lastChild = element.children[element.children.length - 1];
+    element.removeChild(lastChild);
 }
 
 /**
@@ -108,7 +106,7 @@ function getMaxZIndexOfChildren(element: HTMLElement): number {
  * @returns 
  */
 function isAnnotated(element: HTMLElement): boolean {
-    return element.classList.contains(ANNOTATED_ELEMENT_CLASS) && hasViewIcon(element);
+    return element.classList.contains(ANNOTATED_ELEMENT_CLASS);
 }
 
 
