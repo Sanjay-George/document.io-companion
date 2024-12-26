@@ -90,7 +90,8 @@ export default {
         },
       }
     }),
-    require('@tailwindcss/container-queries')
+    require('@tailwindcss/container-queries'),
+    require('tailwind-scrollbar'),
   ],
 }
 
