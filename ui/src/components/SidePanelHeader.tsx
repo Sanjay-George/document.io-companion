@@ -68,7 +68,7 @@ export default function SidePanelHeader({ title, shouldGoBack }
                         data-tooltip-id="side-panel-tooltip"
                         data-tooltip-content="Reload page"
                         data-tooltip-place="bottom"
-                        className="text-slate-400 hover:text-slate-900 cursor-pointer transition duration-150 ease-in-out p-1"
+                        className="text-slate-500 hover:text-slate-950 cursor-pointer transition duration-150 ease-in-out p-1"
                         onClick={handleReloadClick}>
                         <ReloadIcon />
                     </div>
@@ -76,9 +76,9 @@ export default function SidePanelHeader({ title, shouldGoBack }
                         panelPosition === 'left' && (
                             <div
                                 data-tooltip-id="side-panel-tooltip"
-                                data-tooltip-content="Move panel to bottom"
+                                data-tooltip-content="Horizontal layout"
                                 data-tooltip-place="bottom"
-                                className="text-slate-400 hover:text-slate-900 cursor-pointer transition duration-150 ease-in-out p-1"
+                                className="text-slate-500 hover:text-slate-950 cursor-pointer transition duration-150 ease-in-out p-1"
                                 onClick={() => setPanelPosition('bottom')}>
                                 <MoveDownIcon />
                             </div>
@@ -89,9 +89,9 @@ export default function SidePanelHeader({ title, shouldGoBack }
                         panelPosition === 'bottom' && (
                             <div
                                 data-tooltip-id="side-panel-tooltip"
-                                data-tooltip-content="Move panel to left"
+                                data-tooltip-content="Vertical layout"
                                 data-tooltip-place="bottom"
-                                className="text-slate-400 hover:text-slate-900 cursor-pointer transition duration-150 ease-in-out p-1" onClick={() => setPanelPosition('left')}>
+                                className="text-slate-500 hover:text-slate-950 cursor-pointer transition duration-150 ease-in-out p-1" onClick={() => setPanelPosition('left')}>
                                 <MoveLeftIcon />
                             </div>
                         )

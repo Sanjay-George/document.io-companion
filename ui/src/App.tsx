@@ -1,5 +1,5 @@
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createContext } from 'react';
 
 // Import CSS files
@@ -19,7 +19,7 @@ function App() {
     if (!panelPosition) return;
 
     localStorage.setItem('panelPosition', panelPosition as string);
-  }, [panelPosition]);
+  }, [panelPosition])
 
   // On mount, get documentation id from root element
   useEffect(() => {
@@ -50,7 +50,6 @@ function App() {
     setHighlightResizeHandle(false);
   }
 
-
   return (
     <DocumentationContext.Provider value={documentationId}>
       <PanelPositionContext.Provider value={{ panelPosition, setPanelPosition }}>
@@ -60,8 +59,8 @@ function App() {
             direction={panelPosition == 'left' ? "horizontal" : "vertical"}
             className={
               panelPosition == 'left'
-                ? 'fixed top-0 left-0 pointer-events-none active:pointer-events-auto'
-                : "fixed bottom-0 left-0 pointer-events-none active:pointer-events-auto"
+                ? 'fixed group top-0 left-0 pointer-events-none active:pointer-events-auto'
+                : "fixed group bottom-0 left-0 pointer-events-none active:pointer-events-auto"
             }
             style={
               panelPosition == 'left'
@@ -73,24 +72,28 @@ function App() {
                 }
             }
           >
-            {panelPosition == 'left' && (
-              <>
-                <Panel
-                  className="px-7 py-5 w-full min-h-full bg-slate-50 overflow-scroll pointer-events-auto
-                  scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent
-                  "
-                  defaultSize={30}
-                  style={{ overflowY: 'scroll' }}
-                  onResize={handlePanelResize}
-                >
-                  <Outlet />
-                </Panel>
+            {
+              panelPosition == 'left' && (
+                <>
+                  <Panel
+                    className="px-7 py-5 w-full min-h-full bg-slate-50 
+                      overflow-scroll pointer-events-auto 
+                      scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent"
+                    defaultSize={30}
+                    style={{ overflowY: 'scroll' }}
+                    onResize={handlePanelResize}
+                  >
+                    <Outlet />
+                  </Panel>
 
-                <PanelResizeHandle className={`w-1.5 h-full bg-slate-200 hover:bg-slate-300 transition-background duration-150 pointer-events-auto ${highlightResizeHandle ? 'pulsing-animation' : ''}`} />
+                  <PanelResizeHandle className={`w-0.5 h-full bg-slate-300 hover:bg-slate-400 
+                    group-hover:bg-slate-400 transition-background duration-150 
+                    pointer-events-auto ${highlightResizeHandle ? 'pulsing-animation' : ''}`} />
 
-                <Panel className='bg-transparent pointer-events-none' />
-              </>
-            )}
+                  <Panel className='bg-transparent pointer-events-none' />
+                </>
+              )
+            }
 
 
             {
@@ -98,10 +101,13 @@ function App() {
                 <>
                   <Panel className='bg-transparent pointer-events-none' />
 
-                  <PanelResizeHandle className={`h-1.5 w-full bg-slate-200 hover:bg-slate-300 transition-background duration-150 pointer-events-auto ${highlightResizeHandle ? 'pulsing-animation' : ''}`} />
+                  <PanelResizeHandle className={`h-0.5 w-full bg-slate-300 hover:bg-slate-400 
+                    group-hover:bg-slate-400 transition-background duration-150 
+                    pointer-events-auto ${highlightResizeHandle ? 'pulsing-animation' : ''}`} />
 
                   <Panel
-                    className="py-2 px-20 min-w-full h-full bg-slate-50 overflow-scroll pointer-events-auto
+                    className="py-2 px-20 min-w-full h-full bg-slate-50 
+                    overflow-scroll pointer-events-auto
                     scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent
                     "
                     defaultSize={60}
