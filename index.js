@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs/promises');
 
@@ -91,6 +91,18 @@ function createWindow() {
     });
     // TODO: build home page
     mainWindow.loadURL('http://localhost:3000');
+
+    // // Enable navigation history
+    // const { navigationHistory } = mainWindow.webContents;
+    // ipcMain.handle('nav:canGoBack', () => navigationHistory.canGoBack())
+    // ipcMain.handle('nav:canGoForward', () => navigationHistory.canGoForward())
+
+    // mainWindow.webContents.on('did-navigate', () => {
+    //     mainWindow.webContents.send('nav:updated');
+    // });
+    // mainWindow.webContents.on('did-navigate-in-page', () => {
+    //     mainWindow.webContents.send('nav:updated');
+    // });
 }
 
 async function openDocumentation(documentationId) {

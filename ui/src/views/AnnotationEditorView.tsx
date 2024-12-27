@@ -86,11 +86,10 @@ export default function AnnotationEditorView() {
         <>
             <SidePanelHeader title={renderAnnotationId(annotation._id)} shouldGoBack={true} />
 
-
             {
                 (annotation.url !== window.location.href) && (
                     <div className='text-xs'>
-                        <div className="py-2 px-4 mb-4 text-xs text-yellow-800 rounded-lg bg-yellow-50 border-1 border-yellow-200 cursor-pointer" role="alert">
+                        <div className="py-2 px-2 mb-4 text-xs !text-yellow-800 rounded-lg !bg-yellow-50 !border-1 !border-yellow-200 cursor-pointer" role="alert">
                             <a href={annotation.url} rel="noreferrer">
 
                                 This annotation exists on a different url. <span className="font-medium underline">Click here</span> to navigate.
@@ -100,7 +99,7 @@ export default function AnnotationEditorView() {
                 )
             }
 
-            <div className='mb-2'>
+            <div>
                 <Tooltip
                     id="code-tooltip"
                     className="!z-10 !rounded-md !m-0 max-w-lg"
@@ -116,9 +115,6 @@ export default function AnnotationEditorView() {
                     <span className='font-semibold font-sans'>Target: </span> {annotation.target}
                 </Code>
             </div>
-
-
-
 
 
             <AnnotationEditor
