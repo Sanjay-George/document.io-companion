@@ -32,7 +32,7 @@ if (!gotTheLock) {
             mainWindow.focus()
         }
         const url = argv.pop();
-        console.error('Welcome Back', `You arrived from: ${url}`);
+        console.error('Welcome Back!', `You arrived from: ${url}`);
 
         documentationId = fetchDocId(url);
         console.log('Opening documentation:', documentationId);
@@ -42,7 +42,7 @@ if (!gotTheLock) {
 
 // Handling deeplink for Windows and Linux (when app is closed)
 const url = process.argv.pop();
-console.error('Welcome', `You arrived from: ${url}`);
+console.error('Welcome!', `You arrived from: ${url}`);
 documentationId = fetchDocId(url);
 
 app.on('ready', async () => {
@@ -66,7 +66,7 @@ app.on('ready', async () => {
 
 // Handling deeplink for macOS
 app.on('open-url', async (event, url) => {
-    console.error('Welcome Back', `You arrived from: ${url}`);
+    console.error('Welcome Back!', `You arrived from: ${url}`);
     documentationId = fetchDocId(url);
     console.log('Opening documentation:', documentationId);
     await openDocumentation(documentationId);
@@ -114,14 +114,16 @@ async function openDocumentation(documentationId) {
         // TODO
         // mainWindow.webContents.openDevTools();
 
-        // Load the target URL
-        mainWindow.loadURL(documentation.url);
-
-        // Handle DOMContentLoaded to inject assets
-        mainWindow.webContents.on('dom-ready', () => {
-            console.log('DOM loaded. Injecting assets...');
-            injectEditorAssets(mainWindow, documentationId);
-        });
+        // Remove the previous event listener
+        mainWindow.webContents.off('dom-ready', handleDOMReady);
+        // Load the documentation URL
+        await mainWindow.loadURL(documentation.url);
+        // Clear the navigation history to prevent going back to previous documentation
+        mainWindow.webContents.navigationHistory.clear();
+        // Add a new event listener to handle DOM ready
+        mainWindow.webContents.on('dom-ready', handleDOMReady);
+        // DOM already loaded, call the handler manually
+        await handleDOMReady();
 
     } catch (error) {
         console.error('Failed to fetch documentation:', error);
@@ -129,7 +131,10 @@ async function openDocumentation(documentationId) {
     }
 }
 
-
+async function handleDOMReady()  {
+    console.log('DOM loaded. Injecting assets...');   
+    await injectEditorAssets(mainWindow, documentationId);
+}
 
 // Fetch documentation details from the server
 async function fetchDocumentation(documentationId) {
@@ -148,7 +153,7 @@ async function injectEditorAssets(window, documentationId) {
         // Read CSS and JS files
         const cssContent = await fs.readFile(path.join(assetsPath, 'index.css'), 'utf8');
         const jsContent = await fs.readFile(path.join(assetsPath, 'index.js'), 'utf8');
-
+  
         // Inject a root element and set its data attributes
         await window.webContents.executeJavaScript(`
             (function() {
@@ -164,7 +169,7 @@ async function injectEditorAssets(window, documentationId) {
                 document.body.appendChild(root);
             })();
         `);
-
+      
         // Inject CSS
         await window.webContents.insertCSS(cssContent);
 
