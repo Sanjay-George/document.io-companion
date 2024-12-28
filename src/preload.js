@@ -1,7 +1,10 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
-// contextBridge.exposeInMainWorld('electronAPI', {
-//     canGoBack: () => ipcRenderer.invoke('nav:canGoBack'),
-//     canGoForward: () => ipcRenderer.invoke('nav:canGoForward'),
-//     onNavigationUpdate: (callback) => ipcRenderer.on('nav:updated', callback),
-// })
+contextBridge.exposeInMainWorld('electronAPI', {
+    // canGoBack: () => ipcRenderer.invoke('nav:canGoBack'),
+    // canGoForward: () => ipcRenderer.invoke('nav:canGoForward'),
+    // onNavigationUpdate: (callback) => ipcRenderer.on('nav:updated', callback),
+
+    fetch: (...args) => ipcRenderer.invoke('api:fetch', ...args),
+
+})

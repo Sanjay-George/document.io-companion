@@ -2,13 +2,11 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const fs = require('fs/promises');
 
-
 const SERVER_URL = 'http://localhost:5000';
 const SINGLE_DOCUMENTATION_URL = (id) => `${SERVER_URL}/documentations/${id}/`;
 
 let mainWindow;
 let documentationId;
-
 
 
 // Register the custom protocol
@@ -82,43 +80,46 @@ function fetchDocId(url) {
 }
 
 async function createWindow() {
-    mainWindow = new BrowserWindow({
-        width: 1366,
-        height: 768,
-        webPreferences: {
-            preload: path.join(__dirname, 'src', 'preload.js'), // Secure communication with renderer
-            contextIsolation: true,
-            nodeIntegration: false,
-            // TODO: remove this
-            webSecurity: false,
-        },
-    });
-    // TODO: build home page
-    await mainWindow.loadURL('http://localhost:3000');
+    try {
+        mainWindow = new BrowserWindow({
+            width: 1366,
+            height: 768,
+            webPreferences: {
+                preload: path.join(__dirname, 'src', 'preload.js'), // Secure communication with renderer
+                contextIsolation: true,
+                nodeIntegration: false,
+            },
+        });
+        // TODO: build home page
+        await mainWindow.loadURL('http://localhost:3000');
 
-    const session = mainWindow.webContents.session;
-
-    // TODO: test this
-    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-        callback({
-            responseHeaders: {
-                ...details.responseHeaders,
-                'Content-Security-Policy': ['*']
+        // Handle API requests from the renderer
+        // To prevent CSP `connect-src` issues.
+        ipcMain.handle('api:fetch', async (event, url, options) => {
+            try {
+                const res = await fetch(url, options);  
+                return res.json();  
+            } catch (error) {
+                console.error('Fetch error:', error);
+                throw error;
             }
-        })
-    })
-
-    // // Enable navigation history
-    // const { navigationHistory } = mainWindow.webContents;
-    // ipcMain.handle('nav:canGoBack', () => navigationHistory.canGoBack())
-    // ipcMain.handle('nav:canGoForward', () => navigationHistory.canGoForward())
-
-    // mainWindow.webContents.on('did-navigate', () => {
-    //     mainWindow.webContents.send('nav:updated');
-    // });
-    // mainWindow.webContents.on('did-navigate-in-page', () => {
-    //     mainWindow.webContents.send('nav:updated');
-    // });
+        });
+     
+        // // Enable navigation history
+        // const { navigationHistory } = mainWindow.webContents;
+        // ipcMain.handle('nav:canGoBack', () => navigationHistory.canGoBack())
+        // ipcMain.handle('nav:canGoForward', () => navigationHistory.canGoForward())
+    
+        // mainWindow.webContents.on('did-navigate', () => {
+        //     mainWindow.webContents.send('nav:updated');
+        // });
+        // mainWindow.webContents.on('did-navigate-in-page', () => {
+        //     mainWindow.webContents.send('nav:updated');
+        // });
+    }
+    catch (error) {
+        console.error('Failed to create window:', error);
+    }
 }
 
 async function openDocumentation(documentationId) {
@@ -127,8 +128,8 @@ async function openDocumentation(documentationId) {
         const documentation = await fetchDocumentation(documentationId);
         console.log(`Opening documentation: ${documentation.title} at ${documentation.url}`);
 
-        // TODO
-        mainWindow.webContents.openDevTools();
+        // TODO: Remove
+        // mainWindow.webContents.openDevTools();
 
         // Remove the previous event listener
         mainWindow.webContents.off('dom-ready', handleDOMReady);
@@ -136,6 +137,7 @@ async function openDocumentation(documentationId) {
         await mainWindow.loadURL(documentation.url);
         // Clear the navigation history to prevent going back to previous documentation
         mainWindow.webContents.navigationHistory.clear();
+
         // Add a new event listener to handle DOM ready
         mainWindow.webContents.on('dom-ready', handleDOMReady);
         // DOM already loaded, call the handler manually
