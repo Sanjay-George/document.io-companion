@@ -106,7 +106,7 @@ function App() {
                     pointer-events-auto ${highlightResizeHandle ? 'pulsing-animation' : ''}`} />
 
                   <Panel
-                    className="py-2 px-20 min-w-full h-full bg-slate-50 
+                    className="py-2 px-20 max-w-full h-full bg-slate-50 
                     overflow-scroll pointer-events-auto
                     scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent
                     "

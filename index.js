@@ -9,6 +9,8 @@ const SINGLE_DOCUMENTATION_URL = (id) => `${SERVER_URL}/documentations/${id}/`;
 let mainWindow;
 let documentationId;
 
+
+
 // Register the custom protocol
 if (process.defaultApp) {
     if (process.argv.length >= 2) {
@@ -46,7 +48,7 @@ console.error('Welcome!', `You arrived from: ${url}`);
 documentationId = fetchDocId(url);
 
 app.on('ready', async () => {
-    createWindow();
+    await createWindow();
 
     // If app was opened from a deeplink, open the documentation
     if (documentationId) {
@@ -58,7 +60,7 @@ app.on('ready', async () => {
     // https://www.electronjs.org/docs/latest/tutorial/tutorial-first-app#open-a-window-if-none-are-open-macos
     app.on('activate', async () => {
         if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow();
+            await createWindow();
         }
     });
 });
@@ -79,7 +81,7 @@ function fetchDocId(url) {
     return match ? match[1] : null;
 }
 
-function createWindow() {
+async function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1366,
         height: 768,
@@ -87,10 +89,24 @@ function createWindow() {
             preload: path.join(__dirname, 'src', 'preload.js'), // Secure communication with renderer
             contextIsolation: true,
             nodeIntegration: false,
+            // TODO: remove this
+            webSecurity: false,
         },
     });
     // TODO: build home page
-    mainWindow.loadURL('http://localhost:3000');
+    await mainWindow.loadURL('http://localhost:3000');
+
+    const session = mainWindow.webContents.session;
+
+    // TODO: test this
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+        callback({
+            responseHeaders: {
+                ...details.responseHeaders,
+                'Content-Security-Policy': ['*']
+            }
+        })
+    })
 
     // // Enable navigation history
     // const { navigationHistory } = mainWindow.webContents;
@@ -112,7 +128,7 @@ async function openDocumentation(documentationId) {
         console.log(`Opening documentation: ${documentation.title} at ${documentation.url}`);
 
         // TODO
-        // mainWindow.webContents.openDevTools();
+        mainWindow.webContents.openDevTools();
 
         // Remove the previous event listener
         mainWindow.webContents.off('dom-ready', handleDOMReady);
@@ -127,12 +143,11 @@ async function openDocumentation(documentationId) {
 
     } catch (error) {
         console.error('Failed to fetch documentation:', error);
-        app.quit();
     }
 }
 
-async function handleDOMReady()  {
-    console.log('DOM loaded. Injecting assets...');   
+async function handleDOMReady() {
+    console.log('DOM loaded. Injecting assets...');
     await injectEditorAssets(mainWindow, documentationId);
 }
 
@@ -153,7 +168,7 @@ async function injectEditorAssets(window, documentationId) {
         // Read CSS and JS files
         const cssContent = await fs.readFile(path.join(assetsPath, 'index.css'), 'utf8');
         const jsContent = await fs.readFile(path.join(assetsPath, 'index.js'), 'utf8');
-  
+
         // Inject a root element and set its data attributes
         await window.webContents.executeJavaScript(`
             (function() {
@@ -169,7 +184,7 @@ async function injectEditorAssets(window, documentationId) {
                 document.body.appendChild(root);
             })();
         `);
-      
+
         // Inject CSS
         await window.webContents.insertCSS(cssContent);
 
