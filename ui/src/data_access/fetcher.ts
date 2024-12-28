@@ -1,7 +1,20 @@
 // @ts-ignore
-export const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json());
-
-// TODO: Use a factory to create fetcher based on the environment
+const directFetcher = (...args: any[]) => fetch(...args).then((res) => res.json());
 
 // @ts-expect-error Todo: fix this
-export const fetcher2 = (...args: any[]) => window.electronAPI.fetch(...args).then((res) => res);
+const electronFetcher = (...args: any[]) => window.electronAPI.fetch(...args).then((res) => res);
+
+
+export const fetcher = (() => {
+    if (window.electronAPI) {
+        return electronFetcher;
+    }
+    return directFetcher;
+})();
+
+export const fetch = (() => {
+    if (window.electronAPI) {
+        return window.electronAPI.fetch;
+    }
+    return window.fetch;
+})();

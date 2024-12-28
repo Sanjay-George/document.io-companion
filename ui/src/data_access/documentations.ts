@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import {  fetcher2 } from "./fetcher";
+import {  fetcher } from "./fetcher";
 
 // TODO: setup vite env variables
 const API_URL = 'http://localhost:5000';
@@ -13,5 +13,5 @@ export const useDocumentation = (id: string): { data: any | null, isLoading: boo
         useSWR(null);
         return { data: null, isLoading: false, error: 'ID not provided' };
     }
-    return useSWR(SINGLE_DOCUMENTATION_KEY(id), fetcher2);
+    return useSWR(SINGLE_DOCUMENTATION_KEY(id), fetcher);
 }

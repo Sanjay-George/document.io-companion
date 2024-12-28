@@ -4,7 +4,7 @@ export default function ButtonBase({ text, icon, onClick, href, target, styleCla
 
     if (href) {
         return (
-            <Button href={href} target={target || '_self'} className={`!py-3 !px-4 !text-sm !rounded-md ${styleClasses}`} variant="flat" radius="none" size="sm" >
+            <Button href={href} target={target || '_self'} className={`!py-3 !px-4 !text-sm !rounded-md !h-8 ${styleClasses}`} variant="flat" radius="none" size="sm" >
                 {text}
                 {icon}
             </Button >
@@ -12,7 +12,7 @@ export default function ButtonBase({ text, icon, onClick, href, target, styleCla
     }
     else if (onClick) {
         return (
-            <Button onClick={onClick} className={`!py-3 !px-4 !text-sm !rounded-md ${styleClasses}`} variant="flat" radius="none" size="sm">
+            <Button onClick={onClick} className={`!py-3 !px-4 !text-sm !rounded-md !h-8 ${styleClasses}`} variant="flat" radius="none" size="sm">
                 {text}
                 {icon}
             </Button>
@@ -21,7 +21,7 @@ export default function ButtonBase({ text, icon, onClick, href, target, styleCla
 
     else {
         return (
-            <Button className={`!py-3 !px-4 !text-sm !rounded-md ${styleClasses}`} variant="flat" radius="none" size="sm">
+            <Button className={`!py-3 !px-4 !text-sm !rounded-md !h-8 ${styleClasses}`} variant="flat" radius="none" size="sm">
                 {text}
                 {icon}
             </Button>

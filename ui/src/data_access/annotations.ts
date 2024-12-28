@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { fetcher2 } from "./fetcher";
+import { fetch, fetcher } from "./fetcher";
 import { Annotation } from "@/models/annotations";
 
 // TODO: setup vite env variables
@@ -23,7 +23,7 @@ export const useAnnotations = (documentationId: string): { data: any[], isLoadin
         useSWR(null);
         return { data: [], isLoading: false, error: 'Documentation ID not provided' };
     }
-    return useSWR(ALL_ANNOTATIONS_KEY(documentationId), fetcher2);
+    return useSWR(ALL_ANNOTATIONS_KEY(documentationId), fetcher);
 }
 
 export const useAnnotationsByTarget = (documentationId: string, target: string | null): { data: Annotation[], isLoading: boolean, error: any } => {
@@ -34,7 +34,7 @@ export const useAnnotationsByTarget = (documentationId: string, target: string |
     if (!target) {
         return useAnnotations(documentationId);
     }
-    return useSWR(ANNOTATIONS_BY_TARGET_KEY(documentationId, target), fetcher2)
+    return useSWR(ANNOTATIONS_BY_TARGET_KEY(documentationId, target), fetcher)
 };
 
 export const useAnnotation = (annotationId: string): { data: any, isLoading: boolean, error: any } => {
@@ -42,11 +42,11 @@ export const useAnnotation = (annotationId: string): { data: any, isLoading: boo
         useSWR(null);
         return { data: null, isLoading: false, error: 'Annotation ID not provided' };
     }
-    return useSWR(SINGLE_ANNOTATION_KEY(annotationId), fetcher2);
+    return useSWR(SINGLE_ANNOTATION_KEY(annotationId), fetcher);
 }
 
 export const addAnnotation = async (annotation: Annotation) => {
-    await window.electronAPI.fetch(`${API_URL}/annotations/`, {
+    await fetch(`${API_URL}/annotations/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ export const addAnnotation = async (annotation: Annotation) => {
 }
 
 export const updateAnnotation = async (annotationId: string, annotation: Annotation) => {
-    await window.electronAPI.fetch(`${API_URL}/annotations/${annotationId}`, {
+    await fetch(`${API_URL}/annotations/${annotationId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -66,7 +66,7 @@ export const updateAnnotation = async (annotationId: string, annotation: Annotat
 }
 
 export const deleteAnnotation = async (annotationId: string) => {
-    await window.electronAPI.fetch(`${API_URL}/annotations/${annotationId}`, {
+    await fetch(`${API_URL}/annotations/${annotationId}`, {
         method: 'DELETE'
     });
 }
