@@ -42,7 +42,7 @@ if (!gotTheLock) {
 
 // Handling deeplink for Windows and Linux (when app is closed)
 const url = process.argv.pop();
-console.error('Welcome!', `You arrived from: ${url}`);
+console.log('Welcome!', `You arrived from: ${url}`);
 documentationId = fetchDocId(url);
 
 app.on('ready', async () => {
@@ -66,7 +66,7 @@ app.on('ready', async () => {
 
 // Handling deeplink for macOS
 app.on('open-url', async (event, url) => {
-    console.error('Welcome Back!', `You arrived from: ${url}`);
+    console.log('Welcome Back!', `You arrived from: ${url}`);
     documentationId = fetchDocId(url);
     console.log('Opening documentation:', documentationId);
     await openDocumentation(documentationId);
