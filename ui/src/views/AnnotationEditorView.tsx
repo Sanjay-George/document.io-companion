@@ -16,12 +16,17 @@ import { Annotation } from '@/models/annotations';
 import { PreviewType } from '@uiw/react-md-editor';
 import { mutate } from 'swr';
 import QuerySelectorTag from '@/components/QuerySelectorTag';
+import InfoIcon from '@/components/icons/InfoIcon';
+import { Tooltip } from 'react-tooltip';
+
+type AnnotationType = 'component' | 'page';
 
 export default function AnnotationEditorView() {
     const { id: annotationId } = useParams();
     const documentationId = useContext(DocumentationContext) as string;
 
     const [previewMode, setPreviewMode]: [PreviewType, Dispatch<SetStateAction<PreviewType>>] = useState<PreviewType>("preview");
+    const [annotationType, setAnnotationType] = useState<AnnotationType>('component');
 
     const navigate = useNavigate();
 
@@ -33,6 +38,7 @@ export default function AnnotationEditorView() {
         const updatedAnnotation: Annotation = {
             ...annotation,
             value,
+            type: annotationType,
             updated: new Date(),
         };
 
@@ -53,11 +59,13 @@ export default function AnnotationEditorView() {
         navigate(-1);
     }
 
-    // Highlight annotated element
     useEffect(() => {
-        if (!annotation || annotation.type === 'page') {
+        if (!annotation) {
             return;
         }
+        setAnnotationType(annotation.type || 'component');
+
+        // Highlight annotated element
         const element = document.querySelector(annotation.target) as HTMLElement;
         if (!element) {
             console.error('Element not found:', annotation.target);
@@ -100,6 +108,79 @@ export default function AnnotationEditorView() {
             }
 
             <QuerySelectorTag target={annotation.target} />
+
+            {
+                previewMode !== 'preview' && (
+                    <>
+                        <Tooltip
+                            id="info-tooltip"
+                            className="!z-10 !rounded-md !m-0 max-w-lg"
+                            offset={2}
+                            style={{ padding: '4px 8px', fontSize: '12px', lineHeight: '1.5' }}
+                        />
+                        <div className='flex items-center mb-2 px-2 text-xs space-x-4'>
+
+
+
+                            <div className="flex flex-wrap">
+                                <div
+                                    className='inline-flex items-center space-x-1 text-slate-500 me-3'
+                                    data-tooltip-id="info-tooltip"
+                                    data-tooltip-content={`
+                                    Page-level annotations are visible only on the specific page (URL).    
+                                    Component-level annotations are visible on all pages where the component exists.
+                                    `}
+                                    data-tooltip-place="bottom"
+                                >
+                                    <span>Annotation Type </span>
+                                    <InfoIcon />
+                                    <span>: </span>
+                                </div>
+
+                                <div className="flex items-center me-2">
+                                    <input
+                                        id="page-type"
+                                        name='annotation-type'
+                                        type="radio"
+                                        value="page"
+                                        checked={annotationType === 'page'}
+                                        onChange={() => setAnnotationType('page')}
+                                        className="w-3 h-3 text-black bg-gray-100 border-gray-300"
+                                    />
+                                    <label
+                                        htmlFor="page-type"
+                                        className="ms-1"
+                                    >
+                                        Page
+                                    </label>
+                                </div>
+
+                                <div className="flex items-center">
+                                    <input
+                                        id="component-type"
+                                        name='annotation-type'
+                                        type="radio"
+                                        value="component"
+                                        onChange={() => setAnnotationType('component')}
+                                        checked={annotationType === 'component'}
+                                        className="w-3 h-3 bg-gray-100 border-gray-300 "
+                                    />
+                                    <label
+                                        htmlFor="component-type"
+                                        className="ms-1"
+                                    >
+                                        Component
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </>
+                )
+            }
+
+
 
             <AnnotationEditor
                 content={annotation?.value}
