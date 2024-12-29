@@ -1,31 +1,30 @@
-import { Button } from "@nextui-org/button";
+// import { Button } from "@nextui-org/button";
 
-export default function ButtonBase({ text, icon, onClick, href, target, styleClasses }: { text: string, icon: React.ReactNode, onClick?: () => void, href?: string, target?: string, styleClasses: string }) {
+type ButtonProps = {
+    text: string;
+    icon: React.ReactNode;
+    onClick?: () => void;
+    href?: string;
+    target?: string;
+    className?: string;
+};
 
-    if (href) {
-        return (
-            <Button href={href} target={target || '_self'} className={`!py-3 !px-4 !text-sm !rounded-md !h-8 ${styleClasses}`} variant="flat" radius="none" size="sm" >
-                {text}
-                {icon}
-            </Button >
-        )
-    }
-    else if (onClick) {
-        return (
-            <Button onClick={onClick} className={`!py-3 !px-4 !text-sm !rounded-md !h-8 ${styleClasses}`} variant="flat" radius="none" size="sm">
-                {text}
-                {icon}
-            </Button>
-        )
-    }
+export default function ButtonBase({ text, icon, onClick, href, target, className }: ButtonProps) {
 
-    else {
-        return (
-            <Button className={`!py-3 !px-4 !text-sm !rounded-md !h-8 ${styleClasses}`} variant="flat" radius="none" size="sm">
-                {text}
-                {icon}
-            </Button>
-        )
-    }
+    return (
+
+        <button 
+            type="button" 
+            className={`inline-flex justify-center items-center 
+                space-x-2 !py-3 !px-4 !text-sm !rounded-md !h-8
+                transition duration-250 ease-in-out
+                ${className}`}
+            onClick={onClick}
+        > 
+            <span>{text}</span>
+            <span>{icon}</span>
+        </button>
+
+    )
 
 }

@@ -10,7 +10,7 @@ export default function ButtonPrimary({ text, icon, onClick, href, target }: { t
                 onClick={onClick}
                 href={href}
                 target={target}
-                styleClasses="!text-primary !border-primary !border-solid !border-1 !bg-transparent hover:!bg-primary hover:!text-white"
+                className="!text-primary !border-primary !border-solid !border-1 !bg-transparent hover:!bg-primary hover:!text-white"
             />
 
         </>

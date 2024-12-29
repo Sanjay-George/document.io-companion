@@ -9,7 +9,7 @@ export default function ButtonDanger({ text, icon, onClick, href, target }: { te
             onClick={onClick}
             href={href}
             target={target}
-            styleClasses="!text-danger !border-danger !border-solid  !border-1 !bg-transparent hover:!bg-danger hover:!text-white"
+            className="!text-danger !border-danger !border-solid  !border-1 !bg-transparent hover:!bg-danger hover:!text-white"
         />
     )
 }
