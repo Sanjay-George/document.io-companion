@@ -75,6 +75,7 @@ export default {
       },
     },
   },
+  important: "#document-io-root",
   darkMode: "selector",
   plugins: [
     nextui({

@@ -1,4 +1,4 @@
-import { Code, Spinner } from '@nextui-org/react'
+import { Spinner } from '@nextui-org/react'
 import '@/App.css';
 import { addAnnotation } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
@@ -10,6 +10,7 @@ import { DocumentationContext } from '@/App';
 import { Annotation } from '@/models/annotations';
 import { ANNOTATED_ELEMENT_CLASS, ANNOTATED_ELEMENT_ICON_CLASS, HOVERED_ELEMENT_CLASS, MODAL_ROOT_ID } from '@/utils/constants';
 import ContextMenu from '@/components/ContextMenu';
+import QuerySelectorTag from '@/components/QuerySelectorTag';
 
 export default function AnnotationAddView() {
     const documentationId = useContext(DocumentationContext) as string;
@@ -105,7 +106,9 @@ export default function AnnotationAddView() {
     return (
         <>
             <SidePanelHeader title="Add Annotation" shouldGoBack={true} />
-            <Code color="default" className='text-xs'>{target}</Code>
+            
+            <QuerySelectorTag target={target} />
+            
             <AnnotationEditor content='' preview={'live'} handleSave={handleSave} />
         </>
     )

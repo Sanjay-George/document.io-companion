@@ -1,4 +1,4 @@
-import { Code, Spinner } from '@nextui-org/react'
+import { Spinner } from '@nextui-org/react'
 import '@/App.css';
 import { ALL_ANNOTATIONS_KEY, deleteAnnotation, SINGLE_ANNOTATION_KEY, updateAnnotation, useAnnotation } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
@@ -15,7 +15,7 @@ import { DocumentationContext } from '@/App';
 import { Annotation } from '@/models/annotations';
 import { PreviewType } from '@uiw/react-md-editor';
 import { mutate } from 'swr';
-import { Tooltip } from 'react-tooltip';
+import QuerySelectorTag from '@/components/QuerySelectorTag';
 
 export default function AnnotationEditorView() {
     const { id: annotationId } = useParams();
@@ -99,23 +99,7 @@ export default function AnnotationEditorView() {
                 )
             }
 
-            <div>
-                <Tooltip
-                    id="code-tooltip"
-                    className="!z-10 !rounded-md !m-0 max-w-lg"
-                    offset={2}
-                    style={{ padding: '4px 8px', fontSize: '12px', lineHeight: '1.5' }}
-                />
-
-                <Code
-                    color="default"
-                    className='text-xs max-w-full overflow-x-clip overflow-ellipsis' data-tooltip-id="code-tooltip"
-                    data-tooltip-content={annotation.target}
-                    data-tooltip-place="bottom">
-                    <span className='font-semibold font-sans'>Target: </span> {annotation.target}
-                </Code>
-            </div>
-
+            <QuerySelectorTag target={annotation.target} />
 
             <AnnotationEditor
                 content={annotation?.value}

@@ -26,8 +26,8 @@ export default function AnnotationEditor({
             <MDEditor
                 className={
                     panelPosition === 'left'
-                        ? 'my-5 shadow-md rounded-xl bg-white min-h-[calc(100vh-300px)]'
-                        : 'my-5 shadow-md rounded-xl bg-white min-h-[300px]'
+                        ? 'my-3 shadow-md rounded-xl bg-white min-h-[calc(100vh-300px)]'
+                        : 'my-3 shadow-md rounded-xl bg-white min-h-[300px]'
                 }
                 value={value}
                 onChange={(value) => setValue(value || '')}
