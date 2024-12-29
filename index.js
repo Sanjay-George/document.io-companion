@@ -130,18 +130,26 @@ async function openDocumentation(documentationId) {
 
         // TODO: Remove
         // mainWindow.webContents.openDevTools();
+        mainWindow.webContents.once('did-start-loading',  () => {
+            console.log('Started loading');
+        });
+        mainWindow.webContents.once('dom-ready', () => {
+            console.log('DOM ready');
+        });
+        mainWindow.webContents.once('did-finish-load', () => {
+            console.log('Finsihed loading');
+        });
 
         // Remove the previous event listener
         mainWindow.webContents.off('dom-ready', handleDOMReady);
-        // Load the documentation URL
-        await mainWindow.loadURL(documentation.url);
+        // Add event listener to handle DOM ready
+        mainWindow.webContents.on('dom-ready', handleDOMReady);
+
         // Clear the navigation history to prevent going back to previous documentation
         mainWindow.webContents.navigationHistory.clear();
 
-        // Add a new event listener to handle DOM ready
-        mainWindow.webContents.on('dom-ready', handleDOMReady);
-        // DOM already loaded, call the handler manually
-        await handleDOMReady();
+        // Load the documentation URL
+        await mainWindow.loadURL(documentation.url);
 
     } catch (error) {
         console.error('Failed to fetch documentation:', error);
