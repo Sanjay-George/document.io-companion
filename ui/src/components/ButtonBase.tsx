@@ -9,7 +9,7 @@ type ButtonProps = {
     className?: string;
 };
 
-export default function ButtonBase({ text, icon, onClick, href, target, className }: ButtonProps) {
+export default function ButtonBase({ text, icon, onClick, className }: ButtonProps) {
 
     return (
 

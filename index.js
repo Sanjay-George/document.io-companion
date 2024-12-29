@@ -145,11 +145,11 @@ async function openDocumentation(documentationId) {
         // Add event listener to handle DOM ready
         mainWindow.webContents.on('dom-ready', handleDOMReady);
 
-        // Clear the navigation history to prevent going back to previous documentation
-        mainWindow.webContents.navigationHistory.clear();
-
         // Load the documentation URL
         await mainWindow.loadURL(documentation.url);
+
+        // Clear the navigation history to prevent going back to previous documentation
+        mainWindow.webContents.navigationHistory.clear();
 
     } catch (error) {
         console.error('Failed to fetch documentation:', error);
