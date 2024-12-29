@@ -5,19 +5,22 @@ import { useDocumentation } from '@/data_access/documentations';
 import { useAnnotationsByTarget } from '@/data_access/annotations';
 import AnnotationCard from '@/components/AnnotationCard';
 import SidePanelHeader from '@/components/SidePanelHeader';
-import { sortAnnotations } from '@/utils';
-import { useContext, useMemo, } from 'react';
+import { useContext, useMemo, useState, } from 'react';
 import { DocumentationContext } from '@/App';
 import AddIcon from '@/components/icons/AddIcon';
 import { Annotation } from '@/models/annotations';
 import { useNavigate, useSearchParams } from 'react-router';
+
+type FilterType = 'all' | 'in-page';
 
 export default function AnnotationListView() {
   const documentationId = useContext(DocumentationContext) as string;
 
   const [searchParams] = useSearchParams();
   const target = searchParams.get('target');
-  const isFiltered = useMemo(() => !!target && target.length > 0, [target]);
+  const isTargetSelected = useMemo(() => !!target && target.length > 0, [target]);
+
+  const [filter, setFilter] = useState<FilterType>('in-page');
 
   const navigate = useNavigate();
 
@@ -28,11 +31,32 @@ export default function AnnotationListView() {
   const { data: annotations, isLoading: isLoadingAnnotations, error: errorAnnotations }
     = useAnnotationsByTarget(documentationId, target);
 
-  sortAnnotations(annotations);
+  const filteredAnnotations = useMemo(() => {
+    if (filter === 'in-page') {
+      // TODO: Implement sorting
+      // sortAnnotations(annotations);
+
+      return annotations?.filter(inPageFilter);
+    }
+    return annotations;
+  }, [annotations, filter]);
+
+  const pageAnnotationsCount = useMemo(() => annotations?.filter(inPageFilter).length, [annotations, filter]);
+  const allAnnotationsCount = useMemo(() => annotations?.length, [annotations]);
+
+  function inPageFilter(item: Annotation) {
+    if (item.type === 'page') {
+      return item.url === window.location.href;
+    }
+    else if (item.type === 'component') {
+      return document.querySelector(item.target) !== null;
+    }
+    return false;
+  }
 
   const handleAddAnnotationClick = () => {
     // Add annotation for existing target
-    if (isFiltered) {
+    if (isTargetSelected) {
       navigate(`/add?target=${encodeURIComponent(target as any)}`);
       return;
     }
@@ -55,27 +79,54 @@ export default function AnnotationListView() {
 
   return (
     <div className='@container'>
-      <SidePanelHeader title={documentation?.title} shouldGoBack={isFiltered} />
+      <SidePanelHeader title={documentation?.title} shouldGoBack={isTargetSelected} />
+
+      <ul className="flex flex-wrap text-xs font-medium text-center 
+        text-gray-500 mb-3 bg-slate-100 w-fit px-1 py-1 rounded-xl cursor-pointer">
+        <li className="me-2">
+          <a
+            className={
+              `inline-block px-3 py-1 rounded-lg 
+                ${filter === 'in-page' ? 'bg-white' : 'hover:text-gray-900 hover:bg-gray-100'}`
+            }
+            onClick={() => setFilter('in-page')}
+            aria-current="page"
+          >
+            On this page ({pageAnnotationsCount})
+          </a>
+        </li>
+        <li className="me-2">
+          <a
+            className={
+              `inline-block px-3 py-1 rounded-lg 
+                ${filter === 'all' ? 'bg-white' : 'hover:text-gray-900 hover:bg-gray-100'}`
+            }
+            onClick={() => setFilter('all')}
+          >
+            All ({allAnnotationsCount})
+          </a>
+        </li>
+      </ul>
+
 
       {isLoadingAnnotations && <Spinner label="Fetching annotations..." />}
       {errorAnnotations && <div className='text-red-700'>Failed to load annotations. Error: {errorAnnotations?.message}</div>}
 
       <div className='grid gap-5 grid-cols-1 @xl:grid-cols-2 @3xl:grid-cols-3 @6xl:grid-cols-4'>
-        {annotations && annotations.slice(0, 2).map((annotation: Annotation) => (
+        {filteredAnnotations && filteredAnnotations.slice(0, 2).map((annotation: Annotation) => (
           <AnnotationCard key={annotation._id} annotation={annotation} />
         ))}
 
         {/* Adding an `Add` button in between for better UX */}
-        {annotations?.length >= 6 && <div className='@xl:hidden'><ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>}
+        {filteredAnnotations?.length >= 6 && <div className='@xl:hidden'><ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>}
 
-        {annotations && annotations.slice(2).map((annotation: Annotation) => (
+        {filteredAnnotations && filteredAnnotations.slice(2).map((annotation: Annotation) => (
           <AnnotationCard key={annotation._id} annotation={annotation} />
         ))}
 
-
       </div>
-      <div className='my-5'> <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>
 
+      <div className='my-5'> <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>
 
     </div>
 
