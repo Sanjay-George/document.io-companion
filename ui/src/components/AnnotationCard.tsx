@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Annotation } from "@/models/annotations";
-import { Chip } from "@nextui-org/react"
 import Markdown from 'react-markdown';
 import RightArrowIcon from "./icons/RightArrowIcon";
 import { renderAnnotationId } from "@/utils";
@@ -56,25 +55,25 @@ export default function AnnotationCard({ annotation }: { annotation: Annotation 
                                 <p className="!text-slate-600 !text-sm !font-bold">{renderAnnotationId(id as string)}</p>
                                 {type && (
                                     type === 'page' &&
-                                    <Chip size="sm" radius="sm" variant="light" className="border-1 border-sky-500 text-sky-500">{type?.toLocaleUpperCase()}-LEVEL</Chip>
+                                    <span className="bg-sky-50 text-sky-700 text-xs px-2.5 py-0.5 rounded">{type?.toLocaleUpperCase()}-LEVEL</span>
                                 )}
                             </div>
                             <div className="bg-transparent text-accent cursor-pointer hover:text-primary transition duration-150"> <RightArrowIcon /> </div>
                         </div>
                     </div>
-                    </Link>
+                </Link>
             }
             footer={
                 <a
                     // TODO: Implement the link later
                     className='text-primary text-xs'
                     aria-disabled={true}
-                    // href={url}
+                // href={url}
                 >
                     {url}
                 </a>
             }
-            
+
         >
 
         </Card>

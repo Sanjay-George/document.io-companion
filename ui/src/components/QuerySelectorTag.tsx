@@ -13,10 +13,10 @@ export default function QuerySelectorTag({ target }: { target: string }) {
 
             <code
                 className='bg-slate-200/60 text-slate-800
-                px-2 py-1 rounded-lg text-xs
+                mb-2 px-2 py-1 rounded-lg text-xs
                 max-w-full overflow-x-clip overflow-ellipsis
                 h-fit font-mono font-normal inline-block whitespace-nowrap
-                ' 
+                '
                 data-tooltip-id="code-tooltip"
                 data-tooltip-content={target}
                 data-tooltip-place="bottom">
