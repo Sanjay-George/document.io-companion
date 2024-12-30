@@ -112,7 +112,7 @@ export default function AnnotationListView() {
       {isLoadingAnnotations && <Spinner label="Fetching annotations..." />}
       {errorAnnotations && <div className='text-red-700'>Failed to load annotations. Error: {errorAnnotations?.message}</div>}
 
-      <div className='grid gap-5 grid-cols-1 @xl:grid-cols-2 @3xl:grid-cols-3 @6xl:grid-cols-4'>
+      <div className='grid gap-5 grid-cols-1 @xl:grid-cols-2 @3xl:grid-cols-3 @4xl:grid-cols-4 @6xl:grid-cols-5'>
         {filteredAnnotations && filteredAnnotations.slice(0, 2).map((annotation: Annotation) => (
           <AnnotationCard key={annotation._id} annotation={annotation} />
         ))}
