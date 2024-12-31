@@ -79,34 +79,41 @@ export default function AnnotationListView() {
 
   return (
     <div className='@container'>
+
+      {/* TODO: Update title when target selected */}
       <SidePanelHeader title={documentation?.title} shouldGoBack={isTargetSelected} />
 
-      <ul className="flex flex-wrap text-xs font-medium text-center 
+
+
+      {!isTargetSelected && (
+        <ul className="flex flex-wrap text-xs font-medium text-center 
         text-gray-500 mb-3 bg-slate-100 w-fit px-1 py-1 rounded-xl cursor-pointer">
-        <li className="me-2">
-          <a
-            className={
-              `inline-block px-3 py-1 rounded-lg 
+          <li className="me-2">
+            <a
+              className={
+                `inline-block px-3 py-1 rounded-lg 
                 ${filter === 'in-page' ? 'bg-white' : 'hover:text-gray-900 hover:bg-gray-100'}`
-            }
-            onClick={() => setFilter('in-page')}
-            aria-current="page"
-          >
-            On this page ({pageAnnotationsCount})
-          </a>
-        </li>
-        <li className="me-2">
-          <a
-            className={
-              `inline-block px-3 py-1 rounded-lg 
+              }
+              onClick={() => setFilter('in-page')}
+              aria-current="page"
+            >
+              On this page ({pageAnnotationsCount})
+            </a>
+          </li>
+
+          <li className="me-2">
+            <a
+              className={
+                `inline-block px-3 py-1 rounded-lg 
                 ${filter === 'all' ? 'bg-white' : 'hover:text-gray-900 hover:bg-gray-100'}`
-            }
-            onClick={() => setFilter('all')}
-          >
-            All ({allAnnotationsCount})
-          </a>
-        </li>
-      </ul>
+              }
+              onClick={() => setFilter('all')}
+            >
+              All ({allAnnotationsCount})
+            </a>
+          </li>
+        </ul>
+      )}
 
 
       {isLoadingAnnotations && <Spinner label="Fetching annotations..." />}
