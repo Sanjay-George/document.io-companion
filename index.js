@@ -1,12 +1,14 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, session } = require('electron');
 const path = require('path');
 const fs = require('fs/promises');
+const { register } = require('module');
 
 const SERVER_URL = 'http://localhost:5000';
 const SINGLE_DOCUMENTATION_URL = (id) => `${SERVER_URL}/documentations/${id}/`;
 
 let mainWindow;
 let documentationId;
+let allowQuit = false;
 
 
 // Register the custom protocol
@@ -46,6 +48,7 @@ console.log('Welcome!', `You arrived from: ${url}`);
 documentationId = fetchDocId(url);
 
 app.on('ready', async () => {
+    console.group('app:ready');
     await createWindow();
 
     // If app was opened from a deeplink, open the documentation
@@ -57,19 +60,27 @@ app.on('ready', async () => {
     // Re-create window on app activation (macOS)
     // https://www.electronjs.org/docs/latest/tutorial/tutorial-first-app#open-a-window-if-none-are-open-macos
     app.on('activate', async () => {
+        console.group('app:activate');
         if (BrowserWindow.getAllWindows().length === 0) {
+            console.log('Re-creating window');
             await createWindow();
         }
+        console.groupEnd();
     });
+    console.groupEnd();
 });
 
 
 // Handling deeplink for macOS
 app.on('open-url', async (event, url) => {
+    console.group('app:open-url');
+
     console.log('Welcome Back!', `You arrived from: ${url}`);
     documentationId = fetchDocId(url);
     console.log('Opening documentation:', documentationId);
     await openDocumentation(documentationId);
+
+    console.groupEnd();
 });
 
 
@@ -80,8 +91,11 @@ function fetchDocId(url) {
 }
 
 async function createWindow() {
+    console.group('createWindow()');
     try {
+        const persistentSession = session.fromPartition('persist:document-io');
         mainWindow = new BrowserWindow({
+            session: persistentSession,
             width: 1366,
             height: 768,
             webPreferences: {
@@ -92,53 +106,53 @@ async function createWindow() {
         });
         // TODO: build home page
         await mainWindow.loadURL('http://localhost:3000');
-
-        // Handle API requests from the renderer
-        // To prevent CSP `connect-src` issues.
-        ipcMain.handle('api:fetch', async (event, url, options) => {
-            try {
-                const res = await fetch(url, options);  
-                return res.json();  
-            } catch (error) {
-                console.error('Fetch error:', error);
-                throw error;
-            }
-        });
-     
-        // // Enable navigation history
-        // const { navigationHistory } = mainWindow.webContents;
-        // ipcMain.handle('nav:canGoBack', () => navigationHistory.canGoBack())
-        // ipcMain.handle('nav:canGoForward', () => navigationHistory.canGoForward())
-    
-        // mainWindow.webContents.on('did-navigate', () => {
-        //     mainWindow.webContents.send('nav:updated');
-        // });
-        // mainWindow.webContents.on('did-navigate-in-page', () => {
-        //     mainWindow.webContents.send('nav:updated');
-        // });
     }
     catch (error) {
         console.error('Failed to create window:', error);
     }
+    console.groupEnd();
+}
+
+function registerIPCHandlers() {
+    // Handle API requests from the renderer
+    // To prevent CSP `connect-src` issues.
+    ipcMain.removeHandler('api:fetch');
+    ipcMain.handle('api:fetch', async (event, url, options) => {
+        try {
+            const res = await fetch(url, options);
+            return res.json();
+        } catch (error) {
+            console.error('Fetch error:', error);
+            throw error;
+        }
+    });
 }
 
 async function openDocumentation(documentationId) {
     // Fetch documentation details and open the URL
+    console.group('openDocumentation()');
     try {
         const documentation = await fetchDocumentation(documentationId);
         console.log(`Opening documentation: ${documentation.title} at ${documentation.url}`);
 
+        registerIPCHandlers();
+
+        if (!mainWindow || mainWindow.isDestroyed()) {
+            await createWindow();
+        }
+
         // TODO: Remove
         // mainWindow.webContents.openDevTools();
-        mainWindow.webContents.once('did-start-loading',  () => {
-            console.log('Started loading');
-        });
-        mainWindow.webContents.once('dom-ready', () => {
-            console.log('DOM ready');
-        });
-        mainWindow.webContents.once('did-finish-load', () => {
-            console.log('Finsihed loading');
-        });
+        // mainWindow.webContents.once('did-start-loading', () => {
+        //     console.log('Started loading');
+        // });
+        // mainWindow.webContents.once('dom-ready', () => {
+        //     console.log('DOM ready');
+        // });
+        // mainWindow.webContents.once('did-finish-load', () => {
+        //     console.log('Finsihed loading');
+        // });
+
 
         // Remove the previous event listener
         mainWindow.webContents.off('dom-ready', handleDOMReady);
@@ -152,8 +166,9 @@ async function openDocumentation(documentationId) {
         mainWindow.webContents.navigationHistory.clear();
 
     } catch (error) {
-        console.error('Failed to fetch documentation:', error);
+        console.error('Failed to open documentation:', error);
     }
+    console.groupEnd();
 }
 
 async function handleDOMReady() {
@@ -213,3 +228,29 @@ app.on('window-all-closed', () => {
     }
 });
 
+// Clean up on app close (macOS)
+// TODO: check if this fixes cookie / session persistence issue
+// https://github.com/electron/electron/issues/8416
+// https://github.com/electron/electron/issues/6388
+app.on('before-quit', async (event) => {
+    console.group('app:before-quit');
+
+    if (allowQuit) {
+        console.log('Quitting app');
+        return;
+    }
+
+    // Flush storage data before quitting
+    event.preventDefault();
+    console.log('Flushing storage data');
+    const persistentSession = session.fromPartition('persist:document-io');
+    await persistentSession.flushStorageData();
+    await persistentSession.cookies.flushStore();
+
+    setTimeout(() => {
+        allowQuit = true;
+        app.quit();
+    }, 1000);
+
+    console.groupEnd();
+});

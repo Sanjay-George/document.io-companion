@@ -5,6 +5,13 @@ module.exports = {
   packagerConfig: {
     name: 'document-io',
     asar: true,
+    protocols: [
+      {
+        name: 'document-io',
+        schemes: ['document-io'],
+      },
+    ],
+
     // TODO: Fix this later. Only include ui/dist folder
     // https://electron.github.io/packager/main/interfaces/Options.html#ignore
     ignore: [
@@ -18,16 +25,19 @@ module.exports = {
       name: '@electron-forge/maker-squirrel',
       config: {},
     },
+    // {
+    //   name: '@electron-forge/maker-dmg',
+    //   config: {
+    //     // background: './dist/dmg-background.png',
+    //     format: 'ULFO'
+    //   }
+    // },
     {
       name: '@electron-forge/maker-zip',
       platforms: ['darwin'],
     },
     {
       name: '@electron-forge/maker-deb',
-      config: {},
-    },
-    {
-      name: '@electron-forge/maker-rpm',
       config: {},
     },
   ],
