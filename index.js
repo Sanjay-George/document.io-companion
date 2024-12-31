@@ -1,68 +1,70 @@
-const { app, BrowserWindow, ipcMain, session } = require('electron');
-const path = require('path');
-const fs = require('fs/promises');
-const { register } = require('module');
+const { app, BrowserWindow, ipcMain, session } = require("electron");
+const path = require("path");
+const fs = require("fs/promises");
+const { register } = require("module");
 
-const SERVER_URL = 'http://localhost:5000';
+const SERVER_URL = "http://localhost:5000";
 const SINGLE_DOCUMENTATION_URL = (id) => `${SERVER_URL}/documentations/${id}/`;
 
 let mainWindow;
 let documentationId;
 let allowQuit = false;
-
+let allowClose = false;
 
 // Register the custom protocol
 if (process.defaultApp) {
     if (process.argv.length >= 2) {
-        app.setAsDefaultProtocolClient('document-io', process.execPath, [path.resolve(process.argv[1])])
+        app.setAsDefaultProtocolClient("document-io", process.execPath, [
+            path.resolve(process.argv[1]),
+        ]);
     }
 } else {
-    app.setAsDefaultProtocolClient('document-io')
+    app.setAsDefaultProtocolClient("document-io");
 }
 
 // Handling deeplink for Windows and Linux (when app is already running)
 const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
-    app.quit()
+    app.quit();
 } else {
-    app.on('second-instance', async (event, argv, workingDirectory) => {
+    app.on("second-instance", async (event, argv, workingDirectory) => {
         // App already running, focus the window
         if (mainWindow) {
             if (mainWindow.isMinimized()) {
-                mainWindow.restore()
+                mainWindow.restore();
             }
-            mainWindow.focus()
+            mainWindow.focus();
         }
         const url = argv.pop();
-        console.error('Welcome Back!', `You arrived from: ${url}`);
+        console.error("Welcome Back!", `You arrived from: ${url}`);
 
         documentationId = fetchDocId(url);
-        console.log('Opening documentation:', documentationId);
+        console.log("Opening documentation:", documentationId);
         await openDocumentation(documentationId);
-    })
+    });
 }
 
 // Handling deeplink for Windows and Linux (when app is closed)
 const url = process.argv.pop();
-console.log('Welcome!', `You arrived from: ${url}`);
+console.log("Welcome!", `You arrived from: ${url}`);
 documentationId = fetchDocId(url);
 
-app.on('ready', async () => {
-    console.group('app:ready');
+app.on("ready", async () => {
+    console.group("app:ready");
     await createWindow();
 
     // If app was opened from a deeplink, open the documentation
     if (documentationId) {
-        console.log('Opening documentation:', documentationId);
+        console.log("Opening documentation:", documentationId);
         await openDocumentation(documentationId);
     }
 
     // Re-create window on app activation (macOS)
     // https://www.electronjs.org/docs/latest/tutorial/tutorial-first-app#open-a-window-if-none-are-open-macos
-    app.on('activate', async () => {
-        console.group('app:activate');
+    app.on("activate", async () => {
+        console.group("app:activate");
         if (BrowserWindow.getAllWindows().length === 0) {
-            console.log('Re-creating window');
+            console.log("Re-creating window");
             await createWindow();
         }
         console.groupEnd();
@@ -70,19 +72,17 @@ app.on('ready', async () => {
     console.groupEnd();
 });
 
-
 // Handling deeplink for macOS
-app.on('open-url', async (event, url) => {
-    console.group('app:open-url');
+app.on("open-url", async (event, url) => {
+    console.group("app:open-url");
 
-    console.log('Welcome Back!', `You arrived from: ${url}`);
+    console.log("Welcome Back!", `You arrived from: ${url}`);
     documentationId = fetchDocId(url);
-    console.log('Opening documentation:', documentationId);
+    console.log("Opening documentation:", documentationId);
     await openDocumentation(documentationId);
 
     console.groupEnd();
 });
-
 
 function fetchDocId(url) {
     const regex = /document-io:\/\/documentations\/([a-f0-9]+)/;
@@ -91,24 +91,47 @@ function fetchDocId(url) {
 }
 
 async function createWindow() {
-    console.group('createWindow()');
+    console.group("createWindow()");
     try {
-        const persistentSession = session.fromPartition('persist:document-io');
+        const persistentSession = session.fromPartition("persist:document-io");
         mainWindow = new BrowserWindow({
             session: persistentSession,
             width: 1366,
             height: 768,
             webPreferences: {
-                preload: path.join(__dirname, 'src', 'preload.js'), // Secure communication with renderer
+                preload: path.join(__dirname, "src", "preload.js"), // Secure communication with renderer
                 contextIsolation: true,
                 nodeIntegration: false,
             },
         });
+        allowClose = false;
+
         // TODO: build home page
-        await mainWindow.loadURL('http://localhost:3000');
-    }
-    catch (error) {
-        console.error('Failed to create window:', error);
+        await mainWindow.loadURL("http://localhost:3000");
+
+        mainWindow.on("close", async (e) => {
+            if (allowClose) {
+                return;
+            }
+
+            console.group("mainWindow:close");
+            e.preventDefault();
+
+            // Console log cookies
+            const cookies = mainWindow.webContents.session.cookies;
+            console.log('Cookies:', await cookies.get({ domain: '.carwale.com' }));
+
+            await cookies.flushStore();
+            console.log('Cookies flushed');
+
+            allowClose = true;
+            mainWindow.close();
+
+            console.groupEnd();
+        });
+
+    } catch (error) {
+        console.error("Failed to create window:", error);
     }
     console.groupEnd();
 }
@@ -116,13 +139,13 @@ async function createWindow() {
 function registerIPCHandlers() {
     // Handle API requests from the renderer
     // To prevent CSP `connect-src` issues.
-    ipcMain.removeHandler('api:fetch');
-    ipcMain.handle('api:fetch', async (event, url, options) => {
+    ipcMain.removeHandler("api:fetch");
+    ipcMain.handle("api:fetch", async (event, url, options) => {
         try {
             const res = await fetch(url, options);
             return res.json();
         } catch (error) {
-            console.error('Fetch error:', error);
+            console.error("Fetch error:", error);
             throw error;
         }
     });
@@ -130,10 +153,12 @@ function registerIPCHandlers() {
 
 async function openDocumentation(documentationId) {
     // Fetch documentation details and open the URL
-    console.group('openDocumentation()');
+    console.group("openDocumentation()");
     try {
         const documentation = await fetchDocumentation(documentationId);
-        console.log(`Opening documentation: ${documentation.title} at ${documentation.url}`);
+        console.log(
+            `Opening documentation: ${documentation.title} at ${documentation.url}`
+        );
 
         registerIPCHandlers();
 
@@ -153,26 +178,24 @@ async function openDocumentation(documentationId) {
         //     console.log('Finsihed loading');
         // });
 
-
         // Remove the previous event listener
-        mainWindow.webContents.off('dom-ready', handleDOMReady);
+        mainWindow.webContents.off("dom-ready", handleDOMReady);
         // Add event listener to handle DOM ready
-        mainWindow.webContents.on('dom-ready', handleDOMReady);
+        mainWindow.webContents.on("dom-ready", handleDOMReady);
 
         // Load the documentation URL
         await mainWindow.loadURL(documentation.url);
 
         // Clear the navigation history to prevent going back to previous documentation
         mainWindow.webContents.navigationHistory.clear();
-
     } catch (error) {
-        console.error('Failed to open documentation:', error);
+        console.error("Failed to open documentation:", error);
     }
     console.groupEnd();
 }
 
 async function handleDOMReady() {
-    console.log('DOM loaded. Injecting assets...');
+    console.log("DOM loaded. Injecting assets...");
     await injectEditorAssets(mainWindow, documentationId);
 }
 
@@ -187,12 +210,18 @@ async function fetchDocumentation(documentationId) {
 
 // Inject editor assets into the loaded page
 async function injectEditorAssets(window, documentationId) {
-    const assetsPath = path.join(__dirname, 'dist', 'assets');
+    const assetsPath = path.join(__dirname, "dist", "assets");
 
     try {
         // Read CSS and JS files
-        const cssContent = await fs.readFile(path.join(assetsPath, 'index.css'), 'utf8');
-        const jsContent = await fs.readFile(path.join(assetsPath, 'index.js'), 'utf8');
+        const cssContent = await fs.readFile(
+            path.join(assetsPath, "index.css"),
+            "utf8"
+        );
+        const jsContent = await fs.readFile(
+            path.join(assetsPath, "index.js"),
+            "utf8"
+        );
 
         // Inject a root element and set its data attributes
         await window.webContents.executeJavaScript(`
@@ -216,14 +245,13 @@ async function injectEditorAssets(window, documentationId) {
         // Inject JS
         await window.webContents.executeJavaScript(jsContent);
     } catch (error) {
-        console.error('Error injecting editor assets:', error);
+        console.error("Error injecting editor assets:", error);
     }
 }
 
-
 // Clean up on app close (Windows and Linux)
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") {
         app.quit();
     }
 });
@@ -244,6 +272,11 @@ app.on('before-quit', async (event) => {
     event.preventDefault();
     console.log('Flushing storage data');
     const persistentSession = session.fromPartition('persist:document-io');
+
+    // Console log cookies
+    const cookies = await persistentSession.cookies.get({});
+    console.log('persistentSession Cookies:', cookies);
+
     await persistentSession.flushStorageData();
     await persistentSession.cookies.flushStore();
 
