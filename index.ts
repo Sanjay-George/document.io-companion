@@ -11,9 +11,7 @@ const SINGLE_DOCUMENTATION_URL = (id: string) => `${SERVER_URL}/documentations/$
 
 let mainWindow: BrowserWindow;
 let documentationId: string;
-
-let allowQuit = false;
-let allowClose = false;
+let allowWindowClose = false;
 
 // Register the custom protocol
 if (process.defaultApp) {
@@ -116,13 +114,13 @@ async function createWindow() {
                 session: session.fromPartition("persist:document-io"),
             },
         });
-        allowClose = false;
+        allowWindowClose = false;
 
         // TODO: build home page
         await mainWindow.loadURL("http://localhost:3000");
 
         mainWindow.on("close", async (e) => {
-            if (allowClose) {
+            if (allowWindowClose) {
                 return;
             }
             e.preventDefault();
@@ -130,7 +128,7 @@ async function createWindow() {
             const cookies = mainWindow.webContents.session.cookies;
             await flushCookiesToDisk(await cookies.get({}));
 
-            allowClose = true;
+            allowWindowClose = true;
             mainWindow.close();
             console.groupEnd();
         });
@@ -164,24 +162,10 @@ async function restoreCookiesFromDisk(url: string, session: Electron.Session) {
         console.log("No cookies to restore");
         return;
     }
-
     console.group("restoreCookiesFromDisk()");
-
-    // Extract the domain from the input URL
-    // const urlDomain = new URL(url).hostname;
     for (const cookie of cookies) {
         try {
-            // // Check if the cookie's domain matches the domain of the given URL
-            // const cookieDomain = cookie.domain?.startsWith(".")
-            //     ? cookie.domain.substring(1)
-            //     : cookie.domain;
-
-            // if (cookieDomain && urlDomain.endsWith(cookieDomain)) {
             await session.cookies.set({ ...cookie, url });
-            //     console.log(`Restored cookie for domain ${cookie.domain}:`);
-            // } else {
-            //     console.log(`Skipping cookie for mismatched domain ${cookie.domain}`);
-            // }
         } catch (err) {
             console.error("Error restoring cookie:", cookie, err);
         }
@@ -304,40 +288,3 @@ app.on("window-all-closed", () => {
         app.quit();
     }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // Clean up on app close (macOS)
-// // TODO: check if this fixes cookie / session persistence issue
-// // https://github.com/electron/electron/issues/8416
-// // https://github.com/electron/electron/issues/6388
-// app.on('before-quit', async (event) => {
-//     if (allowQuit) return;
-//     event.preventDefault();
-
-//     console.group('app:before-quit');
-
-//     const ses = session.fromPartition('persist:document-io');
-//     console.log('Cookies: ', await ses.cookies.get({}));
-//     await ses.cookies.flushStore();
-//     console.log('Flushing cookies to disk');
-
-//     // Flush storage data before quitting
-//     console.log('Flushing storage data');
-//     ses.flushStorageData();
-
-//     allowQuit = true;
-//     app.quit();
-
-//     console.groupEnd();
-// });
