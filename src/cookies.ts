@@ -1,8 +1,11 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-class CookieManager {
-    constructor(filePath) {
+export default class CookieManager {
+    filePath: string;
+    cookies: any;
+
+    constructor(filePath: string) {
         this.filePath = filePath;
         this.cookies = {};
     }
@@ -13,7 +16,7 @@ class CookieManager {
             const data = await fs.readFile(this.filePath, 'utf8');
             this.cookies = JSON.parse(data);
         } catch (err) {
-            if (err.code === 'ENOENT') {
+            if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
                 console.log('No existing cookie file. Starting fresh.');
                 this.cookies = {};
             } else {
@@ -36,7 +39,7 @@ class CookieManager {
      * Update cookies variable with new cookies
      * @param {Electron.Cookie[]} newCookies 
      */
-    updateCookies(newCookies) {
+    updateCookies(newCookies: Electron.Cookie[]) {
         newCookies.forEach(cookie => {
             const key = `${cookie.domain}|${cookie.name}`;
             this.cookies[key] = cookie;
@@ -44,9 +47,8 @@ class CookieManager {
     }
 
     // Serialize cookies to restore them later
-    getSerializedCookies() {
+    getSerializedCookies(): Electron.Cookie[] {
         return Object.values(this.cookies);
     }
 }
 
-module.exports = CookieManager;
