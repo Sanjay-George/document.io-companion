@@ -17,7 +17,10 @@ const config: ForgeConfig = {
     ignore: [
       /^\/ui/,
       /^\/src/,
-
+      /^\/tsconfig[.]json$/,
+      /\.ts$/,
+      /\.md$/,
+      /\.map$/,
     ]
   },
   rebuildConfig: {},
