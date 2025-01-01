@@ -54,6 +54,8 @@ const url = process.argv.pop();
 console.log("Welcome!", `You arrived from: ${url}`);
 documentationId = (url && parseDocId(url)) as string;
 
+// Handling app ready event 
+// Create main window and open documentation
 app.on("ready", async () => {
     console.group("app:ready");
     await createWindow();
@@ -89,12 +91,18 @@ app.on("open-url", async (event, url) => {
     console.groupEnd();
 });
 
+/**
+ * Parses the documentation ID from deeplink URL
+ * @param url Deeplink URL
+ * @returns 
+ */
 function parseDocId(url: string): string | null {
     const regex = /document-io:\/\/documentations\/([a-f0-9]+)/;
     const match = url.match(regex);
     return match ? match[1] : null;
 }
 
+// Create the main window
 async function createWindow() {
     console.group("createWindow()");
     try {
@@ -105,7 +113,7 @@ async function createWindow() {
                 preload: path.join(__dirname, "src", "preload.js"), // Secure communication with renderer
                 contextIsolation: true,
                 nodeIntegration: false,
-                session: session.fromPartition("persist:document-io")
+                session: session.fromPartition("persist:document-io"),
             },
         });
         allowClose = false;
@@ -113,21 +121,19 @@ async function createWindow() {
         // TODO: build home page
         await mainWindow.loadURL("http://localhost:3000");
 
-        // TODO: Uncomment this
-        // mainWindow.on("close", async (e) => {
-        //     if (allowClose) return;
+        mainWindow.on("close", async (e) => {
+            if (allowClose) {
+                return;
+            }
+            e.preventDefault();
+            console.group("mainWindow:close");
+            const cookies = mainWindow.webContents.session.cookies;
+            await flushCookiesToDisk(await cookies.get({}));
 
-        //     console.group("mainWindow:close");
-        //     e.preventDefault();
-
-        //     const cookies = mainWindow.webContents.session.cookies;
-        //     // await flushCookiesToDisk(await cookies.get({}));
-
-        //     allowClose = true;
-        //     mainWindow.close();
-        //     console.groupEnd();
-        // });
-
+            allowClose = true;
+            mainWindow.close();
+            console.groupEnd();
+        });
     } catch (error) {
         console.error("Failed to create window:", error);
     }
@@ -143,6 +149,7 @@ async function flushCookiesToDisk(cookies: Electron.Cookie[]) {
     await cookieManager.saveCookies();
     console.log("Cookies flushed to disk");
 }
+
 /**
  * Restores cookies from disk
  * @param {string} url - The URL to match cookies against
@@ -151,41 +158,42 @@ async function flushCookiesToDisk(cookies: Electron.Cookie[]) {
  */
 async function restoreCookiesFromDisk(url: string, session: Electron.Session) {
     await cookieManager.loadCookies();
-    const cookies: Electron.Cookie[] = cookieManager.getSerializedCookies();
+    const cookies = cookieManager.getSerializedCookies();
 
     if (!cookies || cookies.length === 0) {
         console.log("No cookies to restore");
         return;
     }
 
-    // Extract the domain from the input URL
-    const urlDomain = new URL(url).hostname;
+    console.group("restoreCookiesFromDisk()");
 
+    // Extract the domain from the input URL
+    // const urlDomain = new URL(url).hostname;
     for (const cookie of cookies) {
         try {
-            // Check if the cookie's domain matches the domain of the given URL
-            const cookieDomain = cookie.domain?.startsWith(".")
-                ? cookie.domain.substring(1)
-                : cookie.domain;
+            // // Check if the cookie's domain matches the domain of the given URL
+            // const cookieDomain = cookie.domain?.startsWith(".")
+            //     ? cookie.domain.substring(1)
+            //     : cookie.domain;
 
-            if (cookieDomain && urlDomain.endsWith(cookieDomain)) {
-                await session.cookies.set({ ...cookie, url });
-                console.log(`Restored cookie for domain ${cookie.domain}:`);
-            } else {
-                console.log(`Skipping cookie for mismatched domain ${cookie.domain}`);
-            }
+            // if (cookieDomain && urlDomain.endsWith(cookieDomain)) {
+            await session.cookies.set({ ...cookie, url });
+            //     console.log(`Restored cookie for domain ${cookie.domain}:`);
+            // } else {
+            //     console.log(`Skipping cookie for mismatched domain ${cookie.domain}`);
+            // }
         } catch (err) {
             console.error("Error restoring cookie:", cookie, err);
         }
     }
-
     console.log("Cookies restored from disk");
+    console.groupEnd();
 }
 
 
 function registerIPCHandlers() {
-    // Handle API requests from the renderer
-    // To prevent CSP `connect-src` issues.
+    // Handle API requests from the renderer process
+    // to prevent CSP `connect-src` issues.
     ipcMain.removeHandler("api:fetch");
     ipcMain.handle("api:fetch", async (event, url, options) => {
         try {
@@ -198,6 +206,10 @@ function registerIPCHandlers() {
     });
 }
 
+/**
+ * Opens the documentation in the main window
+ * @param documentationId 
+ */
 async function openDocumentation(documentationId: string) {
     // Fetch documentation details and open the URL
     console.group("openDocumentation()");
@@ -216,7 +228,7 @@ async function openDocumentation(documentationId: string) {
         mainWindow.webContents.on("dom-ready", handleDOMReady);
 
         // TODO: Uncomment this
-        // await restoreCookiesFromDisk(documentation.url, mainWindow.webContents.session);
+        await restoreCookiesFromDisk(documentation.url, mainWindow.webContents.session);
 
         // Load the documentation URL
         await mainWindow.loadURL(documentation.url);
@@ -234,7 +246,11 @@ async function handleDOMReady() {
     await injectEditorAssets(mainWindow, documentationId);
 }
 
-// Fetch documentation details from the server
+/**
+ * Fetches the documentation details from server
+ * @param documentationId 
+ * @returns 
+ */
 async function fetchDocumentation(documentationId: string) {
     const response = await fetch(SINGLE_DOCUMENTATION_URL(documentationId));
     if (!response.ok) {
@@ -290,27 +306,38 @@ app.on("window-all-closed", () => {
 });
 
 
-// Clean up on app close (macOS)
-// TODO: check if this fixes cookie / session persistence issue
-// https://github.com/electron/electron/issues/8416
-// https://github.com/electron/electron/issues/6388
-app.on('before-quit', async (event) => {
-    if (allowQuit) return;
-    event.preventDefault();
 
-    console.group('app:before-quit');
 
-    const ses = session.fromPartition('persist:document-io');
-    console.log('Cookies: ', await ses.cookies.get({}));
-    await ses.cookies.flushStore();
-    console.log('Flushing cookies to disk');
 
-    // Flush storage data before quitting
-    console.log('Flushing storage data');
-    ses.flushStorageData();
 
-    allowQuit = true;
-    app.quit();
 
-    console.groupEnd();
-});
+
+
+
+
+
+
+// // Clean up on app close (macOS)
+// // TODO: check if this fixes cookie / session persistence issue
+// // https://github.com/electron/electron/issues/8416
+// // https://github.com/electron/electron/issues/6388
+// app.on('before-quit', async (event) => {
+//     if (allowQuit) return;
+//     event.preventDefault();
+
+//     console.group('app:before-quit');
+
+//     const ses = session.fromPartition('persist:document-io');
+//     console.log('Cookies: ', await ses.cookies.get({}));
+//     await ses.cookies.flushStore();
+//     console.log('Flushing cookies to disk');
+
+//     // Flush storage data before quitting
+//     console.log('Flushing storage data');
+//     ses.flushStorageData();
+
+//     allowQuit = true;
+//     app.quit();
+
+//     console.groupEnd();
+// });

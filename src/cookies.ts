@@ -1,6 +1,11 @@
 const fs = require('fs/promises');
 const path = require('path');
 
+// Store and restore cookies from disk (json file for now)
+// To workaround the issue on MacOS, where cookies are not persisted even after flushing them manually "before-quit".
+// https://github.com/electron/electron/issues/8416
+// https://github.com/electron/electron/issues/6388
+
 export default class CookieManager {
     filePath: string;
     cookies: any;
