@@ -8,8 +8,8 @@ import { highlight, removeHighlight } from "@/utils/annotations";
 import Card from "./Card";
 
 
-export default function AnnotationCard({ annotation }: { annotation: Annotation }) {
-    const { _id: id, target, value, type, url } = annotation;
+export default function AnnotationCard({ annotation, condensed }: { annotation: Annotation, condensed?: boolean }) {
+    const { id, target, value, type, url } = annotation;
 
     const navigate = useNavigate();
     const openInEditor = (target: string) => {
@@ -38,16 +38,18 @@ export default function AnnotationCard({ annotation }: { annotation: Annotation 
 
     return (
         <Card
-            className="bg-white shadow-md rounded-xl text-slate-400 hover:text-slate-600"
+            className="bg-white shadow-md rounded-xl 
+            text-slate-400 hover:text-slate-600 overflow-clip"
             body={
                 <div className="max-h-52 overflow-clip transition duration-150 md-renderer">
                     <Markdown>{value}</Markdown>
                 </div>
             }
-            header={
-                <Link to={`/edit/${annotation._id}`} >
+            header={!condensed &&
+                <Link to={`/edit/${annotation.id}`} >
                     <div className="flex gap-3 items-center">
-                        <div className="flex justify-center items-center bg-slate-700 text-white px-3 w-7 h-7 rounded-lg text-xs font-extralight mx-auto">
+                        <div className="flex justify-center items-center bg-slate-700 
+                        text-white px-3 w-7 h-7 rounded-lg text-xs font-extralight mx-auto">
                             {renderAnnotationId(id as string)?.slice(-3)}
                         </div>
                         <div className="w-full flex items-center justify-between">
@@ -58,15 +60,15 @@ export default function AnnotationCard({ annotation }: { annotation: Annotation 
                                     <span className="bg-sky-50 text-sky-700 text-xs px-2.5 py-0.5 rounded">{type?.toLocaleUpperCase()}-LEVEL</span>
                                 )}
                             </div>
-                            <div className="bg-transparent text-accent cursor-pointer hover:text-primary transition duration-150"> <RightArrowIcon /> </div>
+                            <div className="bg-transparent text-accent hover:text-primary transition duration-150"> <RightArrowIcon /> </div>
                         </div>
                     </div>
                 </Link>
             }
-            footer={
+            footer={!condensed &&
                 <a
                     // TODO: Implement the link later
-                    className='text-primary text-xs'
+                    className='text-primary text-xs text-nowrap'
                     aria-disabled={true}
                 // href={url}
                 >
