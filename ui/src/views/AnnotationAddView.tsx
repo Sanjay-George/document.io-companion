@@ -1,6 +1,6 @@
 import { Spinner } from '@nextui-org/react'
 import '@/App.css';
-import { addAnnotation } from '@/data_access/annotations';
+import { addAnnotation, useAnnotations } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
 import AnnotationEditor from '@/components/AnnotationEditor';
 import { useNavigate, useSearchParams } from 'react-router';
@@ -11,6 +11,7 @@ import { Annotation } from '@/models/annotations';
 import { ANNOTATED_ELEMENT_CLASS, ANNOTATED_ELEMENT_ICON_CLASS, HOVERED_ELEMENT_CLASS, MODAL_ROOT_ID } from '@/utils/constants';
 import ContextMenu from '@/components/ContextMenu';
 import QuerySelectorTag from '@/components/QuerySelectorTag';
+import { getQuerySelector } from '@/utils';
 
 export default function AnnotationAddView() {
     const documentationId = useContext(DocumentationContext) as string;
@@ -22,7 +23,13 @@ export default function AnnotationAddView() {
     const navigate = useNavigate();
     const [shouldHighlight, setShouldHighlight] = useState(false);
 
+    const maxIndex = useAnnotations(documentationId).data?.reduce((max, annotation) => {
+        return annotation.index > max ? annotation.index : max;
+    }, -Infinity);
+
     const handleSave = async (value: string) => {
+        console.log('maxIndex:', maxIndex);
+
         const annotation: Annotation = {
             documentationId,
             value,
@@ -30,7 +37,8 @@ export default function AnnotationAddView() {
             url: window.location.href,
             created: new Date(),
             updated: new Date(),
-            type: 'component'
+            type: 'component',
+            index: parseInt(maxIndex + 1),
         };
 
         await addAnnotation(annotation);
@@ -78,6 +86,12 @@ export default function AnnotationAddView() {
         }
     }, [shouldHighlight]);
 
+    const handleContextItemClick = ({ id, triggerEvent }: { id: string, triggerEvent: Event }) => {
+        if (id === "annotate") {
+            const target = getQuerySelector(triggerEvent?.target as HTMLElement);
+            navigate(`/add?target=${encodeURIComponent(target)}&redirectTo=/`);
+        }
+    }
 
     if (!documentationId) {
         return <Spinner label="Could not load editor..." />;
@@ -89,13 +103,14 @@ export default function AnnotationAddView() {
             <>
                 <SidePanelHeader title="Add Annotation" shouldGoBack={true} />
 
-                <p className='!text-sm !font-light !text-slate-500 mt-10 text-center !border-1 !border-slate-300 px-5 py-5 rounded-xl shadow-sm'>
+                <div className="text-xs overflow-hidden py-2 px-3 mb-3 !text-sky-800 rounded-lg !bg-sky-50 !border-1 !border-sky-200 cursor-pointer" role="alert">
                     Right-click a highlighted element to annotate it.
-                </p>
+                </div>
 
                 <ContextMenu
                     onContextMenuOpen={() => setShouldHighlight(false)}
                     onContextMenuClose={() => setShouldHighlight(true)}
+                    onContextItemClick={handleContextItemClick}
                 />
             </>
         )
@@ -106,9 +121,9 @@ export default function AnnotationAddView() {
     return (
         <>
             <SidePanelHeader title="Add Annotation" shouldGoBack={true} />
-            
+
             <QuerySelectorTag target={target} />
-            
+
             <AnnotationEditor content='' preview={'live'} handleSave={handleSave} />
         </>
     )
