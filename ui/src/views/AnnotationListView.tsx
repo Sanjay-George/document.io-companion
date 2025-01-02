@@ -10,8 +10,9 @@ import { DocumentationContext } from '@/App';
 import AddIcon from '@/components/icons/AddIcon';
 import { Annotation } from '@/models/annotations';
 import { useNavigate, useSearchParams } from 'react-router';
+import Tabs from '@/components/Tabs';
 
-type FilterType = 'all' | 'in-page';
+export type FilterType = 'all' | 'in-page';
 
 export default function AnnotationListView() {
   const documentationId = useContext(DocumentationContext) as string;
@@ -35,7 +36,6 @@ export default function AnnotationListView() {
     if (filter === 'in-page') {
       // TODO: Implement sorting
       // sortAnnotations(annotations);
-
       return annotations?.filter(inPageFilter);
     }
     return annotations;
@@ -46,7 +46,8 @@ export default function AnnotationListView() {
 
   function inPageFilter(item: Annotation) {
     if (item.type === 'page') {
-      return item.url === window.location.href;
+      return item.url === window.location.href &&
+        document.querySelector(item.target) !== null;
     }
     else if (item.type === 'component') {
       return document.querySelector(item.target) !== null;
@@ -64,6 +65,11 @@ export default function AnnotationListView() {
     // Add annotation for a new target
     navigate(`/add`);
   }
+
+  const tabItems = [
+    { label: 'On this page', count: pageAnnotationsCount, key: 'in-page' as FilterType },
+    { label: 'All', count: allAnnotationsCount, key: 'all' as FilterType },
+  ];
 
   if (!documentationId) {
     return <Spinner label="Loading editor..." />;
@@ -83,38 +89,9 @@ export default function AnnotationListView() {
       {/* TODO: Update title when target selected */}
       <SidePanelHeader title={documentation?.title} shouldGoBack={isTargetSelected} />
 
-
-
       {!isTargetSelected && (
-        <ul className="flex flex-wrap text-xs font-medium text-center 
-        text-gray-500 mb-3 bg-slate-100 w-fit px-1 py-1 rounded-xl cursor-pointer">
-          <li className="me-2">
-            <a
-              className={
-                `inline-block px-3 py-1 rounded-lg 
-                ${filter === 'in-page' ? 'bg-white' : 'hover:text-gray-900 hover:bg-gray-100'}`
-              }
-              onClick={() => setFilter('in-page')}
-              aria-current="page"
-            >
-              On this page ({pageAnnotationsCount})
-            </a>
-          </li>
-
-          <li className="me-2">
-            <a
-              className={
-                `inline-block px-3 py-1 rounded-lg 
-                ${filter === 'all' ? 'bg-white' : 'hover:text-gray-900 hover:bg-gray-100'}`
-              }
-              onClick={() => setFilter('all')}
-            >
-              All ({allAnnotationsCount})
-            </a>
-          </li>
-        </ul>
+        <Tabs filter={filter} setFilter={setFilter} items={tabItems} />
       )}
-
 
       {isLoadingAnnotations && <Spinner label="Fetching annotations..." />}
       {errorAnnotations && <div className='text-red-700'>Failed to load annotations. Error: {errorAnnotations?.message}</div>}
