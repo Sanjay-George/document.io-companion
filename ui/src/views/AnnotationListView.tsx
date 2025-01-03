@@ -125,7 +125,7 @@ export default function AnnotationListView() {
       {
         !enableReorder && (
           <>
-            <div className='grid gap-5 grid-cols-1 @xl:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4 @7xl:grid-cols-5'>
+            <div className='grid gap-5 grid-cols-1 @xl:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4 @8xl:grid-cols-5'>
               {filteredAnnotations && filteredAnnotations.slice(0, 2).map((annotation: Annotation) => (
                 <AnnotationCard key={annotation.id} annotation={annotation} />
               ))}

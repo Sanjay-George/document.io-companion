@@ -41,7 +41,7 @@ export default function AnnotationListReorderable({ annotations, onSaveOrder }: 
             </div>
             <div className=''>
                 <Reorder.Group
-                    className='grid gap-5 grid-cols-1'
+                    className='grid gap-5 grid-cols-1 list-none m-0'
                     axis='y'
                     values={displayedAnnotations}
                     onReorder={handleReorder}
