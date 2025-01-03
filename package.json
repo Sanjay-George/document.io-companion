@@ -1,14 +1,15 @@
 {
   "name": "document-io-companion-app",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "type": "commonjs",
   "scripts": {
     "clean": "rimraf dist",
     "build:ui": "npm --prefix ./ui run build",
-    "copy:ui": "copyfiles -u 1 ui/dist/** ui/dist/**/* .",
-    "build": "npm run clean && npm run build:ui && npm run copy:ui",
+    "copy:ui": "copyfiles -u 2 ui/dist/** ui/dist/**/* ./dist/ui",
+    "build": "npm run clean && tsc -b && npm run build:ui && npm run copy:ui",
     "start": "electron-forge start",
+    "prepackage": "npm run build",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
@@ -30,7 +31,6 @@
     "@electron/fuses": "^1.8.0",
     "@types/electron": "^1.6.12",
     "@types/node": "^22.10.1",
-    "@types/puppeteer": "^7.0.4",
     "copyfiles": "^2.4.1",
     "electron": "^33.2.1",
     "rimraf": "^6.0.1",

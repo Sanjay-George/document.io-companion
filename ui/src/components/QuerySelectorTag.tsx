@@ -13,7 +13,7 @@ export default function QuerySelectorTag({ target }: { target: string }) {
 
             <code
                 className='bg-slate-200/60 text-slate-800
-                mb-2 px-2 py-1 rounded-lg text-xs
+                 px-2 py-1 rounded-lg text-xs
                 max-w-full overflow-x-clip overflow-ellipsis
                 h-fit font-mono font-normal inline-block whitespace-nowrap
                 '

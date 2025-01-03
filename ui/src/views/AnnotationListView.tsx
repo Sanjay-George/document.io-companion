@@ -1,8 +1,8 @@
-import { Spinner } from '@nextui-org/react'
+import Spinner from '@/components/Spinner';
 import ButtonPrimary from '@/components/ButtonPrimary'
 import '@/App.css';
 import { useDocumentation } from '@/data_access/documentations';
-import { useAnnotationsByTarget } from '@/data_access/annotations';
+import { ALL_ANNOTATIONS_KEY, updateAnnotations, useAnnotationsByTarget } from '@/data_access/annotations';
 import AnnotationCard from '@/components/AnnotationCard';
 import SidePanelHeader from '@/components/SidePanelHeader';
 import { useContext, useMemo, useState, } from 'react';
@@ -10,8 +10,12 @@ import { DocumentationContext } from '@/App';
 import AddIcon from '@/components/icons/AddIcon';
 import { Annotation } from '@/models/annotations';
 import { useNavigate, useSearchParams } from 'react-router';
+import Tabs from '@/components/Tabs';
+import AnnotationListReorderable from '@/components/AnnotationListReorderable';
+import { sortAnnotations } from '@/utils';
+import { mutate } from 'swr';
 
-type FilterType = 'all' | 'in-page';
+export type FilterType = 'all' | 'in-page';
 
 export default function AnnotationListView() {
   const documentationId = useContext(DocumentationContext) as string;
@@ -21,6 +25,7 @@ export default function AnnotationListView() {
   const isTargetSelected = useMemo(() => !!target && target.length > 0, [target]);
 
   const [filter, setFilter] = useState<FilterType>('in-page');
+  const [enableReorder, setEnableReorder] = useState(false);
 
   const navigate = useNavigate();
 
@@ -32,10 +37,8 @@ export default function AnnotationListView() {
     = useAnnotationsByTarget(documentationId, target);
 
   const filteredAnnotations = useMemo(() => {
+    sortAnnotations(annotations);
     if (filter === 'in-page') {
-      // TODO: Implement sorting
-      // sortAnnotations(annotations);
-
       return annotations?.filter(inPageFilter);
     }
     return annotations;
@@ -44,14 +47,22 @@ export default function AnnotationListView() {
   const pageAnnotationsCount = useMemo(() => annotations?.filter(inPageFilter).length, [annotations, filter]);
   const allAnnotationsCount = useMemo(() => annotations?.length, [annotations]);
 
+
   function inPageFilter(item: Annotation) {
     if (item.type === 'page') {
-      return item.url === window.location.href;
+      return item.url === window.location.href &&
+        document.querySelector(item.target) !== null;
     }
     else if (item.type === 'component') {
       return document.querySelector(item.target) !== null;
     }
     return false;
+  }
+
+  const handleSaveOrdering = async (values: Annotation[]) => {
+    await updateAnnotations(values);
+    mutate(ALL_ANNOTATIONS_KEY(documentationId));
+    setEnableReorder(false);
   }
 
   const handleAddAnnotationClick = () => {
@@ -65,12 +76,22 @@ export default function AnnotationListView() {
     navigate(`/add`);
   }
 
+  const tabItems = useMemo(() => {
+    if (enableReorder) {
+      return [{ label: 'All', count: allAnnotationsCount, key: 'all' as FilterType }];
+    }
+    return [
+      { label: 'On this page', count: pageAnnotationsCount, key: 'in-page' as FilterType },
+      { label: 'All', count: allAnnotationsCount, key: 'all' as FilterType },
+    ]
+  }, [pageAnnotationsCount, allAnnotationsCount, enableReorder]);
+
   if (!documentationId) {
-    return <Spinner label="Loading editor..." />;
+    return <Spinner text="Loading editor..." />;
   }
 
   if (isLoading) {
-    return <Spinner label="Fetching details..." />;
+    return <Spinner text="Fetching details..." />;
   }
 
   if (error) {
@@ -83,57 +104,52 @@ export default function AnnotationListView() {
       {/* TODO: Update title when target selected */}
       <SidePanelHeader title={documentation?.title} shouldGoBack={isTargetSelected} />
 
-
-
       {!isTargetSelected && (
-        <ul className="flex flex-wrap text-xs font-medium text-center 
-        text-gray-500 mb-3 bg-slate-100 w-fit px-1 py-1 rounded-xl cursor-pointer">
-          <li className="me-2">
-            <a
-              className={
-                `inline-block px-3 py-1 rounded-lg 
-                ${filter === 'in-page' ? 'bg-white' : 'hover:text-gray-900 hover:bg-gray-100'}`
-              }
-              onClick={() => setFilter('in-page')}
-              aria-current="page"
-            >
-              On this page ({pageAnnotationsCount})
-            </a>
-          </li>
+        <div className='w-full inline-flex justify-between gap-3 mb-3 items-center'>
+          <Tabs filter={filter} setFilter={setFilter} items={tabItems} />
 
-          <li className="me-2">
-            <a
-              className={
-                `inline-block px-3 py-1 rounded-lg 
-                ${filter === 'all' ? 'bg-white' : 'hover:text-gray-900 hover:bg-gray-100'}`
-              }
-              onClick={() => setFilter('all')}
-            >
-              All ({allAnnotationsCount})
-            </a>
-          </li>
-        </ul>
+          {filter === 'all' && (!enableReorder ? (
+            <div className='text-xs cursor-pointer text-slate-500 underline justify-end'
+              onClick={() => setEnableReorder(true)}> Reorder </div>
+          ) : (
+            <div className='text-xs cursor-pointer text-slate-500 underline justify-end'
+              onClick={() => setEnableReorder(false)}> Cancel </div>
+          ))}
+
+        </div>
       )}
 
-
-      {isLoadingAnnotations && <Spinner label="Fetching annotations..." />}
+      {isLoadingAnnotations && <Spinner text="Fetching annotations..." />}
       {errorAnnotations && <div className='text-red-700'>Failed to load annotations. Error: {errorAnnotations?.message}</div>}
 
-      <div className='grid gap-5 grid-cols-1 @xl:grid-cols-2 @3xl:grid-cols-3 @4xl:grid-cols-4 @6xl:grid-cols-5'>
-        {filteredAnnotations && filteredAnnotations.slice(0, 2).map((annotation: Annotation) => (
-          <AnnotationCard key={annotation._id} annotation={annotation} />
-        ))}
+      {
+        !enableReorder && (
+          <>
+            <div className='grid gap-5 grid-cols-1 @xl:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4 @8xl:grid-cols-5'>
+              {filteredAnnotations && filteredAnnotations.slice(0, 2).map((annotation: Annotation) => (
+                <AnnotationCard key={annotation.id} annotation={annotation} />
+              ))}
 
-        {/* Adding an `Add` button in between for better UX */}
-        {filteredAnnotations?.length >= 6 && <div className='@xl:hidden'><ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>}
+              {/* Adding an `Add` button in between for better UX */}
+              {filteredAnnotations?.length >= 6 && <div className='@xl:hidden'><ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>}
 
-        {filteredAnnotations && filteredAnnotations.slice(2).map((annotation: Annotation) => (
-          <AnnotationCard key={annotation._id} annotation={annotation} />
-        ))}
+              {filteredAnnotations && filteredAnnotations.slice(2).map((annotation: Annotation) => (
+                <AnnotationCard key={annotation.id} annotation={annotation} />
+              ))}
+            </div>
 
-      </div>
+            <div className='my-5'> <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>
+          </>
+        )
+      }
 
-      <div className='my-5'> <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>
+      {
+        enableReorder &&
+        <AnnotationListReorderable
+          annotations={filteredAnnotations}
+          onSaveOrder={handleSaveOrdering} />
+      }
+
 
     </div>
 

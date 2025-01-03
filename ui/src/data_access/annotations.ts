@@ -65,6 +65,16 @@ export const updateAnnotation = async (annotationId: string, annotation: Annotat
     });
 }
 
+export const updateAnnotations = async (annotations: Annotation[]) => {
+    await fetch(`${API_URL}/annotations/`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(annotations)
+    });
+}
+
 export const deleteAnnotation = async (annotationId: string) => {
     await fetch(`${API_URL}/annotations/${annotationId}`, {
         method: 'DELETE'

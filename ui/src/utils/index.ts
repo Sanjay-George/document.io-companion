@@ -2,14 +2,8 @@ import { Annotation } from "@/models/annotations";
 import { HOVERED_ELEMENT_CLASS } from "./constants";
 
 export function sortAnnotations(annotations: Annotation[]) {
-    annotations?.sort((a, _) => {
-        if (!a?.type) {
-            return 1;
-        }
-        if (a.type === 'page') {
-            return -1;
-        }
-        return 1;
+    annotations?.sort((a, b) => {
+        return a.index - b.index;
     });
 };
 

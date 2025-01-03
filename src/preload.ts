@@ -5,6 +5,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
     // canGoForward: () => ipcRenderer.invoke('nav:canGoForward'),
     // onNavigationUpdate: (callback) => ipcRenderer.on('nav:updated', callback),
 
-    fetch: (...args) => ipcRenderer.invoke('api:fetch', ...args),
-
+    fetch: (...args: any) => ipcRenderer.invoke('api:fetch', ...args),
 })
