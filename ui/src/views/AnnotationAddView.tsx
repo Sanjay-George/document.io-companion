@@ -1,4 +1,4 @@
-import { Spinner } from '@nextui-org/react'
+import Spinner from '@/components/Spinner';
 import '@/App.css';
 import { addAnnotation, useAnnotations } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
@@ -94,7 +94,7 @@ export default function AnnotationAddView() {
     }
 
     if (!documentationId) {
-        return <Spinner label="Could not load editor..." />;
+        return <Spinner text="Could not load editor..." />;
     }
 
     // Adding annotation on a new target (element)

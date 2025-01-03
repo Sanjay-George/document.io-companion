@@ -1,4 +1,4 @@
-import { Spinner } from '@nextui-org/react'
+import Spinner from '@/components/Spinner';
 import ButtonPrimary from '@/components/ButtonPrimary'
 import '@/App.css';
 import { useDocumentation } from '@/data_access/documentations';
@@ -87,11 +87,11 @@ export default function AnnotationListView() {
   }, [pageAnnotationsCount, allAnnotationsCount, enableReorder]);
 
   if (!documentationId) {
-    return <Spinner label="Loading editor..." />;
+    return <Spinner text="Loading editor..." />;
   }
 
   if (isLoading) {
-    return <Spinner label="Fetching details..." />;
+    return <Spinner text="Fetching details..." />;
   }
 
   if (error) {
@@ -119,7 +119,7 @@ export default function AnnotationListView() {
         </div>
       )}
 
-      {isLoadingAnnotations && <Spinner label="Fetching annotations..." />}
+      {isLoadingAnnotations && <Spinner text="Fetching annotations..." />}
       {errorAnnotations && <div className='text-red-700'>Failed to load annotations. Error: {errorAnnotations?.message}</div>}
 
       {

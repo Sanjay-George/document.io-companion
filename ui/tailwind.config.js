@@ -1,11 +1,9 @@
-const { nextui } = require("@nextui-org/react");
 
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
     fontSize: {
@@ -78,19 +76,6 @@ export default {
   important: "#document-io-root",
   darkMode: "selector",
   plugins: [
-    nextui({
-      themes: {
-        light: {
-          colors: {
-            primary: "#007d7e",
-            secondary: "#000",
-            success: "#22C55E",
-            warning: "#B77206",
-            danger: "#B74606",
-          },
-        },
-      }
-    }),
     require('@tailwindcss/container-queries'),
     require('tailwind-scrollbar'),
   ],

@@ -38,10 +38,7 @@ export default function AnnotationCard({ annotation, condensed }: { annotation: 
 
     return (
         <Card
-            className="bg-white shadow-md rounded-xl 
-            text-slate-400 hover:text-slate-600 overflow-clip
-            flex flex-col justify-space-between
-            "
+            className="text-slate-400 hover:text-slate-600"
             body={
                 <div className="!max-h-52 overflow-clip transition duration-150 md-renderer">
                     <Markdown>{value}</Markdown>

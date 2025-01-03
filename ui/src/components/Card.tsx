@@ -10,14 +10,17 @@ type CardProps = {
 export default function Card({ header, footer, body, className }: CardProps) {
     return (
 
-        <div className={`max-w-sm px-3 border-0 ${className}`}>
+        <div className={`max-w-sm px-3 border-0 
+            bg-white shadow-md rounded-xl 
+            flex flex-col justify-space-between
+            ${className}`}>
 
             {header && (
                 <>
                     <div className="py-2">
                         {header}
                     </div>
-                    <hr className="h-px bg-gray-100 border-0 " />
+                    <hr className="h-px bg-gray-100 border-0" />
                 </>
 
             )}
@@ -30,7 +33,7 @@ export default function Card({ header, footer, body, className }: CardProps) {
             {footer && (
                 <>
                     <hr className="h-px bg-gray-100 border-0" />
-                    <div className="py-2">
+                    <div className="py-2 overflow-x-clip">
                         {footer}
                     </div>
                 </>

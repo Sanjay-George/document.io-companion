@@ -1,5 +1,3 @@
-// import { Button } from "@nextui-org/button";
-
 type ButtonProps = {
     text: string;
     icon: React.ReactNode;
@@ -16,7 +14,7 @@ export default function ButtonBase({ text, icon, onClick, className }: ButtonPro
         <button
             type="button"
             className={`inline-flex justify-center items-center 
-                space-x-2 !py-3 !px-4 !text-sm !rounded-md !h-8
+                !border-[1px] space-x-2 !py-3 !px-4 !text-sm !rounded-md !h-8
                 transition duration-250 ease-in-out text-nowrap overflow-x-clip
                 ${className}`}
             onClick={onClick}

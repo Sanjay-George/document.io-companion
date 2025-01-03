@@ -2,7 +2,6 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { NextUIProvider } from "@nextui-org/react";
 import { MemoryRouter, Route, Routes } from "react-router";
 import AnnotationEditorView from './views/AnnotationEditorView.tsx';
 import AnnotationListView from './views/AnnotationListView.tsx';
@@ -23,17 +22,15 @@ if (import.meta.env.VITE_APP_ENV === 'development') {
 
 createRoot(document.getElementById('document-io-root')!).render(
   <StrictMode>
-    <NextUIProvider>
-      <MemoryRouter>
-        <Routes>
-          <Route element={<App />}>
-            <Route path="/" element={<AnnotationListView />} />
-            <Route path="/add" element={<AnnotationAddView />} />
-            <Route path="/edit/:id" element={<AnnotationEditorView />} />
-          </Route>
-        </Routes>
-      </MemoryRouter>
-    </NextUIProvider>
-  </StrictMode>,
+    <MemoryRouter>
+      <Routes>
+        <Route element={<App />}>
+          <Route path="/" element={<AnnotationListView />} />
+          <Route path="/add" element={<AnnotationAddView />} />
+          <Route path="/edit/:id" element={<AnnotationEditorView />} />
+        </Route>
+      </Routes>
+    </MemoryRouter>
+  </StrictMode>
 )
 
