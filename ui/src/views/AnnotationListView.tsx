@@ -11,8 +11,6 @@ import AddIcon from '@/components/icons/AddIcon';
 import { Annotation } from '@/models/annotations';
 import { useNavigate, useSearchParams } from 'react-router';
 import Tabs from '@/components/Tabs';
-import { Reorder } from "motion/react";
-import RightArrowIcon from '@/components/icons/RightArrowIcon';
 import AnnotationListReorderable from '@/components/AnnotationListReorderable';
 import { sortAnnotations } from '@/utils';
 import { mutate } from 'swr';
@@ -48,13 +46,7 @@ export default function AnnotationListView() {
 
   const pageAnnotationsCount = useMemo(() => annotations?.filter(inPageFilter).length, [annotations, filter]);
   const allAnnotationsCount = useMemo(() => annotations?.length, [annotations]);
-  const maxIndex = useMemo(
-    () =>
-      annotations && annotations.reduce((max, annotation) => {
-        return annotation.index > max ? annotation.index : max;
-      }, -Infinity),
-    [annotations]
-  );
+
 
   function inPageFilter(item: Annotation) {
     if (item.type === 'page') {
@@ -133,7 +125,7 @@ export default function AnnotationListView() {
       {
         !enableReorder && (
           <>
-            <div className='grid gap-5 grid-cols-1 @xl:grid-cols-2 @3xl:grid-cols-3 @4xl:grid-cols-4 @6xl:grid-cols-5'>
+            <div className='grid gap-5 grid-cols-1 @xl:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4 @7xl:grid-cols-5'>
               {filteredAnnotations && filteredAnnotations.slice(0, 2).map((annotation: Annotation) => (
                 <AnnotationCard key={annotation.id} annotation={annotation} />
               ))}
@@ -154,7 +146,7 @@ export default function AnnotationListView() {
       {
         enableReorder &&
         <AnnotationListReorderable
-          annotations={filteredAnnotations} documentationId={documentationId}
+          annotations={filteredAnnotations}
           onSaveOrder={handleSaveOrdering} />
       }
 

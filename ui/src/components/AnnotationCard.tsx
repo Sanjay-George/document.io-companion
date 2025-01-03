@@ -39,9 +39,11 @@ export default function AnnotationCard({ annotation, condensed }: { annotation: 
     return (
         <Card
             className="bg-white shadow-md rounded-xl 
-            text-slate-400 hover:text-slate-600 overflow-clip"
+            text-slate-400 hover:text-slate-600 overflow-clip
+            flex flex-col justify-space-between
+            "
             body={
-                <div className="max-h-52 overflow-clip transition duration-150 md-renderer">
+                <div className="!max-h-52 overflow-clip transition duration-150 md-renderer">
                     <Markdown>{value}</Markdown>
                 </div>
             }
@@ -49,7 +51,7 @@ export default function AnnotationCard({ annotation, condensed }: { annotation: 
                 <Link to={`/edit/${annotation.id}`} >
                     <div className="flex gap-3 items-center">
                         <div className="flex justify-center items-center bg-slate-700 
-                        text-white px-3 w-7 h-7 rounded-lg text-xs font-extralight mx-auto">
+                        text-white px-3 w-7 !h-7 rounded-lg text-xs font-extralight mx-auto">
                             {renderAnnotationId(id as string)?.slice(-3)}
                         </div>
                         <div className="w-full flex items-center justify-between">
@@ -57,7 +59,7 @@ export default function AnnotationCard({ annotation, condensed }: { annotation: 
                                 <p className="!text-slate-600 !text-sm !font-bold">{renderAnnotationId(id as string)}</p>
                                 {type && (
                                     type === 'page' &&
-                                    <span className="bg-sky-50 text-sky-700 text-xs px-2.5 py-0.5 rounded">{type?.toLocaleUpperCase()}-LEVEL</span>
+                                    <span className="text-nowrap bg-sky-50 text-sky-700 text-xs px-2.5 py-0.5 rounded">{type?.toLocaleUpperCase()}-LEVEL</span>
                                 )}
                             </div>
                             <div className="bg-transparent text-accent hover:text-primary transition duration-150"> <RightArrowIcon /> </div>
@@ -68,7 +70,7 @@ export default function AnnotationCard({ annotation, condensed }: { annotation: 
             footer={!condensed &&
                 <a
                     // TODO: Implement the link later
-                    className='text-primary text-xs text-nowrap'
+                    className='text-primary text-xs text-nowrap !h-7'
                     aria-disabled={true}
                 // href={url}
                 >

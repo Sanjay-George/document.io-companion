@@ -1,4 +1,3 @@
-import { getQuerySelector } from "@/utils";
 import { HOVERED_ELEMENT_CLASS, MODAL_ROOT_ID } from "@/utils/constants";
 import { useEffect, useState } from "react";
 import {
@@ -9,7 +8,6 @@ import {
 } from "react-contexify";
 
 import "react-contexify/dist/ReactContexify.css";
-import { useNavigate } from "react-router";
 
 export const CONTEXT_MENU_ID = "document-io-context-menu";
 
@@ -18,7 +16,6 @@ export default function ContextMenu({ onContextMenuOpen, onContextMenuClose, onC
     const { show } = useContextMenu({
         id: CONTEXT_MENU_ID
     });
-    const navigate = useNavigate();
     const [isVisible, setIsVisible] = useState(false);
     // target is the element on which the context menu is triggered
     const [target, setTarget] = useState<HTMLElement | null>(null);

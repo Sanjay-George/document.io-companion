@@ -7,11 +7,10 @@ import RightArrowIcon from "./icons/RightArrowIcon";
 
 interface AnnotationListReorderableProps {
     annotations: Annotation[];
-    documentationId: string;
     onSaveOrder: (values: Annotation[]) => Promise<void>;
 }
 
-export default function AnnotationListReorderable({ annotations, documentationId, onSaveOrder }: AnnotationListReorderableProps) {
+export default function AnnotationListReorderable({ annotations, onSaveOrder }: AnnotationListReorderableProps) {
 
     const [displayedAnnotations, setDisplayedAnnotations] = useState<Annotation[] | null>(null);
 
