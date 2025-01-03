@@ -218,7 +218,6 @@ async function openDocumentation(documentationId: string) {
         // Add event listener to handle DOM ready
         mainWindow.webContents.on("dom-ready", handleDOMReady);
 
-
         // TODO: Uncomment this
         await restoreCookiesFromDisk(documentation.url, mainWindow.webContents.session);
 
@@ -244,10 +243,12 @@ async function handleDOMReady() {
     mainWindow.webContents.on('did-navigate-in-page', handleNavigationInPage);
 }
 
+// @ts-expect-error
 function handleNavigation(event, url, httpResponseCode, httpStatusText) {
     console.log("Navigated", event, url, httpResponseCode, httpStatusText);
 }
 
+// @ts-expect-error
 function handleNavigationInPage(event, url, isMainFrame?, frameProcessId?, frameRoutingId?) {
     console.log("Navigated in page", event, url, isMainFrame, frameProcessId, frameRoutingId);
 

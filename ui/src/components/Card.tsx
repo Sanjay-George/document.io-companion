@@ -9,36 +9,38 @@ type CardProps = {
 
 export default function Card({ header, footer, body, className }: CardProps) {
     return (
-       
-        <div className={`max-w-sm px-3 bg-white border-0 rounded-lg shadow ${className}`}>
+
+        <div className={`max-w-sm px-3 border-0 
+            bg-white shadow-md rounded-xl overflow-x-clip
+            flex flex-col justify-space-between
+            ${className}`}>
 
             {header && (
                 <>
-                 <div className="py-2">
-                    {header}
-
-                </div>
-                    <hr className="h-px bg-gray-100 border-0 " />
+                    <div className="py-2">
+                        {header}
+                    </div>
+                    <hr className="h-px bg-gray-100 border-0 !m-0" />
                 </>
-               
+
             )}
 
 
-            <div className="py-2">
+            <div className="py-2 flex-1">
                 {body}
             </div>
 
             {footer && (
                 <>
-                    <hr className="h-px bg-gray-100 border-0" />
-                    <div className="py-2">
+                    <hr className="h-px bg-gray-100 border-0 !m-0" />
+                    <div className="py-2 overflow-x-clip">
                         {footer}
                     </div>
                 </>
-               
+
             )}
 
-        
+
         </div>
 
 

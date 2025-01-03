@@ -1,7 +1,8 @@
-const { FusesPlugin } = require('@electron-forge/plugin-fuses');
-const { FuseV1Options, FuseVersion } = require('@electron/fuses');
+import type { ForgeConfig } from '@electron-forge/shared-types';
+import FusesPlugin from '@electron-forge/plugin-fuses';
+import { FuseV1Options, FuseVersion } from '@electron/fuses';
 
-module.exports = {
+const config: ForgeConfig = {
   packagerConfig: {
     name: 'document-io',
     asar: true,
@@ -12,11 +13,14 @@ module.exports = {
       },
     ],
 
-    // TODO: Fix this later. Only include ui/dist folder
     // https://electron.github.io/packager/main/interfaces/Options.html#ignore
     ignore: [
-      /^\/ui/
-
+      /^\/ui/,
+      /^\/src/,
+      /^\/tsconfig[.]json$/,
+      /\.ts$/,
+      /\.md$/,
+      /\.map$/,
     ]
   },
   rebuildConfig: {},
@@ -35,6 +39,7 @@ module.exports = {
     {
       name: '@electron-forge/maker-zip',
       platforms: ['darwin'],
+      config: {},
     },
     {
       name: '@electron-forge/maker-deb',
@@ -59,3 +64,5 @@ module.exports = {
     }),
   ],
 };
+
+export default config;

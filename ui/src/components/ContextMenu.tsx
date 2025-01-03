@@ -1,4 +1,3 @@
-import { getQuerySelector } from "@/utils";
 import { HOVERED_ELEMENT_CLASS, MODAL_ROOT_ID } from "@/utils/constants";
 import { useEffect, useState } from "react";
 import {
@@ -9,16 +8,14 @@ import {
 } from "react-contexify";
 
 import "react-contexify/dist/ReactContexify.css";
-import { useNavigate } from "react-router";
 
 export const CONTEXT_MENU_ID = "document-io-context-menu";
 
-export default function ContextMenu({ onContextMenuOpen, onContextMenuClose }: { onContextMenuOpen: () => void, onContextMenuClose: () => void }) {
+export default function ContextMenu({ onContextMenuOpen, onContextMenuClose, onContextItemClick }: { onContextMenuOpen: () => void, onContextMenuClose: () => void, onContextItemClick: (e: any) => void }) {
 
     const { show } = useContextMenu({
         id: CONTEXT_MENU_ID
     });
-    const navigate = useNavigate();
     const [isVisible, setIsVisible] = useState(false);
     // target is the element on which the context menu is triggered
     const [target, setTarget] = useState<HTMLElement | null>(null);
@@ -71,20 +68,12 @@ export default function ContextMenu({ onContextMenuOpen, onContextMenuClose }: {
         setIsVisible(isVisible);
     }
 
-    // Handle context menu item click
-    function handleItemClick({ id, triggerEvent }: { id: string, triggerEvent: Event }) {
-        if (id === "annotate") {
-            const target = getQuerySelector(triggerEvent?.target as HTMLElement);
-            navigate(`/add?target=${encodeURIComponent(target)}&redirectTo=/`);
-        }
-    }
-
     return (
         <>
             <Menu id={CONTEXT_MENU_ID} onVisibilityChange={trackVisibility} className="text-sm">
                 <Item disabled className="font-bold">DOCUMENT.IO</Item>
                 <Separator />
-                <Item id="annotate" onClick={handleItemClick as any}> <span className="pr-4">✍️</span> Annotate</Item>
+                <Item id="annotate" onClick={onContextItemClick as any}> <span className="pr-4">✍️</span> Annotate</Item>
             </Menu>
         </>
     );

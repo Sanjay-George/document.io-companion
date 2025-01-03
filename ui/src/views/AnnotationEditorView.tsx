@@ -1,4 +1,3 @@
-import { Spinner } from '@nextui-org/react'
 import '@/App.css';
 import { ALL_ANNOTATIONS_KEY, deleteAnnotation, SINGLE_ANNOTATION_KEY, updateAnnotation, useAnnotation } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
@@ -18,6 +17,7 @@ import { mutate } from 'swr';
 import QuerySelectorTag from '@/components/QuerySelectorTag';
 import InfoIcon from '@/components/icons/InfoIcon';
 import { Tooltip } from 'react-tooltip';
+import Spinner from '@/components/Spinner';
 
 type AnnotationType = 'component' | 'page';
 
@@ -82,10 +82,10 @@ export default function AnnotationEditorView() {
 
 
     if (!annotationId) {
-        return <Spinner label="Loading editor..." />;
+        return <Spinner text="Loading editor..." />;
     }
     if (isLoading) {
-        return <Spinner label="Fetching details..." />;
+        return <Spinner text="Fetching details..." />;
     }
     if (error) {
         return <div className='text-red-700'>Failed to load the editor. Error: {error?.message}</div>;
@@ -97,7 +97,7 @@ export default function AnnotationEditorView() {
             {
                 (annotation.type === "page" && annotation.url !== window.location.href) && (
                     <div className='text-xs'>
-                        <div className="py-2 px-2 mb-4 text-xs !text-yellow-800 rounded-lg !bg-yellow-50 !border-1 !border-yellow-200 cursor-pointer" role="alert">
+                        <div className="py-2 px-2 mb-3 text-xs !text-yellow-800 rounded-lg !bg-yellow-50 !border-1 !border-yellow-200 cursor-pointer" role="alert">
                             <a href={annotation.url} rel="noreferrer">
                                 This annotation exists on a different url. <span className="font-medium underline">Click here</span> to navigate.
                             </a>
@@ -106,7 +106,9 @@ export default function AnnotationEditorView() {
                 )
             }
 
-            <QuerySelectorTag target={annotation.target} />
+            <div className='mb-3'>
+                <QuerySelectorTag target={annotation.target} />
+            </div>
 
             {
                 previewMode !== 'preview' && (

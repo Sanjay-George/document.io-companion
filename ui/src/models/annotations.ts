@@ -1,5 +1,5 @@
 export interface Annotation {
-    _id?: string;
+    id?: string;
     value: string;
     target: string;
     url: string;
@@ -8,4 +8,5 @@ export interface Annotation {
     updated: Date;
     type: 'page' | 'component';
     comments?: string[];
+    index: number,
 }
