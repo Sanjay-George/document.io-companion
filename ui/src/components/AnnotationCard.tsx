@@ -14,7 +14,7 @@ export default function AnnotationCard({ annotation, condensed }: { annotation: 
     const navigate = useNavigate();
     const openInEditor = (target: string) => {
         if (!target || !target.length) {
-            console.error('No target provided');
+            console.warn('No target provided');
             return;
         }
         const t = encodeURIComponent(target);

@@ -59,7 +59,7 @@ export default function AnnotationAddView() {
         }
         const element = document.querySelector(target) as HTMLElement;
         if (!element) {
-            console.error('Element not found:', target);
+            console.warn('Element not found:', target);
             return;
         }
         highlight(element, false, null, true);

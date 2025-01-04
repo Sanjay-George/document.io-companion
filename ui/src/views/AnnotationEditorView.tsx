@@ -68,7 +68,7 @@ export default function AnnotationEditorView() {
         // Highlight annotated element
         const element = document.querySelector(annotation.target) as HTMLElement;
         if (!element) {
-            console.error('Element not found:', annotation.target);
+            console.warn('Element not found:', annotation.target);
             return;
         }
 
