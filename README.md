@@ -2,7 +2,7 @@
 
 This is a desktop application that works as a companion application to [document.io](https://github.com/Sanjay-George/document.io), enabling seamless website annotation. Built with Electron, it allows you to create and manage annotations on any website while maintaining security and performance.
 
-![image](https://github.com/user-attachments/assets/9b11f99f-3778-4505-a3dd-4eaf8f385c3e)
+![screely-1736026495039](https://github.com/user-attachments/assets/ce662841-0d6c-4f37-a9a9-1f901253af69)
 
 
 ## 🎯 Motivation
