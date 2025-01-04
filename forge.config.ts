@@ -23,28 +23,41 @@ const config: ForgeConfig = {
       /\.map$/,
     ]
   },
+  publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      platforms: ['darwin', 'win32'],
+      config: {
+        repository: {
+          name: 'document.io-companion',
+          owner: 'Sanjay-George'
+        },
+        prerelease: true,
+        authToken: process.env.GITHUB_TOKEN,
+      }
+    }
+  ],
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
       config: {},
     },
+    {
+      name: '@electron-forge/maker-dmg',
+      config: {
+        format: 'ULFO'
+      }
+    },
     // {
-    //   name: '@electron-forge/maker-dmg',
-    //   config: {
-    //     // background: './dist/dmg-background.png',
-    //     format: 'ULFO'
-    //   }
+    //   name: '@electron-forge/maker-zip',
+    //   platforms: ['darwin'],
+    //   config: {},
     // },
-    {
-      name: '@electron-forge/maker-zip',
-      platforms: ['darwin'],
-      config: {},
-    },
-    {
-      name: '@electron-forge/maker-deb',
-      config: {},
-    },
+    // {
+    //   name: '@electron-forge/maker-deb',
+    //   config: {},
+    // },
   ],
   plugins: [
     {

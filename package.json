@@ -1,6 +1,6 @@
 {
   "name": "document-io-companion-app",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.1",
   "main": "dist/index.js",
   "type": "commonjs",
   "scripts": {
@@ -11,7 +11,8 @@
     "start": "electron-forge start",
     "prepackage": "npm run build",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "publish": "node -r dotenv/config node_modules/.bin/electron-forge publish"
   },
   "author": "",
   "license": "ISC",
@@ -28,10 +29,12 @@
     "@electron-forge/maker-zip": "^7.6.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
     "@electron-forge/plugin-fuses": "^7.6.0",
+    "@electron-forge/publisher-github": "^7.6.0",
     "@electron/fuses": "^1.8.0",
     "@types/electron": "^1.6.12",
     "@types/node": "^22.10.1",
     "copyfiles": "^2.4.1",
+    "dotenv": "^16.4.7",
     "electron": "^33.2.1",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
