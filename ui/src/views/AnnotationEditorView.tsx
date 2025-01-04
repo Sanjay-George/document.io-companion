@@ -97,8 +97,9 @@ export default function AnnotationEditorView() {
             {
                 (annotation.type === "page" && annotation.url !== window.location.href) && (
                     <div className='text-xs'>
-                        <div className="py-2 px-2 mb-3 text-xs !text-yellow-800 rounded-lg !bg-yellow-50 !border-1 !border-yellow-200 cursor-pointer" role="alert">
-                            <a href={annotation.url} rel="noreferrer">
+                        <div className="py-2 px-2 mb-3 text-xs rounded-lg !bg-yellow-50 
+                        !border-1 !border-yellow-200 cursor-pointer" role="alert">
+                            <a className='!text-yellow-800' href={annotation.url} rel="noreferrer">
                                 This annotation exists on a different url. <span className="font-medium underline">Click here</span> to navigate.
                             </a>
                         </div>

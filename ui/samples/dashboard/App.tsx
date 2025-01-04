@@ -1,23 +1,6 @@
 import { useEffect, useRef } from 'react';
 import './App.css';
 
-import {
-    Navbar,
-    NavbarBrand,
-    NavbarContent,
-    NavbarItem,
-    Link,
-    Button,
-    Table,
-    TableHeader,
-    TableColumn,
-    TableBody,
-    TableRow,
-    TableCell,
-
-
-} from "@nextui-org/react";
-
 
 export const AcmeLogo = () => {
     return (
@@ -55,74 +38,76 @@ export default function App() {
 
     return (
         <div className="container mx-auto" style={{ maxWidth: '960px', margin: '0 auto' }}>
-            <Navbar>
-                <NavbarBrand>
+            <nav className="flex items-center justify-between py-4">
+                <div className="flex items-center">
                     <AcmeLogo />
                     <p className="font-bold text-inherit">ACME</p>
-                </NavbarBrand>
-                <NavbarContent className="flex gap-4" justify="center">
-                    <NavbarItem>
-                        <Link color="foreground" href="#">
+                </div>
+                <div className="flex gap-4" >
+                    <div>
+                        <a color="foreground" href="#">
                             Features
-                        </Link>
-                    </NavbarItem>
-                    <NavbarItem isActive>
-                        <Link aria-current="page" href="#">
+                        </a>
+                    </div>
+                    <div>
+                        <a aria-current="page" href="#">
                             Customers
-                        </Link>
-                    </NavbarItem>
-                    <NavbarItem>
-                        <Link color="foreground" href="#">
+                        </a>
+                    </div>
+                    <div>
+                        <a color="foreground" href="#">
                             Integrations
-                        </Link>
-                    </NavbarItem>
-                </NavbarContent>
-                <NavbarContent justify="end">
-                    <NavbarItem className="flex">
-                        <Link href="#">Login</Link>
-                    </NavbarItem>
-                    <NavbarItem>
-                        <Button as={Link} color="primary" href="#" variant="flat">
+                        </a>
+                    </div>
+                </div >
+                <div className="flex gap-4">
+                    <div className="flex">
+                        <a href="#">Login</a>
+                    </div>
+                    <div>
+                        <a color="primary" href="#">
                             Sign Up
-                        </Button>
-                    </NavbarItem>
-                </NavbarContent>
-            </Navbar>
+                        </a>
+                    </div>
+                </div >
+            </nav >
 
-            <Table aria-label="Example static collection table" className='mt-10'>
-                <TableHeader>
-                    <TableColumn>NAME</TableColumn>
-                    <TableColumn>ROLE</TableColumn>
-                    <TableColumn>STATUS</TableColumn>
-                </TableHeader>
-                <TableBody>
-                    <TableRow key="1">
-                        <TableCell>Tony Reichert</TableCell>
-                        <TableCell>CEO</TableCell>
-                        <TableCell>Active</TableCell>
-                    </TableRow>
-                    <TableRow key="2">
-                        <TableCell>Zoey Lang</TableCell>
-                        <TableCell>Technical Lead</TableCell>
-                        <TableCell>Paused</TableCell>
-                    </TableRow>
-                    <TableRow key="3">
-                        <TableCell>Jane Fisher</TableCell>
-                        <TableCell>Senior Developer</TableCell>
-                        <TableCell>Active</TableCell>
-                    </TableRow>
-                    <TableRow key="4">
-                        <TableCell>William Howard</TableCell>
-                        <TableCell>Community Manager</TableCell>
-                        <TableCell>Vacation</TableCell>
-                    </TableRow>
-                </TableBody>
-            </Table>
+            <table aria-label="Example static collection table" className='mt-10'>
+                <thead>
+                    <tr>
+                        <th>NAME</th>
+                        <th>ROLE</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr key="1">
+                        <td>Tony Reichert</td>
+                        <td>CEO</td>
+                        <td>Active</td>
+                    </tr>
+                    <tr key="2">
+                        <td>Zoey Lang</td>
+                        <td>Technical Lead</td>
+                        <td>Paused</td>
+                    </tr>
+                    <tr key="3">
+                        <td>Jane Fisher</td>
+                        <td>Senior Developer</td>
+                        <td>Active</td>
+                    </tr>
+                    <tr key="4">
+                        <td>William Howard</td>
+                        <td>Community Manager</td>
+                        <td>Vacation</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <div ref={div}>
 
             </div>
-        </div>
+        </div >
 
     );
 }

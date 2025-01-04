@@ -54,7 +54,7 @@ ANNOTATION HIGHLIGHTING
       font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
     }
 
-    ul {
+    & ul {
       margin-left: 0 !important;
       list-style-type: disc !important;
 
@@ -79,7 +79,7 @@ ANNOTATION HIGHLIGHTING
       }
     }
 
-    ol {
+    & ol {
       margin-left: 0 !important;
       list-style-type: decimal !important;
 
@@ -114,7 +114,7 @@ ANNOTATION HIGHLIGHTING
       min-height: 100% !important;
     }
 
-    textarea {
+    & textarea {
       background: transparent !important;
       border: 0px none rgb(36, 41, 47) !important;
       width: 100% !important;
@@ -128,7 +128,7 @@ ANNOTATION HIGHLIGHTING
   ---------------------- 
   */
   .md-renderer {
-    p {
+    & p {
       margin-bottom: 0.5rem;
     }
   }
