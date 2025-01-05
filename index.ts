@@ -6,11 +6,11 @@ import CookieManager from "./src/cookies";
 const COOKIE_FILE_PATH = path.join(app.getPath('userData'), 'cookies.json');
 const cookieManager = new CookieManager(COOKIE_FILE_PATH);
 
-const SERVER_URL = "http://localhost:5000";
-const SINGLE_DOCUMENTATION_URL = (id: string) => `${SERVER_URL}/documentations/${id}/`;
+let serverURL = "http://localhost:5000";
+const SINGLE_DOCUMENTATION_URL = (id: string) => `${serverURL}/documentations/${id}/`;
 
 let mainWindow: BrowserWindow;
-let documentationId: string;
+let documentationId: string = "";
 let allowWindowClose = false;
 
 // Register the custom protocol
@@ -41,7 +41,10 @@ if (!gotTheLock) {
         if (!url) return;
         console.error("Welcome Back!", `You arrived from: ${url}`);
 
-        documentationId = parseDocId(url) as string;
+        const deepLinkParams = parseDeepLinkUrl(url);
+        documentationId = deepLinkParams.documentationId ?? documentationId;
+        serverURL = deepLinkParams.apiUrl ?? serverURL;
+
         console.log("Opening documentation:", documentationId);
         await openDocumentation(documentationId);
     });
@@ -50,7 +53,9 @@ if (!gotTheLock) {
 // Handling deeplink for Windows and Linux (when app is closed)
 const url = process.argv.pop();
 console.log("Welcome!", `You arrived from: ${url}`);
-documentationId = (url && parseDocId(url)) as string;
+const deepLinkParams = parseDeepLinkUrl(url as string);
+documentationId = deepLinkParams.documentationId ?? documentationId;
+serverURL = deepLinkParams.apiUrl ?? serverURL;
 
 // Handling app ready event 
 // Create main window and open documentation
@@ -82,7 +87,9 @@ app.on("open-url", async (event, url) => {
     console.group("app:open-url");
 
     console.log("Welcome Back!", `You arrived from: ${url}`);
-    documentationId = parseDocId(url) as string;
+    const deepLinkParams = parseDeepLinkUrl(url);
+    documentationId = deepLinkParams.documentationId ?? documentationId;
+    serverURL = deepLinkParams.apiUrl ?? serverURL;
     console.log("Opening documentation:", documentationId);
     await openDocumentation(documentationId);
 
@@ -98,6 +105,44 @@ function parseDocId(url: string): string | null {
     const regex = /document-io:\/\/documentations\/([a-f0-9]+)/;
     const match = url.match(regex);
     return match ? match[1] : null;
+}
+
+type DeepLinkParams = {
+    documentationId: string | null;
+    apiUrl: string | null;
+}
+
+/**
+ * Parses the deep link URL
+ * @param url The deep link URL
+ * @returns {DeepLinkParams} The documentation ID and API URL
+ * @example
+ * const url = 'document-io://documentations/1234/?api-host=http://localhost:5000';
+ * const { documentationId, apiUrl } = parseDeepLinkUrl(url);
+ * console.log(documentationId, apiUrl); // 1234, http://localhost:5000
+ */
+function parseDeepLinkUrl(url: string): DeepLinkParams {
+    if (!url) {
+        return { documentationId: null, apiUrl: null };
+    }
+    console.group("parseDeepLinkUrl()");
+    console.log("parsing URL:", url);
+
+    const regex = /document-io:\/\/documentations\/([a-f0-9]+)/;
+    const match = url.match(regex);
+    const documentationId = match ? match[1] : null;
+    console.log("Documentation ID:", documentationId);
+
+    let apiUrl = null;
+    try {
+        const parsedUrl = new URL(url);
+        apiUrl = parsedUrl.searchParams.get('api-host');
+    } catch (error) {
+        console.error('Invalid URL:', url);
+    }
+    console.log("API URL:", apiUrl);
+    console.groupEnd();
+    return { documentationId, apiUrl };
 }
 
 // Create the main window
@@ -174,7 +219,7 @@ async function restoreCookiesFromDisk(url: string, session: Electron.Session) {
             }
             await session.cookies.set({ ...cookie, url });
         } catch (err) {
-            console.error("Error restoring cookie:", cookie, err);
+            console.error("Error restoring cookie:", cookie.name, cookie.domain);
         }
     }
     console.log("Cookies restored from disk");
