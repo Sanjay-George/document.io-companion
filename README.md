@@ -4,6 +4,8 @@ This is a desktop application that works as a companion application to [document
 
 ![screely-1736026495039](https://github.com/user-attachments/assets/ce662841-0d6c-4f37-a9a9-1f901253af69)
 
+More functionalities are [showcased here...](https://github.com/Sanjay-George/document.io-companion/wiki/Showcase)
+
 
 ## 🎯 Motivation
 
