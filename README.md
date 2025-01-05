@@ -40,7 +40,7 @@ npm run start
 - Cookies are stored locally in JSON files to persist logins without compromising security.
 - The [document.io central application](https://github.com/Sanjay-George/document.io) must be set up for the companion app to work.
 - This app must be launched via deeplink from the central application, which configures the correct server address for communication.
-- This is currently in beta - we're actively improving and adding features.
+- This is currently in beta - features are constantly being improved and added!
 
 
 
