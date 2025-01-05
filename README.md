@@ -4,10 +4,12 @@ This is a desktop application that works as a companion application to [document
 
 ![screely-1736026495039](https://github.com/user-attachments/assets/ce662841-0d6c-4f37-a9a9-1f901253af69)
 
+More functionalities are [showcased here...](https://github.com/Sanjay-George/document.io-companion/wiki/Showcase)
+
 
 ## 🎯 Motivation
 
-Many websites implement strict CSP rules that prevent loading external resources or scripts directly into their pages. This makes it difficult to integrate the annotation interface into the main application. By using this companion app, you can circumvent these restrictions and still annotate content directly on the pages they visit. 
+Many websites implement strict CSP rules that prevent loading external resources or scripts directly into their pages. This makes it difficult to integrate the annotation interface into the [main application](https://github.com/Sanjay-George/document.io). By using this companion app, you can circumvent these restrictions and still annotate content directly on the pages they visit. 
 
 ## ✨ Key Features
 
@@ -18,27 +20,44 @@ Many websites implement strict CSP rules that prevent loading external resources
 
 ## 🚀 Quick Start
 
-```bash
-# Prerequisites: Node.js >= 20
+### Prerequisites
+- **Node.js** (v20 or higher preferred): [Download Node.js](https://nodejs.org/)
 
-# Clone and install
+### Clone and install   
+
+```bash
 git clone https://github.com/Sanjay-George/document.io-companion.git
+
 cd document.io-companion
 npm install
+
 cd ui && npm install && cd ..
+```
 
-# Make the application (for users)
+### Build the application (for users)
+For now, the application needs to be built locally and used, since code-signing and notarizing is not in place. To build the application, run the following command in the root folder:
+
+```bash
 npm run make
+```
 
-# Run the application (for development)
+The built application can be accessed in the `out/` folder. 
+
+###  Run the application (for development)
+For development, run the following command:
+
+```bash
 npm run start
 ```
 
-## 🎶 Caveats and Notes
-- Cookies are stored locally in JSON files to persist logins without compromising security.
+Note: On macOS and Linux, deeplinking works [only if the app is packaged.](https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app#packaging).
+
+
+## 🎶 Important Notes
+- Cookies are stored locally in JSON files to persist logins without compromising security. (This is a temporary workaround for an issue where cookies are not persisted on macOS).
 - The [document.io central application](https://github.com/Sanjay-George/document.io) must be set up for the companion app to work.
 - This app must be launched via deeplink from the central application, which configures the correct server address for communication.
-- This is currently in beta - we're actively improving and adding features.
+- This is currently in beta - features are constantly being improved and added!
 
 
 
