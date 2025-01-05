@@ -50,11 +50,11 @@ For development, run the following command:
 npm run start
 ```
 
-Note: On MacOS and Linux, deeplinking works [only if the app is packaged.](https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app#packaging).
+Note: On macOS and Linux, deeplinking works [only if the app is packaged.](https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app#packaging).
 
 
 ## 🎶 Important Notes
-- Cookies are stored locally in JSON files to persist logins without compromising security.
+- Cookies are stored locally in JSON files to persist logins without compromising security. (This is a temporary workaround for an issue where cookies are not persisted on macOS).
 - The [document.io central application](https://github.com/Sanjay-George/document.io) must be set up for the companion app to work.
 - This app must be launched via deeplink from the central application, which configures the correct server address for communication.
 - This is currently in beta - features are constantly being improved and added!
