@@ -251,8 +251,10 @@ function handleNavigation(event, url, httpResponseCode, httpStatusText) {
 // @ts-expect-error
 function handleNavigationInPage(event, url, isMainFrame?, frameProcessId?, frameRoutingId?) {
     console.log("Navigated in page", event, url, isMainFrame, frameProcessId, frameRoutingId);
-
-    // TODO: Handle isMainFrame only.
+    if (!isMainFrame) {
+        return;
+    }
+    mainWindow.webContents.send('nav:updated');
 }
 
 /**

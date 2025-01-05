@@ -53,7 +53,7 @@ function App() {
   return (
     <DocumentationContext.Provider value={documentationId}>
       <PanelPositionContext.Provider value={{ panelPosition, setPanelPosition }}>
-        <div data-color-mode="light" data-light-theme="light">	
+        <div data-color-mode="light" data-light-theme="light">
           <PanelGroup
             autoSaveId="document-io-panel"
             direction={panelPosition == 'left' ? "horizontal" : "vertical"}

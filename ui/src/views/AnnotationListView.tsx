@@ -18,16 +18,17 @@ import { mutate } from 'swr';
 export type FilterType = 'all' | 'in-page';
 
 export default function AnnotationListView() {
+  const navigate = useNavigate();
   const documentationId = useContext(DocumentationContext) as string;
 
   const [searchParams] = useSearchParams();
   const target = searchParams.get('target');
-  const isTargetSelected = useMemo(() => !!target && target.length > 0, [target]);
 
+  const isTargetSelected = useMemo(() => !!target && target.length > 0, [target]);
   const [filter, setFilter] = useState<FilterType>('in-page');
   const [enableReorder, setEnableReorder] = useState(false);
-
-  const navigate = useNavigate();
+  // A hack to force update the list when the page changes in an SPA
+  const [shouldUpdateList, setShouldUpdateList] = useState(false);
 
   // Fetch documentation details
   const { data: documentation, isLoading, error } = useDocumentation(documentationId);
@@ -36,17 +37,17 @@ export default function AnnotationListView() {
   const { data: annotations, isLoading: isLoadingAnnotations, error: errorAnnotations }
     = useAnnotationsByTarget(documentationId, target);
 
+  // Memoized
   const filteredAnnotations = useMemo(() => {
     sortAnnotations(annotations);
     if (filter === 'in-page') {
       return annotations?.filter(inPageFilter);
     }
     return annotations;
-  }, [annotations, filter]);
+  }, [annotations, filter, shouldUpdateList]);
 
-  const pageAnnotationsCount = useMemo(() => annotations?.filter(inPageFilter).length, [annotations, filter]);
+  const pageAnnotationsCount = useMemo(() => annotations?.filter(inPageFilter).length, [annotations, filter, shouldUpdateList]);
   const allAnnotationsCount = useMemo(() => annotations?.length, [annotations]);
-
 
   function inPageFilter(item: Annotation) {
     if (item.type === 'page') {
@@ -59,6 +60,18 @@ export default function AnnotationListView() {
     return false;
   }
 
+  const tabItems = useMemo(() => {
+    if (enableReorder) {
+      return [{ label: 'All', count: allAnnotationsCount, key: 'all' as FilterType }];
+    }
+    return [
+      { label: 'On this page', count: pageAnnotationsCount, key: 'in-page' as FilterType },
+      { label: 'All', count: allAnnotationsCount, key: 'all' as FilterType },
+    ]
+  }, [pageAnnotationsCount, allAnnotationsCount, enableReorder]);
+
+
+  // Handlers
   const handleSaveOrdering = async (values: Annotation[]) => {
     await updateAnnotations(values);
     mutate(ALL_ANNOTATIONS_KEY(documentationId));
@@ -71,20 +84,18 @@ export default function AnnotationListView() {
       navigate(`/add?target=${encodeURIComponent(target as any)}`);
       return;
     }
-
     // Add annotation for a new target
     navigate(`/add`);
   }
 
-  const tabItems = useMemo(() => {
-    if (enableReorder) {
-      return [{ label: 'All', count: allAnnotationsCount, key: 'all' as FilterType }];
+  window.electronAPI?.onNavigationUpdate(() => {
+    console.log('onNavigationUpdate');
+    if (isTargetSelected) {
+      return;
     }
-    return [
-      { label: 'On this page', count: pageAnnotationsCount, key: 'in-page' as FilterType },
-      { label: 'All', count: allAnnotationsCount, key: 'all' as FilterType },
-    ]
-  }, [pageAnnotationsCount, allAnnotationsCount, enableReorder]);
+    setShouldUpdateList(!shouldUpdateList);
+  });
+
 
   if (!documentationId) {
     return <Spinner text="Loading editor..." />;
@@ -149,7 +160,6 @@ export default function AnnotationListView() {
           annotations={filteredAnnotations}
           onSaveOrder={handleSaveOrdering} />
       }
-
 
     </div>
 
