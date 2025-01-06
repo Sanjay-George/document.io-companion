@@ -3,7 +3,9 @@ import { fetch, fetcher } from "./fetcher";
 import { Annotation } from "@/models/annotations";
 
 // TODO: setup vite env variables
-const API_URL = 'http://localhost:5000';
+const API_URL = (import.meta.env.VITE_APP_ENV === 'development')
+    ? 'http://localhost:5000'
+    : '';
 
 // Keys
 export const ALL_ANNOTATIONS_KEY = (documentationId: string) =>

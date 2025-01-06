@@ -233,13 +233,26 @@ function registerIPCHandlers() {
     ipcMain.removeHandler("api:fetch");
     ipcMain.handle("api:fetch", async (event, url, options) => {
         try {
+            if (!isValidURL(url)) {
+                url = `${serverURL}${url}`;
+            }
+            console.log("Fetching:", url);
             const res = await fetch(url, options);
             return res.json();
         } catch (error) {
-            console.error("Fetch error:", error);
+            console.error(error);
             throw error;
         }
     });
+}
+
+function isValidURL(url: string) {
+    try {
+        new URL(url);
+        return true;
+    } catch (error) {
+        return false;
+    }
 }
 
 /**
