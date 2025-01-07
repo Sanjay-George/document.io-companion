@@ -6,6 +6,50 @@ This is a desktop application that works as a companion application to [document
 
 More functionalities are [showcased here...](https://github.com/Sanjay-George/document.io-companion/wiki/Showcase)
 
+## 🚀 Quick Start
+
+#### Prerequisites
+- **Node.js** (v20 or higher preferred): [Download Node.js](https://nodejs.org/)
+
+### For users
+
+Get started in 4 simple steps:
+
+#### 1. Download or clone the repo
+
+```bash
+git clone https://github.com/Sanjay-George/document.io-companion.git
+```
+
+If you don't have git on your machine, just download this repo by clicking the **Code** -> **Download ZIP** and unzip it.
+
+
+#### 2. Install dependencies
+In the application root folder, run the following:
+
+```
+npm install
+cd ui && npm install && cd ..
+```
+
+#### 3. Build the application
+
+```bash
+npm run make
+```
+
+The built application can be accessed in `out/make/` folder. Install the application.
+
+#### 4. Open a documentation for the main application
+From your hosted version of [document.io](https://github.com/Sanjay-George/document.io) (or from https://www.document-io.tech/), click on a documentation link to open it in the companion app.
+
+
+### For devs
+Follow similar steps as users, but run `npm run start` instead of `make` to start the application. 
+
+Note: On macOS and Linux, deeplinking works [only if the app is packaged.](https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app#packaging).
+
+<!-- 1. For now, the application needs to be built locally and used, since code-signing and notarizing is not in place. To build the application, run the following command in the root folder: -->
 
 ## 🎯 Motivation
 
@@ -18,39 +62,10 @@ Many websites implement strict CSP rules that prevent loading external resources
 - Cross-platform support (Windows & MacOS)
 - Coming soon: Image, video, and voice note annotations
 
-## 🚀 Quick Start
 
-### Prerequisites
-- **Node.js** (v20 or higher preferred): [Download Node.js](https://nodejs.org/)
 
-### Clone and install   
 
-```bash
-git clone https://github.com/Sanjay-George/document.io-companion.git
 
-cd document.io-companion
-npm install
-
-cd ui && npm install && cd ..
-```
-
-### Build the application (for users)
-For now, the application needs to be built locally and used, since code-signing and notarizing is not in place. To build the application, run the following command in the root folder:
-
-```bash
-npm run make
-```
-
-The built application can be accessed in the `out/` folder. 
-
-###  Run the application (for development)
-For development, run the following command:
-
-```bash
-npm run start
-```
-
-Note: On macOS and Linux, deeplinking works [only if the app is packaged.](https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app#packaging).
 
 
 ## 🎶 Important Notes
