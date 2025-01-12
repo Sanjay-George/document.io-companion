@@ -35,6 +35,17 @@ export default function App() {
         }
     }, []);
 
+    const iframeContent = `
+    <div className="w-full text-center border-2 border-red-500">
+        <h2>iframe content</h2>
+        <ul>
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+        </ul>
+    </div>
+    `;
+
 
     return (
         <div className="container mx-auto" style={{ maxWidth: '960px', margin: '0 auto' }}>
@@ -104,9 +115,9 @@ export default function App() {
                 </tbody>
             </table>
 
-            <div ref={div}>
+            <iframe srcDoc={iframeContent} ></iframe>
 
-            </div>
+            <div ref={div}></div>
         </div >
 
     );
