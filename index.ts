@@ -276,6 +276,13 @@ async function openDocumentation(documentationId: string) {
         // Add event listener to handle DOM ready
         mainWindow.webContents.on("dom-ready", handleDOMReady);
 
+        // Handle new tab or window requests
+        mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+            // Load the URL in the current window instead of a new one
+            mainWindow.loadURL(url);
+            return { action: 'deny' };  // Prevent new window creation
+        });
+
         // TODO: Uncomment this
         await restoreCookiesFromDisk(documentation.url, mainWindow.webContents.session);
 
@@ -372,4 +379,39 @@ app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
         app.quit();
     }
+});
+
+// Handling basic auth
+app.on("login", (event, webContents, request, authInfo, callback) => {
+    if (!mainWindow) {
+        return;
+    }
+
+    event.preventDefault();
+    console.log("Login requested:", authInfo);
+
+    // Create a custom authentication popup window
+    const authWindow = new BrowserWindow({
+        width: 400,
+        height: 300,
+        modal: true,
+        parent: mainWindow,
+        webPreferences: {
+            preload: path.join(__dirname, "src", "preload.js"),
+            contextIsolation: true,
+            nodeIntegration: false,
+        }
+    });
+
+    // Load the auth.html page in the popup window
+    authWindow.loadFile(path.join(__dirname, "src", "views", "auth.html"));
+
+
+    // Wait for the credentials from renderer
+    ipcMain.once('auth-submit', (event, credentials) => {
+        console.log("Credentials submitted for user: ", credentials.username);
+        callback(credentials.username, credentials.password);
+        authWindow.close();
+    });
+
 });

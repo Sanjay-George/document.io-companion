@@ -25,6 +25,7 @@
   "include": [
     "src/**/*.ts",
     "index.ts",
+    "src/auth.html"
   ],
   "exclude": [
     "node_modules",
