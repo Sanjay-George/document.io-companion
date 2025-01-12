@@ -11,7 +11,7 @@ import { Annotation } from '@/models/annotations';
 import { ANNOTATED_ELEMENT_CLASS, ANNOTATED_ELEMENT_ICON_CLASS, HOVERED_ELEMENT_CLASS, MODAL_ROOT_ID } from '@/utils/constants';
 import ContextMenu from '@/components/ContextMenu';
 import QuerySelectorTag from '@/components/QuerySelectorTag';
-import { getQuerySelector } from '@/utils';
+import { addEventListenersToAllIframes, getQuerySelector, removeEventListenersFromAllIframes } from '@/utils';
 
 export default function AnnotationAddView() {
     const documentationId = useContext(DocumentationContext) as string;
@@ -74,15 +74,21 @@ export default function AnnotationAddView() {
         if (shouldHighlight) {
             document.addEventListener('mouseover', handleMouseOver, { passive: true });
             document.addEventListener('mouseout', handleMouseOut, { passive: true });
+            addEventListenersToAllIframes('mouseover', handleMouseOver as any);
+            addEventListenersToAllIframes('mouseout', handleMouseOut as any);
         }
         else {
             document.removeEventListener('mouseover', handleMouseOver);
             document.removeEventListener('mouseout', handleMouseOut);
+            removeEventListenersFromAllIframes('mouseover', handleMouseOver as any);
+            removeEventListenersFromAllIframes('mouseout', handleMouseOut as any);
         }
 
         return () => {
             document.removeEventListener('mouseover', handleMouseOver);
             document.removeEventListener('mouseout', handleMouseOut);
+            removeEventListenersFromAllIframes('mouseover', handleMouseOver as any);
+            removeEventListenersFromAllIframes('mouseout', handleMouseOut as any);
         }
     }, [shouldHighlight]);
 
@@ -139,8 +145,21 @@ export default function AnnotationAddView() {
  * @returns 
  */
 const handleMouseOver = (event: MouseEvent) => {
+    // Don't highlight elements inside the editor
     if ((event.target as HTMLElement)?.closest(`#${MODAL_ROOT_ID}`)) {
         return;
+    }
+
+    console.group('Mouse Over');
+    try {
+        console.log('Mouse over:', event.target);
+        console.log('querySelector:', getQuerySelector(event.target as HTMLElement));
+        console.log('isHighlightable:', isHighlightable(event.target as HTMLElement));
+    } catch (error) {
+        console.error(error);
+    }
+    finally {
+        console.groupEnd();
     }
 
     if (!isHighlightable(event.target as HTMLElement)) {

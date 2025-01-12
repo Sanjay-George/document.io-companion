@@ -1,3 +1,4 @@
+import { addEventListenersToAllIframes, removeEventListenersFromAllIframes } from "@/utils";
 import { HOVERED_ELEMENT_CLASS, MODAL_ROOT_ID } from "@/utils/constants";
 import { useEffect, useState } from "react";
 import {
@@ -23,8 +24,11 @@ export default function ContextMenu({ onContextMenuOpen, onContextMenuClose, onC
     // Add event listener to show context menu
     useEffect(() => {
         document.addEventListener("contextmenu", displayMenu);
+        addEventListenersToAllIframes("contextmenu", displayMenu as any);
+
         return () => {
             document.removeEventListener("contextmenu", displayMenu);
+            removeEventListenersFromAllIframes("contextmenu", displayMenu as any);
         };
     }, []);
 
@@ -51,15 +55,16 @@ export default function ContextMenu({ onContextMenuOpen, onContextMenuClose, onC
     }, [target]);
 
     // Display context menu
-    function displayMenu(e: MouseEvent) {
-        if ((e.target as HTMLElement)?.closest(`#${MODAL_ROOT_ID}`)) {
+    function displayMenu(event: MouseEvent) {
+        if ((event.target as HTMLElement)?.closest(`#${MODAL_ROOT_ID}`)) {
             return;
         }
-        e.preventDefault();
+        event.preventDefault();
 
-        setTarget(e?.target as HTMLElement);
+        setTarget(event?.target as HTMLElement);
+        console.log(event.target);
         show({
-            event: e,
+            event,
         });
     }
 

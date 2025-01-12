@@ -88,3 +88,24 @@ export function debounce(func: Function, wait: number, immediate: boolean = fals
         if (callNow) func.apply(context, args);
     };
 }
+
+
+export function addEventListenersToAllIframes(type: string, listener: (event: Event) => void) {
+    const iframes = document.querySelectorAll('iframe');
+    if (!iframes || !iframes.length) return;
+
+    iframes.forEach(iframe => {
+        const iframeDocument = iframe.contentDocument || iframe?.contentWindow?.document;
+        iframeDocument?.addEventListener(type, listener);
+    });
+}
+
+export function removeEventListenersFromAllIframes(type: string, listener: (event: Event) => void) {
+    const iframes = document.querySelectorAll('iframe');
+    if (!iframes || !iframes.length) return;
+
+    iframes.forEach(iframe => {
+        const iframeDocument = iframe.contentDocument || iframe?.contentWindow?.document;
+        iframeDocument?.removeEventListener(type, listener);
+    });
+}
