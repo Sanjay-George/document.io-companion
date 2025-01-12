@@ -4,12 +4,11 @@ import { useNavigate } from "react-router";
 import { useContext } from "react";
 import { PanelPositionContext } from "@/App";
 import { ReloadIcon } from "./icons/ReloadIcon";
-import MoveDownIcon from "./icons/MoveDownIcon";
-import MoveLeftIcon from "./icons/MoveLeftIcon";
+import HorizontalLayoutIcon from "./icons/HorizontalLayoutIcon";
+import VerticalLayoutIcon from "./icons/VerticalLayoutIcon";
 import { Tooltip } from 'react-tooltip'
+import { PanelPosition } from "@/models/panelPosition";
 
-
-export type PanelPosition = 'left' | 'bottom';
 
 export default function SidePanelHeader({ title, shouldGoBack }
     : { title: string, shouldGoBack?: boolean }) {
@@ -73,26 +72,26 @@ export default function SidePanelHeader({ title, shouldGoBack }
                         <ReloadIcon />
                     </div>
                     {
-                        panelPosition === 'left' && (
+                        panelPosition === PanelPosition.RIGHT && (
                             <div
                                 data-tooltip-id="side-panel-tooltip"
                                 data-tooltip-content="Horizontal layout"
                                 data-tooltip-place="bottom"
                                 className="text-slate-500 hover:text-slate-950 cursor-pointer transition duration-150 ease-in-out p-1"
-                                onClick={() => setPanelPosition('bottom')}>
-                                <MoveDownIcon />
+                                onClick={() => setPanelPosition(PanelPosition.BOTTOM)}>
+                                <HorizontalLayoutIcon />
                             </div>
                         )
                     }
 
                     {
-                        panelPosition === 'bottom' && (
+                        panelPosition !== PanelPosition.RIGHT && (
                             <div
                                 data-tooltip-id="side-panel-tooltip"
                                 data-tooltip-content="Vertical layout"
                                 data-tooltip-place="bottom"
-                                className="text-slate-500 hover:text-slate-950 cursor-pointer transition duration-150 ease-in-out p-1" onClick={() => setPanelPosition('left')}>
-                                <MoveLeftIcon />
+                                className="text-slate-500 hover:text-slate-950 cursor-pointer transition duration-150 ease-in-out p-1" onClick={() => setPanelPosition(PanelPosition.RIGHT)}>
+                                <VerticalLayoutIcon />
                             </div>
                         )
                     }

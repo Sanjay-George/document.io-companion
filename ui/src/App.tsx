@@ -5,9 +5,11 @@ import { createContext } from 'react';
 // Import CSS files
 import './App.css';
 import { Outlet } from 'react-router';
+import { PanelPosition } from './models/panelPosition';
 
 export const DocumentationContext = createContext(null as string | null);
 export const PanelPositionContext = createContext(null as object | null);
+
 
 function App() {
   const [documentationId, setDocumentationId] = useState(null as string | null);
@@ -30,7 +32,7 @@ function App() {
 
     const id = rootElement.getAttribute('data-documentation-id');
     setDocumentationId(id);
-    setPanelPosition(localStorage.getItem('panelPosition') ?? 'left');
+    setPanelPosition(localStorage.getItem('panelPosition') ?? PanelPosition.RIGHT);
 
     // Hardcode documentation id for development
     if (import.meta.env.VITE_APP_ENV === 'development') {
@@ -56,14 +58,14 @@ function App() {
         <div data-color-mode="light" data-light-theme="light">
           <PanelGroup
             autoSaveId="document-io-panel"
-            direction={panelPosition == 'left' ? "horizontal" : "vertical"}
+            direction={panelPosition === PanelPosition.RIGHT ? "horizontal" : "vertical"}
             className={
-              panelPosition == 'left'
+              panelPosition == PanelPosition.RIGHT
                 ? 'fixed group top-0 left-0 pointer-events-none active:pointer-events-auto'
                 : "fixed group bottom-0 left-0 pointer-events-none active:pointer-events-auto"
             }
             style={
-              panelPosition == 'left'
+              panelPosition == PanelPosition.RIGHT
                 ? {
                   minHeight: '100%', width: '100vw', zIndex: 2147483647
                 }
@@ -73,31 +75,31 @@ function App() {
             }
           >
             {
-              panelPosition == 'left' && (
+              panelPosition == PanelPosition.RIGHT && (
                 <>
-                  <Panel
-                    className="px-7 py-5 w-full min-h-full bg-slate-50 
-                      overflow-scroll pointer-events-auto 
-                      scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent"
-                    defaultSize={30}
-                    style={{ overflowY: 'scroll' }}
-                    onResize={handlePanelResize}
-                  >
-                    <Outlet />
-                  </Panel>
+                  <Panel className='bg-transparent pointer-events-none' />
 
                   <PanelResizeHandle className={`w-0.5 h-full bg-slate-300 hover:bg-slate-400 
                     group-hover:bg-slate-400 transition-background duration-150 
                     pointer-events-auto ${highlightResizeHandle ? 'pulsing-animation' : ''}`} />
 
-                  <Panel className='bg-transparent pointer-events-none' />
+                  <Panel
+                    className="px-7 py-5 w-full min-h-full bg-slate-50 
+                      overflow-scroll pointer-events-auto 
+                      scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent"
+                    defaultSize={25}
+                    style={{ overflowY: 'scroll' }}
+                    onResize={handlePanelResize}
+                  >
+                    <Outlet />
+                  </Panel>
                 </>
               )
             }
 
 
             {
-              panelPosition == 'bottom' && (
+              panelPosition !== PanelPosition.RIGHT && (
                 <>
                   <Panel className='bg-transparent pointer-events-none' />
 

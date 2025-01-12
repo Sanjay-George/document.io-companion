@@ -3,6 +3,7 @@ import { useContext, useMemo, useState } from 'react';
 import ButtonPrimary from './ButtonPrimary';
 import RightArrowIcon from './icons/RightArrowIcon';
 import { PanelPositionContext } from '@/App';
+import { PanelPosition } from '@/models/panelPosition';
 
 export default function AnnotationEditor({
     content,
@@ -25,7 +26,7 @@ export default function AnnotationEditor({
         <>
             <MDEditor
                 className={
-                    panelPosition === 'left'
+                    panelPosition === PanelPosition.RIGHT
                         ? 'my-3 shadow-md rounded-xl bg-white min-h-[calc(100vh-300px)]'
                         : 'my-3 shadow-md rounded-xl bg-white min-h-[300px]'
                 }

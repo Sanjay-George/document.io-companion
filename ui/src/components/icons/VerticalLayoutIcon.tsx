@@ -1,4 +1,4 @@
-export default function MoveDownIcon() {
+export default function VerticalLayoutIcon() {
     return (
         <svg
             className="size-4"

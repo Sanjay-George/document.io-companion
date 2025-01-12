@@ -1,4 +1,4 @@
-export default function MoveDownIcon() {
+export default function HorizontalLayoutIcon() {
     return (
         <svg
             className="size-4"
