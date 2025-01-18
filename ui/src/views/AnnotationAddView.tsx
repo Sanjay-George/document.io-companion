@@ -10,7 +10,7 @@ import { DocumentationContext } from '@/App';
 import { Annotation } from '@/models/annotations';
 import { ANNOTATED_ELEMENT_CLASS, ANNOTATED_ELEMENT_ICON_CLASS, HOVERED_ELEMENT_CLASS, MODAL_ROOT_ID } from '@/utils/constants';
 import ContextMenu from '@/components/ContextMenu';
-import QuerySelectorTag from '@/components/QuerySelectorTag';
+import CodeBlock from '@/components/CodeBlock';
 import { getQuerySelector } from '@/utils';
 
 export default function AnnotationAddView() {
@@ -122,7 +122,10 @@ export default function AnnotationAddView() {
         <>
             <SidePanelHeader title="Add Annotation" shouldGoBack={true} />
 
-            <QuerySelectorTag target={target} />
+            <div className='mb-3 space-y-2'>
+                <CodeBlock title='Target' value={target} />
+                <CodeBlock title='URL' value={window.location.href} />
+            </div>
 
             <AnnotationEditor content='' preview={'live'} handleSave={handleSave} />
         </>

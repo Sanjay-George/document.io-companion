@@ -45,7 +45,7 @@ export default function SidePanelHeader({ title, shouldGoBack }
                     offset={2}
                     clickable={true}
                 >
-                    <p className="!pb-1">Browser Controls</p>
+                    <div className="!pb-1 !text-xs !text-white">Browser Controls</div>
                     <div className="w-full inline-flex items-center justify-center space-x-3 cursor-pointer">
                         <div className="text-slate-300 hover:text-white cursor-pointer
                              transition duration-150 ease-in-out !p-0"

@@ -3,10 +3,11 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { MemoryRouter, Route, Routes } from "react-router";
-import AnnotationEditorView from './views/AnnotationEditorView.tsx';
+import AnnotationEditView from './views/AnnotationEditView.tsx';
 import AnnotationListView from './views/AnnotationListView.tsx';
 import SampleSite from '../samples/SampleSite.tsx';
 import AnnotationAddView from './views/AnnotationAddView.tsx';
+import AnnotationDetailsView from './views/AnnotationDetailsView.tsx';
 
 // If in development mode, render the sample website for testing
 if (import.meta.env.VITE_APP_ENV === 'development') {
@@ -27,7 +28,8 @@ createRoot(document.getElementById('document-io-root')!).render(
         <Route element={<App />}>
           <Route path="/" element={<AnnotationListView />} />
           <Route path="/add" element={<AnnotationAddView />} />
-          <Route path="/edit/:id" element={<AnnotationEditorView />} />
+          <Route path="/:id" element={<AnnotationDetailsView />} />
+          <Route path="/:id/edit" element={<AnnotationEditView />} />
         </Route>
       </Routes>
     </MemoryRouter>

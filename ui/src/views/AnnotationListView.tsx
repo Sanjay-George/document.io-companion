@@ -1,19 +1,17 @@
 import Spinner from '@/components/Spinner';
-import ButtonPrimary from '@/components/ButtonPrimary'
 import '@/App.css';
 import { useDocumentation } from '@/data_access/documentations';
 import { ALL_ANNOTATIONS_KEY, updateAnnotations, useAnnotationsByTarget } from '@/data_access/annotations';
-import AnnotationCard from '@/components/AnnotationCard';
 import SidePanelHeader from '@/components/SidePanelHeader';
 import { useContext, useMemo, useState, } from 'react';
 import { DocumentationContext } from '@/App';
-import AddIcon from '@/components/icons/AddIcon';
 import { Annotation } from '@/models/annotations';
 import { useNavigate, useSearchParams } from 'react-router';
 import Tabs from '@/components/Tabs';
 import AnnotationListReorderable from '@/components/AnnotationListReorderable';
 import { sortAnnotations } from '@/utils';
 import { mutate } from 'swr';
+import AnnotationList from '@/components/AnnotationList';
 
 export type FilterType = 'all' | 'in-page';
 
@@ -74,7 +72,7 @@ export default function AnnotationListView() {
   // Handlers
   const handleSaveOrdering = async (values: Annotation[]) => {
     await updateAnnotations(values);
-    mutate(ALL_ANNOTATIONS_KEY(documentationId));
+    await mutate(ALL_ANNOTATIONS_KEY(documentationId));
     setEnableReorder(false);
   }
 
@@ -135,22 +133,10 @@ export default function AnnotationListView() {
 
       {
         !enableReorder && (
-          <>
-            <div className='grid gap-5 grid-cols-1 @xl:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4 @8xl:grid-cols-5'>
-              {filteredAnnotations && filteredAnnotations.slice(0, 2).map((annotation: Annotation) => (
-                <AnnotationCard key={annotation.id} annotation={annotation} />
-              ))}
-
-              {/* Adding an `Add` button in between for better UX */}
-              {filteredAnnotations?.length >= 6 && <div className='@xl:hidden'><ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>}
-
-              {filteredAnnotations && filteredAnnotations.slice(2).map((annotation: Annotation) => (
-                <AnnotationCard key={annotation.id} annotation={annotation} />
-              ))}
-            </div>
-
-            <div className='my-5'> <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>
-          </>
+          <AnnotationList
+            annotations={filteredAnnotations}
+            handleAddAnnotationClick={handleAddAnnotationClick}
+          />
         )
       }
 

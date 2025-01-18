@@ -1,6 +1,6 @@
 import { Tooltip } from "react-tooltip";
 
-export default function QuerySelectorTag({ target }: { target: string }) {
+export default function CodeBlock({ title, value }: { title: string, value: string }) {
 
     return (
         <div>
@@ -18,9 +18,9 @@ export default function QuerySelectorTag({ target }: { target: string }) {
                 h-fit font-mono font-normal inline-block whitespace-nowrap
                 '
                 data-tooltip-id="code-tooltip"
-                data-tooltip-content={target}
+                data-tooltip-content={value}
                 data-tooltip-place="bottom">
-                <span className='font-semibold font-sans'>Target: </span> {target}
+                <span className='font-semibold font-sans'>{title}: </span> {value}
             </code>
         </div>
     )

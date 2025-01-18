@@ -45,7 +45,7 @@ export default function AnnotationCard({ annotation, condensed }: { annotation: 
                 </div>
             }
             header={!condensed &&
-                <Link to={`/edit/${annotation.id}`} >
+                <Link to={`/${annotation.id}`} >
                     <div className="flex gap-3 items-center">
                         <div className="flex justify-center items-center bg-slate-700 
                         text-white px-3 w-7 !h-7 rounded-lg text-xs font-extralight mx-auto">
