@@ -8,6 +8,8 @@ import HorizontalLayoutIcon from "./icons/HorizontalLayoutIcon";
 import VerticalLayoutIcon from "./icons/VerticalLayoutIcon";
 import { Tooltip } from 'react-tooltip'
 import { PanelPosition } from "@/models/panelPosition";
+import BrowserIcon from "./icons/BrowserIcon";
+import RightArrowIcon from "./icons/RightArrowIcon";
 
 
 export default function SidePanelHeader({ title, shouldGoBack }
@@ -18,12 +20,12 @@ export default function SidePanelHeader({ title, shouldGoBack }
     const handleReloadClick = () => {
         window.location.reload();
     }
-    // const handleBackClick = () => {
-    //     window.history.back();
-    // }
-    // const handleForwardClick = () => {
-    //     window.history.forward();
-    // }
+    const handleBackClick = () => {
+        window.history.back();
+    }
+    const handleForwardClick = () => {
+        window.history.forward();
+    }
 
     return (
         <>
@@ -38,39 +40,47 @@ export default function SidePanelHeader({ title, shouldGoBack }
                 </div>
 
                 <Tooltip
-                    id="side-panel-tooltip"
-                    className="!z-10 !rounded-md !m-0"
+                    id="browser-controls-tooltip"
+                    className="!z-10 !rounded-md !m-0 !justify-center !text-xs !py-1 !px-2"
                     offset={2}
-                    style={{ padding: '0px 8px', fontSize: '12px' }}
+                    clickable={true}
+                >
+                    <p className="!pb-1">Browser Controls</p>
+                    <div className="w-full inline-flex items-center justify-center space-x-3 cursor-pointer">
+                        <div className="text-slate-300 hover:text-white cursor-pointer
+                             transition duration-150 ease-in-out !p-0"
+                            onClick={handleBackClick}>
+                            <LeftArrowIcon />
+                        </div>
+                        <div className="text-slate-300 hover:text-white cursor-pointer
+                             transition duration-150 ease-in-out !p-0"
+                            onClick={handleForwardClick}>
+                            <RightArrowIcon />
+                        </div>
+                        <div className="text-slate-300 hover:text-white cursor-pointer
+                             transition duration-150 ease-in-out !p-0"
+                            onClick={handleReloadClick}
+                        >
+                            <ReloadIcon />
+                        </div>
+                    </div>
+                </Tooltip>
+
+                <Tooltip
+                    id="side-panel-tooltip"
+                    className="!z-10 !rounded-md !m-0 !text-xs !py-1 !px-2"
+                    offset={2}
                 />
 
                 <div className="inline-flex items-center justify-end space-x-1">
-                    {/* <div
-                        data-tooltip-id="side-panel-tooltip"
-                        data-tooltip-content="Go back"
-                        data-tooltip-place="bottom"
-                        className="text-slate-400 hover:text-slate-900 cursor-pointer transition duration-150 ease-in-out p-1"
-                        onClick={handleBackClick}>
-                        <LeftArrowIcon />
-                    </div>
-
                     <div
-                        data-tooltip-id="side-panel-tooltip"
-                        data-tooltip-content="Go forward"
-                        data-tooltip-place="bottom"
-                        className="text-slate-400 hover:text-slate-900 cursor-pointer transition duration-150 ease-in-out p-1"
-                        onClick={handleForwardClick}>
-                        <RightArrowIcon />
-                    </div> */}
-
-                    <div
-                        data-tooltip-id="side-panel-tooltip"
-                        data-tooltip-content="Reload page"
+                        data-tooltip-id="browser-controls-tooltip"
                         data-tooltip-place="bottom"
                         className="text-slate-500 hover:text-slate-950 cursor-pointer transition duration-150 ease-in-out p-1"
-                        onClick={handleReloadClick}>
-                        <ReloadIcon />
+                    >
+                        <BrowserIcon />
                     </div>
+
                     {
                         panelPosition === PanelPosition.RIGHT && (
                             <div
