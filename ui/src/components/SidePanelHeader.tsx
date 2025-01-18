@@ -41,7 +41,7 @@ export default function SidePanelHeader({ title, shouldGoBack }
 
                 <Tooltip
                     id="browser-controls-tooltip"
-                    className="!z-10 !rounded-md !m-0 !justify-center !text-xs !py-1 !px-2"
+                    className="!z-10 !rounded-md !m-0 !justify-center !text-xs !pt-1 !pb-0 !px-2"
                     offset={2}
                     clickable={true}
                 >
