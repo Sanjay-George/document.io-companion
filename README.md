@@ -45,7 +45,7 @@ From your hosted version of [document.io](https://github.com/Sanjay-George/docum
 
 
 ### For devs
-Follow similar steps as users, but run `npm run start` instead of `make` to start the application. 
+Follow similar steps as users, but run `npm run start` or `npm run package` to start the application. 
 
 Note: On macOS and Linux, deeplinking works [only if the app is packaged.](https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app#packaging).
 
