@@ -12,6 +12,7 @@
     "start": "electron-forge start",
     "prepackage": "npm run build",
     "package": "electron-forge package",
+    "premake": "npm run build",
     "make": "electron-forge make",
     "publish": "node -r dotenv/config node_modules/.bin/electron-forge publish"
   },
