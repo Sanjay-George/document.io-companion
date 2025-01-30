@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
+import styles from './index.css?inline';
 import App from './App.tsx'
 import { MemoryRouter, Route, Routes } from "react-router";
 import AnnotationEditView from './views/AnnotationEditView.tsx';
@@ -21,7 +22,20 @@ if (import.meta.env.VITE_APP_ENV === 'development') {
   )
 }
 
-createRoot(document.getElementById('document-io-root')!).render(
+const mountPoint = document.getElementById('document-io-root');
+const shadowRoot = mountPoint!.attachShadow({ mode: 'open' });
+const styleSheet = document.createElement("link");
+
+const style = document.createElement("style");
+style.textContent = styles;
+shadowRoot.appendChild(style);
+
+
+const rootContainer = document.createElement("div");
+shadowRoot.appendChild(rootContainer);
+
+
+createRoot(rootContainer).render(
   <StrictMode>
     <MemoryRouter>
       <Routes>

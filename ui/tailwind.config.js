@@ -73,7 +73,7 @@ export default {
       },
     },
   },
-  important: "#document-io-root",
+  // important: "#document-io-root",
   darkMode: "selector",
   plugins: [
     require('@tailwindcss/container-queries'),
