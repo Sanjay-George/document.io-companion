@@ -1,7 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
-import styles from './index.css?inline';
+import indexStyles from './index.css?inline';
+import reactContexifyStyles from "react-contexify/dist/ReactContexify.css?inline";
+import reactTooltipStyles from 'react-tooltip/dist/react-tooltip.css?inline';
+import reactMDEditorStyles from "@uiw/react-md-editor/markdown-editor.css?inline";
+
+
 import App from './App.tsx'
 import { MemoryRouter, Route, Routes } from "react-router";
 import AnnotationEditView from './views/AnnotationEditView.tsx';
@@ -24,11 +28,22 @@ if (import.meta.env.VITE_APP_ENV === 'development') {
 
 const mountPoint = document.getElementById('document-io-root');
 const shadowRoot = mountPoint!.attachShadow({ mode: 'open' });
-const styleSheet = document.createElement("link");
 
-const style = document.createElement("style");
-style.textContent = styles;
-shadowRoot.appendChild(style);
+const indexStyle = document.createElement("style");
+indexStyle.textContent = indexStyles;
+shadowRoot.appendChild(indexStyle);
+
+const reactContexifyStyle = document.createElement("style");
+reactContexifyStyle.textContent = reactContexifyStyles;
+shadowRoot.appendChild(reactContexifyStyle);
+
+const reactTooltipStyle = document.createElement("style");
+reactTooltipStyle.textContent = reactTooltipStyles;
+shadowRoot.appendChild(reactTooltipStyle);
+
+const reactMDEditorStyle = document.createElement("style");
+reactMDEditorStyle.textContent = reactMDEditorStyles;
+shadowRoot.appendChild(reactMDEditorStyle);
 
 
 const rootContainer = document.createElement("div");
