@@ -4,7 +4,7 @@ import { Annotation } from "@/models/annotations";
 
 // TODO: setup vite env variables
 const API_URL = (import.meta.env.VITE_APP_ENV === 'development')
-    ? 'http://localhost:5000'
+    ? 'http://localhost:5001'
     : '';
 
 // Keys
