@@ -124,6 +124,10 @@ div.w-md-editor-preview {
     margin-bottom: 5px;
   }
 
+  li p {
+    margin-bottom: 0;
+  }
+
   input[type="checkbox"] {
     margin-right: 5px;
     transform: scale(1.2);
@@ -142,7 +146,7 @@ div.w-md-editor-preview {
     padding: 10px;
     border-radius: 5px;
     overflow-x: auto;
-    margin: 2rem 0;
+    margin: 1rem 0;
   }
 
   code {
@@ -161,7 +165,7 @@ div.w-md-editor-preview {
   }
 
   p {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
 
   h1,
@@ -172,6 +176,10 @@ div.w-md-editor-preview {
   h6 {
     margin-top: 2rem;
     margin-bottom: 1rem;
+  }
+
+  h1:first-child {
+    margin-top: 0;
   }
 
 }
