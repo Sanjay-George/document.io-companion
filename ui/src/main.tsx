@@ -1,17 +1,15 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import indexStyles from './index.css?inline';
 
 // TODO: Separate styles for shadow dom and root in App.css
 import './App.css';
 
 // Shadow DOM specific styles
+import indexStyles from './index.css?inline';
+import AppStyles from './App.css?inline';
 import reactContexifyStyles from "react-contexify/dist/ReactContexify.css?inline";
 import reactTooltipStyles from 'react-tooltip/dist/react-tooltip.css?inline';
 import reactMDEditorStyles from "@uiw/react-md-editor/markdown-editor.css?inline";
-import AppStyles from './App.css?inline';
-
-
 
 import App from './App.tsx'
 import { MemoryRouter, Route, Routes } from "react-router";
@@ -36,8 +34,6 @@ if (import.meta.env.VITE_APP_ENV === 'development') {
 const mountPoint = document.getElementById('document-io-root');
 const shadowRoot = mountPoint!.attachShadow({ mode: 'open' });
 
-
-
 const reactContexifyStyle = document.createElement("style");
 reactContexifyStyle.textContent = reactContexifyStyles;
 shadowRoot.appendChild(reactContexifyStyle);
@@ -49,7 +45,6 @@ shadowRoot.appendChild(reactTooltipStyle);
 const reactMDEditorStyle = document.createElement("style");
 reactMDEditorStyle.textContent = reactMDEditorStyles;
 shadowRoot.appendChild(reactMDEditorStyle);
-
 
 const indexStyle = document.createElement("style");
 indexStyle.textContent = indexStyles;
