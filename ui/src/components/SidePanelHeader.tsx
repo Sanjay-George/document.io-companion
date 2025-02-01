@@ -44,7 +44,7 @@ export default function SidePanelHeader({ title, shouldGoBack }
                     offset={2}
                 />
 
-                <div className="inline-flex items-center justify-end space-x-2">
+                <div className="inline-flex items-center justify-end space-x-1">
                     <div
                         data-tooltip-id="browser-controls-tooltip"
                         data-tooltip-place="bottom"
