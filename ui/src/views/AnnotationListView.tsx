@@ -1,5 +1,4 @@
 import Spinner from '@/components/Spinner';
-import '@/App.css';
 import { useDocumentation } from '@/data_access/documentations';
 import { ALL_ANNOTATIONS_KEY, updateAnnotations, useAnnotationsByTarget } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
