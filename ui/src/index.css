@@ -5,7 +5,6 @@
 @tailwind utilities;
 
 
-/* @scope (#document-io-root) { */
 :host {
   --var-primary: #007d7e;
   --var-accent: #ff8749;
@@ -110,6 +109,3 @@ h6 {
 p {
   margin-bottom: 0;
 }
-
-
-/* } */

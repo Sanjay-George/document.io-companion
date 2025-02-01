@@ -1,9 +1,6 @@
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { useEffect, useState } from 'react';
 import { createContext } from 'react';
-
-// Import CSS files
-import './App.css';
 import { Outlet } from 'react-router';
 import { PanelPosition } from './models/panelPosition';
 
