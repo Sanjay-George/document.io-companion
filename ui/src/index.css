@@ -4,13 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: light;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
 
 /* @scope (#document-io-root) { */
 :host {
@@ -66,6 +59,7 @@
   -moz-osx-font-smoothing: grayscale;
 
 }
+
 
 /* Typography */
 h1 {
