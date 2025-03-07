@@ -8,7 +8,6 @@ import './App.css';
 import indexStyles from './index.css?inline';
 import AppStyles from './App.css?inline';
 import reactContexifyStyles from "react-contexify/dist/ReactContexify.css?inline";
-import reactTooltipStyles from 'react-tooltip/dist/react-tooltip.css?inline';
 import reactMDEditorStyles from "@uiw/react-md-editor/markdown-editor.css?inline";
 
 import App from './App.tsx'
@@ -37,10 +36,6 @@ const shadowRoot = mountPoint!.attachShadow({ mode: 'open' });
 const reactContexifyStyle = document.createElement("style");
 reactContexifyStyle.textContent = reactContexifyStyles;
 shadowRoot.appendChild(reactContexifyStyle);
-
-const reactTooltipStyle = document.createElement("style");
-reactTooltipStyle.textContent = reactTooltipStyles;
-shadowRoot.appendChild(reactTooltipStyle);
 
 const reactMDEditorStyle = document.createElement("style");
 reactMDEditorStyle.textContent = reactMDEditorStyles;
