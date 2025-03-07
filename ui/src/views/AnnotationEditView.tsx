@@ -1,4 +1,3 @@
-import '@/App.css';
 import { ALL_ANNOTATIONS_KEY, SINGLE_ANNOTATION_KEY, updateAnnotation, useAnnotation } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
 import { renderAnnotationId } from '@/utils';
@@ -11,8 +10,8 @@ import { Annotation } from '@/models/annotations';
 import { mutate } from 'swr';
 import CodeBlock from '@/components/CodeBlock';
 import InfoIcon from '@/components/icons/InfoIcon';
-import { Tooltip } from 'react-tooltip';
 import Spinner from '@/components/Spinner';
+import Tooltipped from '@/components/Tooltipped';
 
 type AnnotationType = 'component' | 'page';
 
@@ -82,28 +81,22 @@ export default function AnnotationEditView() {
                 <CodeBlock title='URL' value={annotation.url} />
             </div>
 
-
-            <Tooltip
-                id="info-tooltip"
-                className="!z-10 !rounded-md !m-0 max-w-lg"
-                offset={2}
-                style={{ padding: '4px 8px', fontSize: '12px', lineHeight: '1.5' }}
-            />
             <div className='flex items-center mb-2 px-2 text-xs space-x-4'>
                 <div className="flex flex-wrap">
-                    <div
-                        className='inline-flex items-center space-x-1 text-slate-500 me-3'
-                        data-tooltip-id="info-tooltip"
-                        data-tooltip-content={`
-                                    Page-level annotations are visible only on the specific page (URL).    
-                                    Component-level annotations are visible on all pages where the component exists.
-                                    `}
-                        data-tooltip-place="bottom"
-                    >
-                        <span>Annotation Type </span>
-                        <InfoIcon />
-                        <span>: </span>
-                    </div>
+                    {Tooltipped(
+                        () => (
+                            <div
+                                className='inline-flex items-center space-x-1 text-slate-500 me-3'
+                            >
+                                <span>Annotation Type </span>
+                                <InfoIcon />
+                                <span>: </span>
+                            </div>
+                        ),
+                        "Page annotations are visible only on the specific page (URL). Component annotations (default) are visible on all pages where the component exists.",
+                        {},
+                        'bottom-start'
+                    )}
 
                     <div className="flex items-center me-2">
                         <input

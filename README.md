@@ -43,11 +43,12 @@ The built application can be accessed in `out/make/` folder. Install the applica
 #### 4. Open a documentation for the main application
 From your hosted version of [document.io](https://github.com/Sanjay-George/document.io) (or from https://www.document-io.tech/), click on a documentation link to open it in the companion app.
 
-
 ### For devs
 Follow similar steps as users, but run `npm run start` or `npm run package` to start the application. 
 
 Note: On macOS and Linux, deeplinking works [only if the app is packaged.](https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app#packaging).
+
+[See here for more info about the setup for developing UI](https://github.com/Sanjay-George/document.io-companion/blob/master/ui/README.md)
 
 <!-- 1. For now, the application needs to be built locally and used, since code-signing and notarizing is not in place. To build the application, run the following command in the root folder: -->
 

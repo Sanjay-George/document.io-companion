@@ -1,4 +1,3 @@
-import '@/App.css';
 import { ALL_ANNOTATIONS_KEY, deleteAnnotation, useAnnotation } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
 import { renderAnnotationId } from '@/utils';

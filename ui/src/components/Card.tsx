@@ -9,8 +9,8 @@ type CardProps = {
 
 export default function Card({ header, footer, body, className }: CardProps) {
     return (
-
-        <div className={`max-w-sm px-3 border-0 
+        // Don't replace max-w-[384px] with max-w-sm. `sm` uses rem units and breaks on some pages
+        <div className={`max-w-[384px] px-3 border-0 
             bg-white shadow-md rounded-xl overflow-x-clip
             flex flex-col justify-space-between
             ${className}`}>
