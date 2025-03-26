@@ -68,7 +68,7 @@ export default function AnnotationDetailsView() {
     }
     return (
         <>
-            <SidePanelHeader title={renderAnnotationId(annotation._id)} shouldGoBack={true} />
+            <SidePanelHeader title={renderAnnotationId(annotation._id)} canGoBack={true} />
 
             {
                 (annotation.type === "page" && annotation.url !== window.location.href) && (

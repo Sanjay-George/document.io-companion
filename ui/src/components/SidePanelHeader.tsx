@@ -13,8 +13,8 @@ import Tooltipped from "./Tooltipped";
 
 
 
-export default function SidePanelHeader({ title, shouldGoBack }
-    : { title: string, shouldGoBack?: boolean }) {
+export default function SidePanelHeader({ title, canGoBack }
+    : { title: string, canGoBack?: boolean }) {
 
     const navigate = useNavigate();
     const { panelPosition, setPanelPosition } = useContext(PanelPositionContext) as any;
@@ -42,7 +42,7 @@ export default function SidePanelHeader({ title, shouldGoBack }
             <div className='flex items-center space-x-4 text-primary justify-between @xl:mb-2'>
                 <div className="inline-flex space-x-2">
                     {
-                        shouldGoBack
+                        canGoBack
                         &&
                         <button onClick={() => navigate(-1)}><LeftArrowIcon /></button>
                     }

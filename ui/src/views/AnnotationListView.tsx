@@ -110,7 +110,7 @@ export default function AnnotationListView() {
     <div className='@container'>
 
       {/* TODO: Update title when target selected */}
-      <SidePanelHeader title={documentation?.title} shouldGoBack={isTargetSelected} />
+      <SidePanelHeader title={documentation?.title} canGoBack={isTargetSelected} />
 
       {!isTargetSelected && (
         <div className='w-full inline-flex justify-between gap-3 mb-3 items-center'>
