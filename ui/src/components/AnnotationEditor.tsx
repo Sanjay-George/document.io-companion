@@ -1,9 +1,7 @@
-import MDEditor, { PreviewType } from '@uiw/react-md-editor';
-import { useContext, useMemo, useState } from 'react';
+import MDEditor, { PreviewType, commands } from '@uiw/react-md-editor';
+import { useMemo, useState } from 'react';
 import ButtonPrimary from './ButtonPrimary';
 import RightArrowIcon from './icons/RightArrowIcon';
-import { PanelPositionContext } from '@/App';
-import { PanelPosition } from '@/models/panelPosition';
 
 export default function AnnotationEditor({
     content,
@@ -16,22 +14,35 @@ export default function AnnotationEditor({
         preview?: PreviewType
     }) {
 
+    const isPreview = preview === 'preview';
     const [value, setValue] = useState(content || '');
-    const { panelPosition } = useContext(PanelPositionContext) as any;
+    const [rightToolbarBtns, setRightToolbarBtns] = useState(commands.getExtraCommands());
 
     const showSaveButton = useMemo(() =>
-        !!handleSave && !!value.length && preview != 'preview', [handleSave, value, preview]);
+        !!handleSave && !!value.length && !isPreview, [handleSave, value, preview]);
+
+    useMemo(() => {
+        const extraCommands = commands.getExtraCommands();
+        if (isPreview) {
+            // remove the preview, live and edit buttons from the toolbar
+            setRightToolbarBtns(
+                extraCommands.filter((command) => command.keyCommand !== 'preview')
+            );
+        }
+    }, [isPreview]);
+
 
     return (
         <>
             <MDEditor
                 className={
-                    panelPosition === PanelPosition.RIGHT
-                        ? 'my-3 shadow-md rounded-xl bg-white min-h-[calc(100vh-300px)]'
-                        : 'my-3 shadow-md rounded-xl bg-white min-h-[300px]'
+                    'my-3 shadow-md rounded-xl bg-white'
                 }
                 value={value}
+                height={"calc(100% - 200px)"}
                 onChange={(value) => setValue(value || '')}
+                commands={isPreview ? [] : commands.getCommands()}
+                extraCommands={rightToolbarBtns}
                 preview={preview}
             />
 
