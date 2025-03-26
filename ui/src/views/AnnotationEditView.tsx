@@ -9,11 +9,9 @@ import { DocumentationContext } from '@/App';
 import { Annotation } from '@/models/annotations';
 import { mutate } from 'swr';
 import CodeBlock from '@/components/CodeBlock';
-import InfoIcon from '@/components/icons/InfoIcon';
 import Spinner from '@/components/Spinner';
-import Tooltipped from '@/components/Tooltipped';
+import AnnotationTypeSelector, { AnnotationType } from '@/components/AnnotationTypeSelector';
 
-type AnnotationType = 'component' | 'page';
 
 export default function AnnotationEditView() {
     const { id: annotationId } = useParams();
@@ -74,68 +72,17 @@ export default function AnnotationEditView() {
     }
     return (
         <>
-            <SidePanelHeader title={renderAnnotationId(annotation._id)} shouldGoBack={true} />
+            <SidePanelHeader title={renderAnnotationId(annotation._id)} canGoBack={true} />
 
             <div className='mb-3 space-y-2'>
                 <CodeBlock title='Target' value={annotation.target} />
                 <CodeBlock title='URL' value={annotation.url} />
             </div>
 
-            <div className='flex items-center mb-2 px-2 text-xs space-x-4'>
-                <div className="flex flex-wrap">
-                    {Tooltipped(
-                        () => (
-                            <div
-                                className='inline-flex items-center space-x-1 text-slate-500 me-3'
-                            >
-                                <span>Annotation Type </span>
-                                <InfoIcon />
-                                <span>: </span>
-                            </div>
-                        ),
-                        "Page annotations are visible only on the specific page (URL). Component annotations (default) are visible on all pages where the component exists.",
-                        {},
-                        'bottom-start'
-                    )}
-
-                    <div className="flex items-center me-2">
-                        <input
-                            id="page-type"
-                            name='annotation-type'
-                            type="radio"
-                            value="page"
-                            checked={annotationType === 'page'}
-                            onChange={() => setAnnotationType('page')}
-                            className="w-3 h-3 text-black bg-gray-100 border-gray-300"
-                        />
-                        <label
-                            htmlFor="page-type"
-                            className="ms-1"
-                        >
-                            Page
-                        </label>
-                    </div>
-
-                    <div className="flex items-center">
-                        <input
-                            id="component-type"
-                            name='annotation-type'
-                            type="radio"
-                            value="component"
-                            onChange={() => setAnnotationType('component')}
-                            checked={annotationType === 'component'}
-                            className="w-3 h-3 bg-gray-100 border-gray-300 "
-                        />
-                        <label
-                            htmlFor="component-type"
-                            className="ms-1"
-                        >
-                            Component
-                        </label>
-                    </div>
-
-                </div>
-            </div>
+            <AnnotationTypeSelector
+                onChange={setAnnotationType}
+                type={annotationType}
+            />
 
             <AnnotationEditor
                 content={annotation?.value}

@@ -11,9 +11,12 @@ import { ANNOTATED_ELEMENT_CLASS, ANNOTATED_ELEMENT_ICON_CLASS, HOVERED_ELEMENT_
 import ContextMenu from '@/components/ContextMenu';
 import CodeBlock from '@/components/CodeBlock';
 import { getQuerySelector } from '@/utils';
+import AnnotationTypeSelector, { AnnotationType } from '@/components/AnnotationTypeSelector';
 
 export default function AnnotationAddView() {
     const documentationId = useContext(DocumentationContext) as string;
+
+    const [annotationType, setAnnotationType] = useState<AnnotationType>('component');
 
     const [searchParams] = useSearchParams();
     const target = searchParams.get('target');
@@ -36,7 +39,7 @@ export default function AnnotationAddView() {
             url: window.location.href,
             created: new Date(),
             updated: new Date(),
-            type: 'component',
+            type: annotationType,
             index: parseInt(maxIndex + 1),
         };
 
@@ -125,6 +128,11 @@ export default function AnnotationAddView() {
                 <CodeBlock title='Target' value={target} />
                 <CodeBlock title='URL' value={window.location.href} />
             </div>
+
+            <AnnotationTypeSelector
+                onChange={setAnnotationType}
+                type={annotationType}
+            />
 
             <AnnotationEditor content='' preview={'live'} handleSave={handleSave} />
         </>
