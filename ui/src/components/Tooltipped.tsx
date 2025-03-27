@@ -7,12 +7,15 @@ import { useInteractions } from '@floating-ui/react';
 export default function Tooltipped(Component: React.ComponentType<any>,
     tooltip: string, props: any, placement: Placement = 'bottom') {
     const [isOpen, setIsOpen] = useState(false);
+
     const { refs, floatingStyles, context } = useFloating({
         open: isOpen,
         onOpenChange: setIsOpen,
         placement: placement,
     });
-    const hover = useHover(context);
+    const hover = useHover(context, {
+        restMs: 500,
+    });
     const { getReferenceProps, getFloatingProps } = useInteractions([
         hover,
     ]);
