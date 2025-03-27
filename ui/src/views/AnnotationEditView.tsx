@@ -72,7 +72,7 @@ export default function AnnotationEditView() {
     }
     return (
         <>
-            <SidePanelHeader title={renderAnnotationId(annotation._id)} canGoBack={true} />
+            <SidePanelHeader title={renderAnnotationId(annotation._id)} canGoBack={true} showNavigationButtons={false} showOrientationButtons={false} />
 
             <div className='mb-3 space-y-2'>
                 <CodeBlock title='Target' value={annotation.target} />

@@ -22,7 +22,7 @@ export default function AnnotationTypeSelector({ type, onChange }: { type: Annot
                             <span>: </span>
                         </div>
                     ),
-                    "Page annotations are visible only on the specific page (URL). Component annotations (default) are visible on all pages where the component exists.",
+                    "Page annotations are attached to a specific page (URL). Component annotations (default) are visible on all pages where the component exists.",
                     {},
                     'bottom-start'
                 )}

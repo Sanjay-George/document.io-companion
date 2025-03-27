@@ -11,10 +11,8 @@ import RightArrowIcon from "./icons/RightArrowIcon";
 import Tooltipped from "./Tooltipped";
 
 
-
-
-export default function SidePanelHeader({ title, canGoBack }
-    : { title: string, canGoBack?: boolean }) {
+export default function SidePanelHeader({ title, canGoBack, showNavigationButtons = true, showOrientationButtons = true }
+    : { title: string, canGoBack?: boolean, showNavigationButtons?: boolean, showOrientationButtons?: boolean }) {
 
     const navigate = useNavigate();
     const { panelPosition, setPanelPosition } = useContext(PanelPositionContext) as any;
@@ -34,7 +32,8 @@ export default function SidePanelHeader({ title, canGoBack }
     const BackButton = () => (<div className={buttonClasses} onClick={handleBackClick}><LeftArrowIcon /></div>)
     const ForwardButton = () => (<div className={buttonClasses} onClick={handleForwardClick}><RightArrowIcon /></div>)
     const ReloadButton = () => (<div className={buttonClasses} onClick={handleReloadClick}><ReloadIcon /></div>)
-    const HorizontalLayoutButton = () => (<div className={buttonClasses} onClick={() => setPanelPosition(PanelPosition.BOTTOM)}><HorizontalLayoutIcon /></div>)
+
+    const HorizontalLayoutButton = () => (<div className={buttonClasses} onClick={() => setPanelPosition(PanelPosition.BOTTOM)}> <HorizontalLayoutIcon /></div >)
     const VerticalLayoutButton = () => (<div className={buttonClasses} onClick={() => setPanelPosition(PanelPosition.RIGHT)}><VerticalLayoutIcon /></div>)
 
     return (
@@ -50,19 +49,26 @@ export default function SidePanelHeader({ title, canGoBack }
                 </div>
 
                 <div className="inline-flex items-center justify-end space-x-1">
-                    {Tooltipped(BackButton, "Go back", {})}
-                    {Tooltipped(ForwardButton, "Go forward", {})}
-                    {Tooltipped(ReloadButton, "Reload", {})}
+                    {showNavigationButtons && (
+                        <>
+                            {Tooltipped(BackButton, "Go back", {})}
+                            {Tooltipped(ForwardButton, "Go forward", {})}
+                            {Tooltipped(ReloadButton, "Reload", {})}
+                        </>
+                    )}
 
-                    <div className="border-l border-slate-300 h-5 !ml-3 !mr-1"></div>
+                    {showOrientationButtons && (
+                        <>
+                            <div className="border-l border-slate-300 h-5 !ml-3 !mr-1"></div>
+                            {
+                                panelPosition === PanelPosition.RIGHT && (Tooltipped(HorizontalLayoutButton, "Horizontal layout", {}, 'bottom-end'))
+                            }
 
-                    {
-                        panelPosition === PanelPosition.RIGHT && Tooltipped(HorizontalLayoutButton, "Horizontal layout", {}, 'bottom-end')
-                    }
-
-                    {
-                        panelPosition !== PanelPosition.RIGHT && Tooltipped(VerticalLayoutButton, "Vertical layout", {})
-                    }
+                            {
+                                panelPosition !== PanelPosition.RIGHT && (Tooltipped(VerticalLayoutButton, "Vertical layout", {}))
+                            }
+                        </>
+                    )}
 
                 </div>
             </div >
