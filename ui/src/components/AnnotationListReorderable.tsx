@@ -4,6 +4,7 @@ import AnnotationCard from "./AnnotationCard";
 import ButtonPrimary from "./ButtonPrimary";
 import { useEffect, useState } from "react";
 import RightArrowIcon from "./icons/RightArrowIcon";
+import Card from "./Card";
 
 interface AnnotationListReorderableProps {
     annotations: Annotation[];
@@ -35,7 +36,7 @@ export default function AnnotationListReorderable({ annotations, onSaveOrder }: 
         displayedAnnotations &&
         <>
             <div className='text-xs'>
-                <div className="py-2 px-3 mb-3 text-xs !text-sky-800 rounded-lg !bg-sky-50 !border-1 !border-sky-200 cursor-pointer" role="alert">
+                <div className="py-2 px-3 mb-3 text-xs !text-sky-800 rounded-lg !bg-sky-50 !border-1 !border-sky-200" role="alert">
                     Drag the cards vertically to reorder the annotations. Click the <b>Save</b> button to save the new order.
                 </div>
             </div>
@@ -48,7 +49,7 @@ export default function AnnotationListReorderable({ annotations, onSaveOrder }: 
                 >
                     {displayedAnnotations?.map(item => (
                         <Reorder.Item className='!cursor-grab' key={item.id} value={item}>
-                            <AnnotationCard key={item.id} annotation={item} condensed={true} />
+                            <AnnotationCard key={item.id} annotation={item} draggable />
                         </Reorder.Item>
                     ))}
                 </Reorder.Group>

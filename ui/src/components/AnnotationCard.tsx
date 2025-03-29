@@ -1,15 +1,13 @@
 import { useEffect } from "react";
 import { Annotation } from "@/models/annotations";
 import Markdown from 'react-markdown';
-import RightArrowIcon from "./icons/RightArrowIcon";
-import { renderTitleFromValue } from "@/utils";
 import { Link, useNavigate } from "react-router";
 import { highlight, removeHighlight } from "@/utils/annotations";
 import Card from "./Card";
 
 
-export default function AnnotationCard({ annotation, condensed }: { annotation: Annotation, condensed?: boolean }) {
-    const { id, target, value, type, url, index } = annotation;
+export default function AnnotationCard({ annotation, draggable = false }: { annotation: Annotation, draggable?: boolean }) {
+    const { target, value } = annotation;
 
     const navigate = useNavigate();
     const openInEditor = (target: string) => {
@@ -39,11 +37,16 @@ export default function AnnotationCard({ annotation, condensed }: { annotation: 
         <Card
             className="text-slate-400 hover:text-slate-600 hover:cursor-pointer"
             body={
-                <Link to={`/${annotation.id}`} >
+                <div className="flex flex-row">
+                    {draggable && (
+                        <div className="pr-2 hover:!cursor-grab">:::</div>
+                    )}
                     <div className="!max-h-56 overflow-clip transition duration-150 md-renderer">
-                        <Markdown>{value}</Markdown>
+                        <Link to={`/${annotation.id}`} >
+                            <Markdown>{value}</Markdown>
+                        </ Link>
                     </div>
-                </ Link>
+                </div>
             }
         />
     )
