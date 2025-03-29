@@ -1,6 +1,6 @@
 # Document.io - Companion App
 
-This is a desktop application that works as a companion application to [document.io](https://github.com/Sanjay-George/document.io), enabling seamless website annotation. Built with Electron, it allows you to create and manage annotations on any website while maintaining security and performance.
+This is a desktop application that works as a companion to [document.io](https://github.com/Sanjay-George/document.io), enabling seamless website annotation. Built with Electron, it allows you to create and manage annotations on any website while maintaining security and performance.
 
 ![screely-1736026495039](https://github.com/user-attachments/assets/ce662841-0d6c-4f37-a9a9-1f901253af69)
 
@@ -20,9 +20,6 @@ Get started in 4 simple steps:
 ```bash
 git clone https://github.com/Sanjay-George/document.io-companion.git
 ```
-
-If you don't have git on your machine, just download this repo by clicking the **Code** -> **Download ZIP** and unzip it.
-
 
 #### 2. Install dependencies
 In the application root folder, run the following:
@@ -52,9 +49,16 @@ Note: On macOS and Linux, deeplinking works [only if the app is packaged.](https
 
 <!-- 1. For now, the application needs to be built locally and used, since code-signing and notarizing is not in place. To build the application, run the following command in the root folder: -->
 
+## 🎶 Important Notes
+- Cookies are stored locally in JSON files to persist logins without compromising security. (This is a temporary workaround for an issue where cookies are not persisted on macOS).
+- The [document.io central application](https://github.com/Sanjay-George/document.io) must be set up for the companion app to work.
+- This app must be launched via deeplink from the central application, which configures the correct server address for communication.
+- This is currently in BETA - features are constantly being improved and added!
+
+
 ## 🎯 Motivation
 
-Many websites implement strict CSP rules that prevent loading external resources or scripts directly into their pages. This makes it difficult to integrate the annotation interface into the [main application](https://github.com/Sanjay-George/document.io). By using this companion app, you can circumvent these restrictions and still annotate content directly on the pages they visit. 
+Many websites implement strict CSP rules that prevent loading external resources or scripts directly into their pages. This makes it difficult to integrate the annotation interface into the [main application](https://github.com/Sanjay-George/document.io). By using this companion app, you can circumvent these restrictions and still annotate content directly on the pages you visit. 
 
 ## ✨ Key Features
 
@@ -62,18 +66,4 @@ Many websites implement strict CSP rules that prevent loading external resources
 - Local session management
 - Cross-platform support (Windows & MacOS)
 - Coming soon: Image, video, and voice note annotations
-
-
-
-
-
-
-
-## 🎶 Important Notes
-- Cookies are stored locally in JSON files to persist logins without compromising security. (This is a temporary workaround for an issue where cookies are not persisted on macOS).
-- The [document.io central application](https://github.com/Sanjay-George/document.io) must be set up for the companion app to work.
-- This app must be launched via deeplink from the central application, which configures the correct server address for communication.
-- This is currently in beta - features are constantly being improved and added!
-
-
 
