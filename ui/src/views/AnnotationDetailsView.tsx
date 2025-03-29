@@ -1,6 +1,6 @@
 import { ALL_ANNOTATIONS_KEY, deleteAnnotation, useAnnotation } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
-import { renderAnnotationId } from '@/utils';
+import { renderTitleFromValue } from '@/utils';
 import AnnotationEditor from '@/components/AnnotationEditor';
 import { useNavigate, useParams } from 'react-router';
 import ButtonPrimary from '@/components/ButtonPrimary';
@@ -68,7 +68,7 @@ export default function AnnotationDetailsView() {
     }
     return (
         <>
-            <SidePanelHeader title={renderAnnotationId(annotation._id)} canGoBack={true} />
+            <SidePanelHeader title={renderTitleFromValue(annotation.value, 30)} canGoBack={true} />
 
             {
                 (annotation.type === "page" && annotation.url !== window.location.href) && (

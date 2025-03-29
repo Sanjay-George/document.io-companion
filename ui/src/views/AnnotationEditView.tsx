@@ -1,6 +1,6 @@
 import { ALL_ANNOTATIONS_KEY, SINGLE_ANNOTATION_KEY, updateAnnotation, useAnnotation } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
-import { renderAnnotationId } from '@/utils';
+import { renderTitleFromValue } from '@/utils';
 import AnnotationEditor from '@/components/AnnotationEditor';
 import { useNavigate, useParams } from 'react-router';
 import { useContext, useEffect, useState } from 'react';
@@ -72,7 +72,7 @@ export default function AnnotationEditView() {
     }
     return (
         <>
-            <SidePanelHeader title={renderAnnotationId(annotation._id)} canGoBack={true} showNavigationButtons={false} showOrientationButtons={false} />
+            <SidePanelHeader title={renderTitleFromValue(annotation.value, 30)} canGoBack={true} showNavigationButtons={false} showOrientationButtons={false} />
 
             <div className='mb-3 space-y-2'>
                 <CodeBlock title='Target' value={annotation.target} />

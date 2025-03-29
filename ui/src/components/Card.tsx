@@ -25,7 +25,6 @@ export default function Card({ header, footer, body, className }: CardProps) {
 
             )}
 
-
             <div className="py-2 flex-1">
                 {body}
             </div>
