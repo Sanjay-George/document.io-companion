@@ -4,7 +4,6 @@ import AnnotationCard from "./AnnotationCard";
 import ButtonPrimary from "./ButtonPrimary";
 import { useEffect, useState } from "react";
 import RightArrowIcon from "./icons/RightArrowIcon";
-import Card from "./Card";
 
 interface AnnotationListReorderableProps {
     annotations: Annotation[];
