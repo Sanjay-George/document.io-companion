@@ -39,7 +39,7 @@ export default function SidePanelHeader({ title, canGoBack, showNavigationButton
     return (
         <>
             <div className='flex items-center space-x-4 text-primary justify-between @xl:mb-2'>
-                <div className="inline-flex space-x-2">
+                <div className="inline-flex space-x-2 items-center">
                     {
                         canGoBack
                         &&
