@@ -4,6 +4,7 @@ import Markdown from 'react-markdown';
 import { Link, useNavigate } from "react-router";
 import { highlight, removeHighlight } from "@/utils/annotations";
 import Card from "./Card";
+import DragHandleIcon from "./icons/DragHandleIcon";
 
 
 export default function AnnotationCard({ annotation, draggable = false }: { annotation: Annotation, draggable?: boolean }) {
@@ -39,7 +40,7 @@ export default function AnnotationCard({ annotation, draggable = false }: { anno
             body={
                 <div className="flex flex-row">
                     {draggable && (
-                        <div className="pr-2 hover:!cursor-grab">:::</div>
+                        <div className="pt-2 pr-2 hover:!cursor-grab"><DragHandleIcon /></div>
                     )}
                     <div className="!max-h-56 overflow-clip transition duration-150 md-renderer">
                         <Link to={`/${annotation.id}`} >

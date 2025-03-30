@@ -2,23 +2,24 @@ import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { useEffect, useState } from 'react';
 import { createContext } from 'react';
 import { Outlet } from 'react-router';
-import { PanelPosition } from './models/panelPosition';
+import { PanelOrientation } from './models/panelOrientation';
+import { debounce } from './utils';
 
 export const DocumentationContext = createContext(null as string | null);
-export const PanelPositionContext = createContext(null as object | null);
-
+export const PanelOrientationContext = createContext(null as object | null);
+export const PanelSizeContext = createContext(null as object | null);
 
 function App() {
   const [documentationId, setDocumentationId] = useState(null as string | null);
-  const [panelPosition, setPanelPosition] = useState('');
+  const [panelOrientation, setPanelOrientation] = useState('');
+
   const [highlightResizeHandle, setHighlightResizeHandle] = useState(false);
 
-  // When panel position changes, store in local storage
+  // When panel orientation changes, store in local storage
   useEffect(() => {
-    if (!panelPosition) return;
-
-    localStorage.setItem('panelPosition', panelPosition as string);
-  }, [panelPosition])
+    if (!panelOrientation) return;
+    localStorage.setItem('panelOrientation', panelOrientation as string);
+  }, [panelOrientation]);
 
   // On mount, get documentation id from root element
   useEffect(() => {
@@ -29,7 +30,7 @@ function App() {
 
     const id = rootElement.getAttribute('data-documentation-id');
     setDocumentationId(id);
-    setPanelPosition(localStorage.getItem('panelPosition') ?? PanelPosition.RIGHT);
+    setPanelOrientation(localStorage.getItem('panelOrientation') ?? PanelOrientation.VERTICAL);
 
     // Hardcode documentation id for development
     if (import.meta.env.VITE_APP_ENV === 'development') {
@@ -49,20 +50,25 @@ function App() {
     setHighlightResizeHandle(false);
   }
 
+  const debouncedHandlePanelResize = debounce(handlePanelResize, 100);
+
   return (
     <DocumentationContext.Provider value={documentationId}>
-      <PanelPositionContext.Provider value={{ panelPosition, setPanelPosition }}>
+      <PanelOrientationContext.Provider value={{ panelOrientation, setPanelOrientation }}>
+
         <div data-color-mode="light" data-light-theme="light">
           <PanelGroup
             autoSaveId="document-io-panel"
-            direction={panelPosition === PanelPosition.RIGHT ? "horizontal" : "vertical"}
+            // This is not a mistake. Panel direction is how panels are split. 
+            // So vertical orientation means horizontal panel direction
+            direction={panelOrientation === PanelOrientation.VERTICAL ? "horizontal" : "vertical"}
             className={
-              panelPosition == PanelPosition.RIGHT
+              panelOrientation == PanelOrientation.VERTICAL
                 ? 'fixed group top-0 left-0 pointer-events-none active:pointer-events-auto'
                 : "fixed group bottom-0 left-0 pointer-events-none active:pointer-events-auto"
             }
             style={
-              panelPosition == PanelPosition.RIGHT
+              panelOrientation == PanelOrientation.VERTICAL
                 ? {
                   minHeight: '100%', width: '100vw', zIndex: 2147483647
                 }
@@ -72,7 +78,7 @@ function App() {
             }
           >
             {
-              panelPosition == PanelPosition.RIGHT && (
+              panelOrientation == PanelOrientation.VERTICAL && (
                 <>
                   <Panel className='bg-transparent pointer-events-none' />
 
@@ -86,7 +92,7 @@ function App() {
                       scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent"
                     defaultSize={25}
                     style={{ overflowY: 'scroll' }}
-                    onResize={handlePanelResize}
+                    onResize={debouncedHandlePanelResize}
                   >
                     <Outlet />
                   </Panel>
@@ -96,7 +102,7 @@ function App() {
 
 
             {
-              panelPosition !== PanelPosition.RIGHT && (
+              panelOrientation !== PanelOrientation.VERTICAL && (
                 <>
                   <Panel className='bg-transparent pointer-events-none' />
 
@@ -111,7 +117,7 @@ function App() {
                     "
                     defaultSize={60}
                     style={{ overflowY: 'scroll' }}
-                    onResize={handlePanelResize}
+                    onResize={debouncedHandlePanelResize}
                   >
                     <Outlet />
                   </Panel>
@@ -122,7 +128,7 @@ function App() {
 
           </PanelGroup>
         </div>
-      </PanelPositionContext.Provider>
+      </PanelOrientationContext.Provider>
     </DocumentationContext.Provider >
 
   )

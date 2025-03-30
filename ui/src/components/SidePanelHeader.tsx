@@ -2,11 +2,11 @@ import H2 from "./H2";
 import LeftArrowIcon from "./icons/LeftArrowIcon";
 import { useNavigate } from "react-router";
 import { useContext } from "react";
-import { PanelPositionContext } from "@/App";
+import { PanelOrientationContext } from "@/App";
 import { ReloadIcon } from "./icons/ReloadIcon";
 import HorizontalLayoutIcon from "./icons/HorizontalLayoutIcon";
 import VerticalLayoutIcon from "./icons/VerticalLayoutIcon";
-import { PanelPosition } from "@/models/panelPosition";
+import { PanelOrientation } from "@/models/panelOrientation";
 import RightArrowIcon from "./icons/RightArrowIcon";
 import Tooltipped from "./Tooltipped";
 
@@ -15,7 +15,7 @@ export default function SidePanelHeader({ title, canGoBack, showNavigationButton
     : { title: string, canGoBack?: boolean, showNavigationButtons?: boolean, showOrientationButtons?: boolean }) {
 
     const navigate = useNavigate();
-    const { panelPosition, setPanelPosition } = useContext(PanelPositionContext) as any;
+    const { panelOrientation, setPanelOrientation } = useContext(PanelOrientationContext) as any;
 
     const handleReloadClick = () => {
         window.location.reload();
@@ -33,8 +33,8 @@ export default function SidePanelHeader({ title, canGoBack, showNavigationButton
     const ForwardButton = () => (<div className={buttonClasses} onClick={handleForwardClick}><RightArrowIcon /></div>)
     const ReloadButton = () => (<div className={buttonClasses} onClick={handleReloadClick}><ReloadIcon /></div>)
 
-    const HorizontalLayoutButton = () => (<div className={buttonClasses} onClick={() => setPanelPosition(PanelPosition.BOTTOM)}> <HorizontalLayoutIcon /></div >)
-    const VerticalLayoutButton = () => (<div className={buttonClasses} onClick={() => setPanelPosition(PanelPosition.RIGHT)}><VerticalLayoutIcon /></div>)
+    const HorizontalLayoutButton = () => (<div className={buttonClasses} onClick={() => setPanelOrientation(PanelOrientation.HORIZONTAL)}> <HorizontalLayoutIcon /></div >)
+    const VerticalLayoutButton = () => (<div className={buttonClasses} onClick={() => setPanelOrientation(PanelOrientation.VERTICAL)}><VerticalLayoutIcon /></div>)
 
     return (
         <>
@@ -61,11 +61,11 @@ export default function SidePanelHeader({ title, canGoBack, showNavigationButton
                         <>
                             <div className="border-l border-slate-300 h-5 !ml-3 !mr-1"></div>
                             {
-                                panelPosition === PanelPosition.RIGHT && (Tooltipped(HorizontalLayoutButton, "Horizontal layout", {}, 'bottom-end'))
+                                panelOrientation === PanelOrientation.VERTICAL && (Tooltipped(HorizontalLayoutButton, "Horizontal layout", {}, 'bottom-end'))
                             }
 
                             {
-                                panelPosition !== PanelPosition.RIGHT && (Tooltipped(VerticalLayoutButton, "Vertical layout", {}))
+                                panelOrientation !== PanelOrientation.VERTICAL && (Tooltipped(VerticalLayoutButton, "Vertical layout", {}))
                             }
                         </>
                     )}
