@@ -36,19 +36,26 @@ export default function AnnotationCard({ annotation, draggable = false }: { anno
 
     return (
         <Card
-            className={`text-slate-400 hover:text-slate-600 hover:cursor-pointer ${draggable ? '!pl-2' : ''}`}
+            className={`text-slate-400 hover:text-slate-600 ${draggable ? '!pl-2' : 'hover:cursor-pointer'}`}
             body={
-                <div className="flex flex-row" >
+                <div className="flex flex-row h-full w-full" >
                     {draggable && (
                         <div className="pt-2 pr-1 hover:!cursor-grab"><DragHandleIcon /></div>
-                    )
-                    }
-                    <div className="!max-h-56 overflow-clip transition duration-150 md-renderer">
-                        <Link to={`/${annotation.id}`} >
+                    )}
+                    {draggable ? (
+                        // If draggable, render without the Link
+                        <div className="!max-h-56 overflow-clip transition duration-150 md-renderer">
                             <Markdown>{value}</Markdown>
-                        </ Link>
-                    </div>
-                </div >
+                        </div>
+                    ) : (
+                        // If not draggable, wrap content in a Link
+                        <Link to={`/${annotation.id}`} >
+                            <div className="!max-h-56 overflow-clip transition duration-150 md-renderer">
+                                <Markdown>{value}</Markdown>
+                            </div>
+                        </Link>
+                    )}
+                </div>
             }
         />
     )
