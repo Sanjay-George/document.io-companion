@@ -2,7 +2,7 @@ import Spinner from '@/components/Spinner';
 import { useDocumentation } from '@/data_access/documentations';
 import { ALL_ANNOTATIONS_KEY, updateAnnotations, useAnnotationsByTarget } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
-import { useContext, useMemo, useState, } from 'react';
+import { useContext, useEffect, useMemo, useState, } from 'react';
 import { DocumentationContext } from '@/App';
 import { Annotation } from '@/models/annotations';
 import { useNavigate, useSearchParams } from 'react-router';
@@ -20,10 +20,19 @@ export default function AnnotationListView() {
 
   const [searchParams] = useSearchParams();
   const target = searchParams.get('target');
+  const filterQS = searchParams.get('filter') || 'in-page';
 
   const isTargetSelected = useMemo(() => !!target && target.length > 0, [target]);
-  const [filter, setFilter] = useState<FilterType>('in-page');
+  const [filter, setFilter] = useState<FilterType>(filterQS as FilterType);
   const [enableReorder, setEnableReorder] = useState(false);
+
+  // Update filter state when query string changes
+  useEffect(() => {
+    if (filter !== filterQS) {
+      setFilter(filterQS as FilterType);
+    }
+  }, [filterQS]);
+
   // A hack to force update the list when the page changes in an SPA
   const [shouldUpdateList, setShouldUpdateList] = useState(false);
 
@@ -59,11 +68,11 @@ export default function AnnotationListView() {
 
   const tabItems = useMemo(() => {
     if (enableReorder) {
-      return [{ label: 'All', count: allAnnotationsCount, key: 'all' as FilterType }];
+      return [{ label: 'All', count: allAnnotationsCount, key: 'all' as FilterType, link: '/?filter=all' }];
     }
     return [
-      { label: 'On this page', count: pageAnnotationsCount, key: 'in-page' as FilterType },
-      { label: 'All', count: allAnnotationsCount, key: 'all' as FilterType },
+      { label: 'On this page', count: pageAnnotationsCount, key: 'in-page' as FilterType, link: '/?filter=in-page' },
+      { label: 'All', count: allAnnotationsCount, key: 'all' as FilterType, link: '/?filter=all' },
     ]
   }, [pageAnnotationsCount, allAnnotationsCount, enableReorder]);
 
@@ -114,7 +123,7 @@ export default function AnnotationListView() {
 
       {!isTargetSelected && (
         <div className='w-full inline-flex justify-between gap-3 mb-3 items-center'>
-          <Tabs filter={filter} setFilter={setFilter} items={tabItems} />
+          <Tabs filter={filter} items={tabItems} />
 
           {filter === 'all' && (!enableReorder ? (
             <div className='text-xs cursor-pointer text-slate-500 underline justify-end'

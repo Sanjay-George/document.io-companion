@@ -30,8 +30,6 @@ export default function AnnotationAddView() {
     }, -Infinity);
 
     const handleSave = async (value: string) => {
-        console.log('maxIndex:', maxIndex);
-
         const annotation: Annotation = {
             documentationId,
             value,
