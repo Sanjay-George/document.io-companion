@@ -8,8 +8,6 @@
         return;
     }
 
-    console.log(`[Document.io Companion] Using documentation-id=${documentationId}. Injecting assets...`);
-
     // ---- Inject assets and bridge ----
     injectRoot(documentationId);
     injectAssets();
