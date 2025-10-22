@@ -1,5 +1,7 @@
 # Document.io - Companion App
 
+> ⚠️ Migration to Chrome / Edge extensions in progress. Extensions would be easier to distribute and use compared to a dedicated app.
+
 This is a desktop application that works as a companion to [document.io](https://github.com/Sanjay-George/document.io), enabling seamless website annotation. Built with Electron, it allows you to create and manage annotations on any website while maintaining security and performance.
 
 ![screely-1736026495039](https://github.com/user-attachments/assets/ce662841-0d6c-4f37-a9a9-1f901253af69)
