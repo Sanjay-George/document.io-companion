@@ -162,7 +162,7 @@ async function createWindow() {
         allowWindowClose = false;
 
         // TODO: build home page
-        await mainWindow.loadURL("http://localhost:3000");
+        await mainWindow.loadURL("http://localhost:3001");
 
         mainWindow.on("close", async (e) => {
             if (allowWindowClose) {

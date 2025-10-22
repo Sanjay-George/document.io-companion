@@ -11,7 +11,7 @@ import RightArrowIcon from "./icons/RightArrowIcon";
 import Tooltipped from "./Tooltipped";
 
 
-export default function SidePanelHeader({ title, canGoBack, showNavigationButtons = true, showOrientationButtons = true }
+export default function SidePanelHeader({ title, canGoBack, showNavigationButtons = false, showOrientationButtons = true }
     : { title: string, canGoBack?: boolean, showNavigationButtons?: boolean, showOrientationButtons?: boolean }) {
 
     const navigate = useNavigate();
@@ -51,6 +51,9 @@ export default function SidePanelHeader({ title, canGoBack, showNavigationButton
                 <div className="inline-flex items-center justify-end space-x-1">
                     {showNavigationButtons && (
                         <>
+                            {/* TODO: Remove navigation buttons, instead change to allowNavigation flag
+                                    to prevent navigation while editing annotation
+                            */}
                             {Tooltipped(BackButton, "Go back", {})}
                             {Tooltipped(ForwardButton, "Go forward", {})}
                             {Tooltipped(ReloadButton, "Reload", {})}

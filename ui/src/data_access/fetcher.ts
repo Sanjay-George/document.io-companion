@@ -2,19 +2,19 @@
 const directFetcher = (...args: any[]) => fetch(...args).then((res) => res.json());
 
 // @ts-expect-error Todo: fix this
-const electronFetcher = (...args: any[]) => window.electronAPI.fetch(...args).then((res) => res);
+const electronFetcher = (...args: any[]) => window.documentioAPI.fetch(...args).then((res) => res);
 
 
 export const fetcher = (() => {
-    if (window.electronAPI) {
+    if (window.documentioAPI) {
         return electronFetcher;
     }
     return directFetcher;
 })();
 
 export const fetch = (() => {
-    if (window.electronAPI) {
-        return window.electronAPI.fetch;
+    if (window.documentioAPI) {
+        return window.documentioAPI.fetch;
     }
     return window.fetch;
 })();
