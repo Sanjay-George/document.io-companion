@@ -14,7 +14,10 @@
     "package": "electron-forge package",
     "premake": "npm run build",
     "make": "electron-forge make",
-    "publish": "node -r dotenv/config node_modules/.bin/electron-forge publish"
+    "publish": "node -r dotenv/config node_modules/.bin/electron-forge publish",
+    "clean-ext": "rimraf extensions/dist",
+    "copy-ext:ui": "copyfiles -u 2 ui/dist/** ui/dist/**/* extensions/dist",
+    "build-ext": "npm run clean-ext && npm run build:ui && npm run copy-ext:ui"
   },
   "author": "",
   "license": "ISC",

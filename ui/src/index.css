@@ -109,3 +109,12 @@ h6 {
 p {
   margin-bottom: 0;
 }
+
+p,
+td,
+li,
+a,
+span,
+div {
+  font-size: var(--var-text-base);
+}

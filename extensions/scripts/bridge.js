@@ -2,7 +2,7 @@
 (function () {
     window.documentioAPI = {
         fetch: (url, options = {}) => {
-            console.log(`[Document.io Bridge] Fetching: ${url}`);
+            console.debug(`[Document.io Bridge] Fetching: ${url}`);
             return new Promise((resolve, reject) => {
                 const reqId = Math.random().toString(36).slice(2);
                 function handler(event) {
