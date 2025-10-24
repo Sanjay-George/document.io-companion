@@ -6,7 +6,7 @@
 
 
 :host {
-  --var-primary: #007d7e;
+  --var-primary: #0075A0;
   --var-accent: #ff8749;
   --var-danger: #B74606;
 
@@ -113,8 +113,6 @@ p {
 p,
 td,
 li,
-a,
-span,
-div {
+a {
   font-size: var(--var-text-base);
 }

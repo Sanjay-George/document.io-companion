@@ -10,7 +10,7 @@ export default function CodeBlock({ title, value }: { title: string, value: stri
                 h-fit font-mono font-normal inline-block whitespace-nowrap
                 '
         >
-            <span className='font-semibold font-sans'>{title}: </span> {value}
+            <span className='font-semibold font-sans text-xs'>{title}: </span> {value}
         </code>
     )
 
