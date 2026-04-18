@@ -71,6 +71,13 @@ function App() {
     localStorage.setItem('editMode', String(editMode));
   }, [editMode]);
 
+  // Keep floating popup as the primary focus when opened from page interaction.
+  useEffect(() => {
+    if (activePopup) {
+      setIsMinimized(true);
+    }
+  }, [activePopup]);
+
   // Hover highlights — only active in edit mode when context menu is not open
   useEffect(() => {
     if (!editMode || !hoverEnabled) {

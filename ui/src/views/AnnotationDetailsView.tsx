@@ -9,7 +9,7 @@ import { highlight, removeHighlight } from '@/utils/annotations';
 import ButtonDanger from '@/components/ButtonDanger';
 import EditIcon from '@/components/icons/EditIcon';
 import DeleteIcon from '@/components/icons/DeleteIcon';
-import { DocumentationContext } from '@/App';
+import { DocumentationContext, PanelOrientationContext } from '@/App';
 import { mutate } from 'swr';
 import CodeBlock from '@/components/CodeBlock';
 import Spinner from '@/components/Spinner';
@@ -18,6 +18,7 @@ import Spinner from '@/components/Spinner';
 export default function AnnotationDetailsView() {
     const { id: annotationId } = useParams();
     const documentationId = useContext(DocumentationContext) as string;
+    const { editMode } = useContext(PanelOrientationContext) as any;
 
     const navigate = useNavigate();
 
@@ -94,12 +95,14 @@ export default function AnnotationDetailsView() {
                 preview="preview" />
 
 
-            <div className='space-x-2'>
-                <ButtonPrimary text="Edit" icon={<EditIcon />}
-                    onClick={() => { navigate(`/${annotation.id}/edit`) }} />
-                <ButtonDanger text="Delete" icon={<DeleteIcon />}
-                    onClick={handleDelete} />
-            </div>
+            {editMode && (
+                <div className='space-x-2'>
+                    <ButtonPrimary text="Edit" icon={<EditIcon />}
+                        onClick={() => { navigate(`/${annotation.id}/edit`) }} />
+                    <ButtonDanger text="Delete" icon={<DeleteIcon />}
+                        onClick={handleDelete} />
+                </div>
+            )}
 
         </>
     )

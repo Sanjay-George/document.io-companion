@@ -6,7 +6,6 @@ import {
     ALL_ANNOTATIONS_KEY,
     SINGLE_ANNOTATION_KEY,
     addAnnotation,
-    deleteAnnotation,
     updateAnnotation,
     useAnnotationsByTarget,
 } from '@/data_access/annotations';
@@ -15,11 +14,8 @@ import AnnotationEditor from '@/components/AnnotationEditor';
 import AnnotationTypeSelector, { AnnotationType } from '@/components/AnnotationTypeSelector';
 import CodeBlock from '@/components/CodeBlock';
 import Spinner from '@/components/Spinner';
-import ButtonPrimary from '@/components/ButtonPrimary';
-import ButtonDanger from '@/components/ButtonDanger';
-import EditIcon from '@/components/icons/EditIcon';
-import DeleteIcon from '@/components/icons/DeleteIcon';
 import CloseIcon from '@/components/icons/CloseIcon';
+import DragHandleIcon from '@/components/icons/DragHandleIcon';
 import LeftArrowIcon from '@/components/icons/LeftArrowIcon';
 import RightArrowIcon from '@/components/icons/RightArrowIcon';
 import ExpandIcon from '@/components/icons/ExpandIcon';
@@ -46,7 +42,7 @@ export default function AnnotationPopup({ mode: initialMode, target, elementRect
     const dragOffset = useRef({ x: 0, y: 0 });
     const [pos, setPos] = useState(() => computeInitialPosition(elementRect));
 
-    const [mode, setMode] = useState<PopupMode>(initialMode);
+    const [mode] = useState<PopupMode>(initialMode);
     const [annotationType, setAnnotationType] = useState<AnnotationType>('component');
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -119,14 +115,6 @@ export default function AnnotationPopup({ mode: initialMode, target, elementRect
         onClose();
     };
 
-    const handleDelete = async () => {
-        if (!currentAnnotation) return;
-        if (!window.confirm('Delete this annotation?')) return;
-        await deleteAnnotation(currentAnnotation.id as string);
-        await mutate(ALL_ANNOTATIONS_KEY(documentationId));
-        onClose();
-    };
-
     const handleOpenInPanel = () => {
         setIsMinimized(false);
         if (mode === 'add') {
@@ -159,10 +147,7 @@ export default function AnnotationPopup({ mode: initialMode, target, elementRect
                 onMouseDown={handleHeaderMouseDown}
             >
                 <div className="flex items-center gap-2 min-w-0">
-                    {/* grip dots */}
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-3 text-slate-400 flex-shrink-0">
-                        <path d="M4 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm0 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm0 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm6-8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm0 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm0 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm6-8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm0 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm0 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z" />
-                    </svg>
+                    <span className="text-slate-400 flex-shrink-0"><DragHandleIcon /></span>
                     <span className="text-xs font-semibold truncate">{title}</span>
                 </div>
 
@@ -235,21 +220,6 @@ export default function AnnotationPopup({ mode: initialMode, target, elementRect
                 )}
             </div>
 
-            {/* Footer */}
-            <div className="border-t border-slate-100 px-3 py-2 flex items-center gap-2 flex-shrink-0">
-                {mode === 'view' && (
-                    <ButtonPrimary text="Edit" icon={<EditIcon />} onClick={() => setMode('edit')} />
-                )}
-                {mode === 'edit' && (
-                    <ButtonDanger text="Delete" icon={<DeleteIcon />} onClick={handleDelete} />
-                )}
-                <button
-                    onClick={onClose}
-                    className="text-xs text-slate-500 hover:text-slate-700 px-2 py-1 rounded hover:bg-slate-100 transition-colors"
-                >
-                    {mode === 'view' ? 'Close' : 'Discard'}
-                </button>
-            </div>
         </div>
     );
 }

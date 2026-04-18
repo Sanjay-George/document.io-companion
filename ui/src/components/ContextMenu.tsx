@@ -68,11 +68,6 @@ export default function ContextMenu({ onContextMenuOpen, onContextMenuClose }: {
         setActivePopup({ type: 'add', target: getQuerySelector(el), elementRect: el.getBoundingClientRect() });
     }
 
-    function handleEditClick({ triggerEvent }: any) {
-        const el = triggerEvent?.target as HTMLElement;
-        setActivePopup({ type: 'edit', target: getQuerySelector(el), elementRect: el.getBoundingClientRect() });
-    }
-
     function handleViewClick({ triggerEvent }: any) {
         const el = triggerEvent?.target as HTMLElement;
         setActivePopup({ type: 'view', target: getQuerySelector(el), elementRect: el.getBoundingClientRect() });
@@ -88,8 +83,8 @@ export default function ContextMenu({ onContextMenuOpen, onContextMenuClose }: {
                 </Item>
             )}
             {editMode && targetIsAnnotated && (
-                <Item id="edit-annotation" onClick={handleEditClick}>
-                    <span className="pr-4">✏️</span> Edit annotation
+                <Item id="view-annotation-editmode" onClick={handleViewClick}>
+                    <span className="pr-4">👁️</span> View annotation
                 </Item>
             )}
             {!editMode && targetIsAnnotated && (

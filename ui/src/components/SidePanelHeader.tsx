@@ -8,19 +8,24 @@ import VerticalLayoutIcon from "./icons/VerticalLayoutIcon";
 import { PanelOrientation } from "@/models/panelOrientation";
 import Tooltipped from "./Tooltipped";
 import MinimizeIcon from "./icons/MinimizeIcon";
+import Tabs from "./Tabs";
 
 
-export default function SidePanelHeader({ title, canGoBack, showOrientationButtons = true }
-    : { title: string, canGoBack?: boolean, showOrientationButtons?: boolean }) {
+export default function SidePanelHeader({ title, canGoBack, showOrientationButtons = true, showEditModeToggle = false }
+    : { title: string, canGoBack?: boolean, showOrientationButtons?: boolean, showEditModeToggle?: boolean }) {
 
     const navigate = useNavigate();
-    const { panelOrientation, setPanelOrientation, setIsMinimized } = useContext(PanelOrientationContext) as any;
+    const { panelOrientation, setPanelOrientation, setIsMinimized, editMode, setEditMode } = useContext(PanelOrientationContext) as any;
 
     const buttonClasses = "text-slate-500 hover:text-slate-950 cursor-pointer transition duration-150 ease-in-out p-1";
 
     const HorizontalLayoutButton = () => (<div className={buttonClasses} onClick={() => setPanelOrientation(PanelOrientation.HORIZONTAL)}> <HorizontalLayoutIcon /></div >)
     const VerticalLayoutButton = () => (<div className={buttonClasses} onClick={() => setPanelOrientation(PanelOrientation.VERTICAL)}><VerticalLayoutIcon /></div>)
     const MinimizeButton = () => (<div className={buttonClasses} onClick={() => setIsMinimized(true)}><MinimizeIcon /></div>)
+    const modeItems = [
+        { label: 'View', count: 0, key: 'view' },
+        { label: 'Edit', count: 0, key: 'edit' },
+    ];
 
     return (
         <>
@@ -35,6 +40,14 @@ export default function SidePanelHeader({ title, canGoBack, showOrientationButto
                 </div>
 
                 <div className="inline-flex items-center justify-end space-x-2">
+                    {showEditModeToggle && (
+                        <Tabs
+                            filter={editMode ? 'edit' : 'view'}
+                            items={modeItems}
+                            showCount={false}
+                            onTabSelect={(key: string) => setEditMode(key === 'edit')}
+                        />
+                    )}
                     {showOrientationButtons && (
                         <>
                             <div className="border-l border-slate-300 h-5 !ml-3 !mr-1"></div>

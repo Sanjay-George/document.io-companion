@@ -23,7 +23,7 @@ export default function AnnotationCard({ annotation, draggable = false }: { anno
         const openPopup = () => {
             const elementRect = element.getBoundingClientRect();
             setActivePopup({
-                type: editMode ? 'edit' : 'view',
+                type: 'view',
                 target,
                 elementRect,
                 initialAnnotationId: annotation.id,
