@@ -6,6 +6,7 @@ import {
     ALL_ANNOTATIONS_KEY,
     SINGLE_ANNOTATION_KEY,
     addAnnotation,
+    deleteAnnotation,
     updateAnnotation,
     useAnnotationsByTarget,
 } from '@/data_access/annotations';
@@ -15,10 +16,14 @@ import AnnotationTypeSelector, { AnnotationType } from '@/components/AnnotationT
 import CodeBlock from '@/components/CodeBlock';
 import Spinner from '@/components/Spinner';
 import CloseIcon from '@/components/icons/CloseIcon';
+import DeleteIcon from '@/components/icons/DeleteIcon';
 import DragHandleIcon from '@/components/icons/DragHandleIcon';
+import EditIcon from '@/components/icons/EditIcon';
 import LeftArrowIcon from '@/components/icons/LeftArrowIcon';
 import RightArrowIcon from '@/components/icons/RightArrowIcon';
 import ExpandIcon from '@/components/icons/ExpandIcon';
+import ButtonDanger from '@/components/ButtonDanger';
+import ButtonPrimary from '@/components/ButtonPrimary';
 import { renderTitleFromValue } from '@/utils';
 
 type PopupMode = 'add' | 'edit' | 'view';
@@ -33,7 +38,7 @@ type Props = {
 
 export default function AnnotationPopup({ mode: initialMode, target, elementRect, initialAnnotationId, onClose }: Props) {
     const documentationId = useContext(DocumentationContext) as string;
-    const { setIsMinimized } = useContext(PanelOrientationContext) as any;
+    const { setIsMinimized, editMode } = useContext(PanelOrientationContext) as any;
     const navigate = useNavigate();
 
     const popupRef = useRef<HTMLDivElement>(null);
@@ -42,7 +47,7 @@ export default function AnnotationPopup({ mode: initialMode, target, elementRect
     const dragOffset = useRef({ x: 0, y: 0 });
     const [pos, setPos] = useState(() => computeInitialPosition(elementRect));
 
-    const [mode] = useState<PopupMode>(initialMode);
+    const [mode, setMode] = useState<PopupMode>(initialMode);
     const [annotationType, setAnnotationType] = useState<AnnotationType>('component');
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -101,6 +106,14 @@ export default function AnnotationPopup({ mode: initialMode, target, elementRect
             index: maxIndex + 1,
         };
         await addAnnotation(annotation);
+        await mutate(ALL_ANNOTATIONS_KEY(documentationId));
+        onClose();
+    };
+
+    const handleDelete = async () => {
+        if (!currentAnnotation?.id) return;
+        if (!window.confirm('Are you sure you want to delete this annotation?')) return;
+        await deleteAnnotation(currentAnnotation.id as string);
         await mutate(ALL_ANNOTATIONS_KEY(documentationId));
         onClose();
     };
@@ -219,6 +232,13 @@ export default function AnnotationPopup({ mode: initialMode, target, elementRect
                     <p className="text-sm text-slate-500 py-2">No annotation found for this element.</p>
                 )}
             </div>
+
+            {mode === 'view' && currentAnnotation && editMode && (
+                <div className="flex items-center space-x-2 px-3 py-2 border-t border-slate-100 flex-shrink-0">
+                    <ButtonPrimary text="Edit" icon={<EditIcon />} onClick={() => setMode('edit')} />
+                    <ButtonDanger text="Delete" icon={<DeleteIcon />} onClick={handleDelete} />
+                </div>
+            )}
 
         </div>
     );
