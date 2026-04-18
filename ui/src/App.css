@@ -39,6 +39,26 @@ ANNOTATION HIGHLIGHTING
   cursor: pointer;
 }
 
+.document-io-edit-annotated-element {
+  outline: 2px dashed rgba(245, 158, 11, 0.85) !important;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.document-io-edit-annotated-element:hover {
+  box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.4),
+    0 4px 6px -4px rgba(245, 158, 11, 0.4) !important;
+}
+
+.document-io-edit-annotated-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(245, 158, 11, 0.85);
+  color: white;
+  padding: 0px;
+  cursor: pointer;
+}
+
 
 /* 
   ----------------------

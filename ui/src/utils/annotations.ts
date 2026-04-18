@@ -1,4 +1,4 @@
-import { ANNOTATED_ELEMENT_CLASS, ANNOTATED_ELEMENT_ICON_CLASS, ANNOTATED_ELEMENT_WITH_SHADOW_CLASS } from "./constants";
+import { ANNOTATED_ELEMENT_CLASS, ANNOTATED_ELEMENT_ICON_CLASS, ANNOTATED_ELEMENT_WITH_SHADOW_CLASS, EDIT_ANNOTATED_CLASS, EDIT_ANNOTATED_ICON_CLASS } from "./constants";
 
 const VIEW_ICON = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -6,53 +6,32 @@ const VIEW_ICON = `
 </svg>
 `;
 
+const PENCIL_ICON = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+  <path d="M2.695 14.763l-1.262 3.154a.5.5 0 0 0 .65.65l3.155-1.262a4 4 0 0 0 1.343-.885L17.5 5.5a2.121 2.121 0 0 0-3-3L3.58 13.42a4 4 0 0 0-.885 1.343z" />
+</svg>
+`;
 
 /**
- * Highlights the annotated element
- * Adds a view icon to the element to view the annotation
- * @param element Element to highlight
- * @param showIcon If true, shows an icon to view the annotation
- * @param iconCallback Callback function to call when the icon is clicked
- * @param withShadow If true, adds a shadow to the element
+ * Shared helper — appends a small icon badge to an element.
  */
-export function highlight(element: HTMLElement, showIcon = true, iconCallback: Function | null = null, withShadow = false) {
-    if (!element || !isHighlightable(element) || isAnnotated(element)) {
-        return;
-    }
-    // const { _id: id, target }: { _id: string, target: string } = annotation;
-    // const element = document.querySelector(target) as HTMLElement;
+function addIcon(
+    element: HTMLElement,
+    svgString: string,
+    cssClass: string,
+    callback: Function | null,
+) {
+    if (element.querySelector(`.${cssClass}`)) return;
 
-    element.classList.add(ANNOTATED_ELEMENT_CLASS);
-    withShadow && element.classList.add(ANNOTATED_ELEMENT_WITH_SHADOW_CLASS);
-    // TODO: Add annotation id to the element only if needed
-    // element.dataset.annotationId = id;
-
-    showIcon && addViewIcon(element, iconCallback);
-}
-
-/**
- * Adds the view icon to the element
- * @param element Element to add the icon to
- * @param callback Callback function to call when the icon is clicked
- * @returns 
- */
-function addViewIcon(element: HTMLElement, callback: Function | null = null) {
     const elementStyle = window.getComputedStyle(element);
-
-    if (hasViewIcon(element)) {
-        return;
-    }
-
-    // Add view icon
     const icon = document.createElement('div');
-    icon.innerHTML = VIEW_ICON;
-    icon.classList.add(ANNOTATED_ELEMENT_ICON_CLASS);
+    icon.innerHTML = svgString;
+    icon.classList.add(cssClass);
     icon.onclick = (e) => {
         e.preventDefault();
         e.stopPropagation();
         callback && callback();
     };
-    // Assign height and width based on element size
     icon.style.height = `min(20px, ${element.offsetHeight - 5}px)`;
     icon.style.width = `min(20px, ${element.offsetHeight - 5}px)`;
     icon.style.minHeight = `15px`;
@@ -65,29 +44,60 @@ function addViewIcon(element: HTMLElement, callback: Function | null = null) {
     }
 }
 
-export function removeHighlight(element: HTMLElement) {
-    if (!element || !isAnnotated(element)) {
-        return;
+/**
+ * Removes any direct-child icon with the given CSS class from the element.
+ */
+function removeIconByClass(element: HTMLElement, cssClass: string) {
+    for (const child of Array.from(element.children)) {
+        if (child.classList.contains(cssClass)) {
+            element.removeChild(child);
+            return;
+        }
     }
-    element.classList.remove(ANNOTATED_ELEMENT_CLASS);
-    element.classList.remove(ANNOTATED_ELEMENT_WITH_SHADOW_CLASS);
-    removeViewIcon(element);
-}
-
-function removeViewIcon(element: HTMLElement) {
-    if (!hasViewIcon(element)) {
-        return;
-    }
-    // Icon is the last child
-    const lastChild = element.children[element.children.length - 1];
-    element.removeChild(lastChild);
 }
 
 /**
- * Gets the maximum z-index of the children of the element
- * @param element 
- * @returns
+ * Highlights an annotated element in blue (view mode).
+ * Adds a view icon badge that triggers iconCallback on click.
  */
+export function highlight(element: HTMLElement, showIcon = true, iconCallback: Function | null = null, withShadow = false) {
+    if (!element || !isHighlightable(element) || isAnnotated(element) || isEditAnnotated(element)) {
+        return;
+    }
+    element.classList.add(ANNOTATED_ELEMENT_CLASS);
+    withShadow && element.classList.add(ANNOTATED_ELEMENT_WITH_SHADOW_CLASS);
+    showIcon && addIcon(element, VIEW_ICON, ANNOTATED_ELEMENT_ICON_CLASS, iconCallback);
+}
+
+/**
+ * Highlights an annotated element in amber (edit mode).
+ * Adds a pencil icon badge that triggers iconCallback on click.
+ */
+export function highlightEditMode(element: HTMLElement, iconCallback: Function | null = null) {
+    if (!element || !isHighlightable(element) || isAnnotated(element) || isEditAnnotated(element)) {
+        return;
+    }
+    element.classList.add(EDIT_ANNOTATED_CLASS);
+    addIcon(element, PENCIL_ICON, EDIT_ANNOTATED_ICON_CLASS, iconCallback);
+}
+
+/**
+ * Removes all highlight classes and icon badges from the element.
+ * Handles both view-mode (blue) and edit-mode (amber) highlights.
+ */
+export function removeHighlight(element: HTMLElement) {
+    if (!element) return;
+    if (isAnnotated(element)) {
+        element.classList.remove(ANNOTATED_ELEMENT_CLASS);
+        element.classList.remove(ANNOTATED_ELEMENT_WITH_SHADOW_CLASS);
+        removeIconByClass(element, ANNOTATED_ELEMENT_ICON_CLASS);
+    }
+    if (isEditAnnotated(element)) {
+        element.classList.remove(EDIT_ANNOTATED_CLASS);
+        removeIconByClass(element, EDIT_ANNOTATED_ICON_CLASS);
+    }
+}
+
 function getMaxZIndexOfChildren(element: HTMLElement): number {
     const children = element.children;
     let maxZIndex = 0;
@@ -100,32 +110,15 @@ function getMaxZIndexOfChildren(element: HTMLElement): number {
     return maxZIndex;
 }
 
-/**
- * Checks if the element is already annotated
- * @param element 
- * @returns 
- */
 function isAnnotated(element: HTMLElement): boolean {
     return element.classList.contains(ANNOTATED_ELEMENT_CLASS);
 }
 
-
-/**
- * Checks if the element has the view icon
- * @param element 
- * @returns 
- */
-function hasViewIcon(element: HTMLElement) {
-    if (!element.children || element.children.length === 0) {
-        return false;
-    }
-    const lastChild = element.children[element.children.length - 1];
-    return lastChild.tagName.toLowerCase() === 'div'
-        && lastChild.classList.contains(ANNOTATED_ELEMENT_ICON_CLASS);
+function isEditAnnotated(element: HTMLElement): boolean {
+    return element.classList.contains(EDIT_ANNOTATED_CLASS);
 }
 
 export function isHighlightable(element: HTMLElement) {
-    // disallow svg elements
     const blockedElements = new Set([
         'svg', 'path', 'circle', 'rect', 'ellipse', 'line', 'polyline', 'polygon',
         'script', 'style', 'link', 'meta', 'head', 'title', 'base', 'noscript',
@@ -134,3 +127,4 @@ export function isHighlightable(element: HTMLElement) {
     ]);
     return !blockedElements.has(element.tagName.toLowerCase());
 }
+

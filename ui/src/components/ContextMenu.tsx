@@ -1,5 +1,7 @@
-import { HOVERED_ELEMENT_CLASS, MODAL_ROOT_ID } from "@/utils/constants";
-import { useEffect, useState } from "react";
+import { ANNOTATED_ELEMENT_CLASS, EDIT_ANNOTATED_CLASS, HOVERED_ELEMENT_CLASS, MODAL_ROOT_ID } from "@/utils/constants";
+import { useContext, useEffect, useState } from "react";
+import { PanelOrientationContext } from "@/App";
+import { getQuerySelector } from "@/utils";
 import {
     Menu,
     Item,
@@ -11,16 +13,16 @@ import "react-contexify/dist/ReactContexify.css";
 
 export const CONTEXT_MENU_ID = "document-io-context-menu";
 
-export default function ContextMenu({ onContextMenuOpen, onContextMenuClose, onContextItemClick }: { onContextMenuOpen: () => void, onContextMenuClose: () => void, onContextItemClick: (e: any) => void }) {
+export default function ContextMenu({ onContextMenuOpen, onContextMenuClose }: { onContextMenuOpen: () => void, onContextMenuClose: () => void }) {
 
     const { show } = useContextMenu({
         id: CONTEXT_MENU_ID
     });
+    const { editMode, setActivePopup } = useContext(PanelOrientationContext) as any;
     const [isVisible, setIsVisible] = useState(false);
-    // target is the element on which the context menu is triggered
     const [target, setTarget] = useState<HTMLElement | null>(null);
+    const [targetIsAnnotated, setTargetIsAnnotated] = useState(false);
 
-    // Add event listener to show context menu
     useEffect(() => {
         document.addEventListener("contextmenu", displayMenu);
         return () => {
@@ -28,7 +30,6 @@ export default function ContextMenu({ onContextMenuOpen, onContextMenuClose, onC
         };
     }, []);
 
-    // Handle context menu visibility
     useEffect(() => {
         if (isVisible) {
             onContextMenuOpen();
@@ -38,7 +39,6 @@ export default function ContextMenu({ onContextMenuOpen, onContextMenuClose, onC
         }
     }, [isVisible]);
 
-    // Add or remove highlight on hovering target element
     useEffect(() => {
         if (target) {
             target.classList.add(HOVERED_ELEMENT_CLASS);
@@ -50,31 +50,58 @@ export default function ContextMenu({ onContextMenuOpen, onContextMenuClose, onC
         }
     }, [target]);
 
-    // Display context menu
     function displayMenu(e: MouseEvent) {
         if ((e.target as HTMLElement)?.closest(`#${MODAL_ROOT_ID}`)) {
             return;
         }
         e.preventDefault();
-
-        setTarget(e?.target as HTMLElement);
-        show({
-            event: e,
-        });
+        const el = e.target as HTMLElement;
+        const isAnnotated = el.classList.contains(ANNOTATED_ELEMENT_CLASS)
+            || el.classList.contains(EDIT_ANNOTATED_CLASS);
+        setTarget(el);
+        setTargetIsAnnotated(isAnnotated);
+        show({ event: e });
     }
 
-    // Track visibility of context menu
-    const trackVisibility = (isVisible: boolean) => {
-        setIsVisible(isVisible);
+    function handleAnnotateClick({ triggerEvent }: any) {
+        const el = triggerEvent?.target as HTMLElement;
+        setActivePopup({ type: 'add', target: getQuerySelector(el), elementRect: el.getBoundingClientRect() });
+    }
+
+    function handleEditClick({ triggerEvent }: any) {
+        const el = triggerEvent?.target as HTMLElement;
+        setActivePopup({ type: 'edit', target: getQuerySelector(el), elementRect: el.getBoundingClientRect() });
+    }
+
+    function handleViewClick({ triggerEvent }: any) {
+        const el = triggerEvent?.target as HTMLElement;
+        setActivePopup({ type: 'view', target: getQuerySelector(el), elementRect: el.getBoundingClientRect() });
     }
 
     return (
-        <>
-            <Menu id={CONTEXT_MENU_ID} onVisibilityChange={trackVisibility} className="text-sm">
-                <Item disabled className="font-bold">DOCUMENT.IO</Item>
-                <Separator />
-                <Item id="annotate" onClick={onContextItemClick as any}> <span className="pr-4">✍️</span> Annotate</Item>
-            </Menu>
-        </>
+        <Menu id={CONTEXT_MENU_ID} onVisibilityChange={setIsVisible} className="text-sm">
+            <Item disabled className="font-bold">DOCUMENT.IO</Item>
+            <Separator />
+            {editMode && !targetIsAnnotated && (
+                <Item id="annotate" onClick={handleAnnotateClick}>
+                    <span className="pr-4">✍️</span> Annotate
+                </Item>
+            )}
+            {editMode && targetIsAnnotated && (
+                <Item id="edit-annotation" onClick={handleEditClick}>
+                    <span className="pr-4">✏️</span> Edit annotation
+                </Item>
+            )}
+            {!editMode && targetIsAnnotated && (
+                <Item id="view-annotation" onClick={handleViewClick}>
+                    <span className="pr-4">👁️</span> View annotation
+                </Item>
+            )}
+            {!editMode && !targetIsAnnotated && (
+                <Item disabled>
+                    <span className="text-slate-400 text-xs">No annotation here</span>
+                </Item>
+            )}
+        </Menu>
     );
 }

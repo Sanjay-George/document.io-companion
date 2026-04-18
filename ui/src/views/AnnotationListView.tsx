@@ -3,7 +3,7 @@ import { useDocumentation } from '@/data_access/documentations';
 import { ALL_ANNOTATIONS_KEY, updateAnnotations, useAnnotationsByTarget } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
 import { useContext, useEffect, useMemo, useState, } from 'react';
-import { DocumentationContext } from '@/App';
+import { DocumentationContext, PanelOrientationContext } from '@/App';
 import { Annotation } from '@/models/annotations';
 import { useNavigate, useSearchParams } from 'react-router';
 import Tabs from '@/components/Tabs';
@@ -17,6 +17,7 @@ export type FilterType = 'all' | 'in-page';
 export default function AnnotationListView() {
   const navigate = useNavigate();
   const documentationId = useContext(DocumentationContext) as string;
+  const { editMode, setEditMode } = useContext(PanelOrientationContext) as any;
 
   const [searchParams] = useSearchParams();
   const target = searchParams.get('target');
@@ -125,14 +126,27 @@ export default function AnnotationListView() {
         <div className='w-full inline-flex justify-between gap-3 mb-3 items-center'>
           <Tabs filter={filter} items={tabItems} />
 
-          {filter === 'all' && (!enableReorder ? (
-            <div className='text-xs cursor-pointer text-slate-500 underline justify-end'
-              onClick={() => setEnableReorder(true)}> Reorder </div>
-          ) : (
-            <div className='text-xs cursor-pointer text-slate-500 underline justify-end'
-              onClick={() => setEnableReorder(false)}> Cancel </div>
-          ))}
+          <div className='flex items-center gap-2'>
+            <button
+              onClick={() => setEditMode((prev: boolean) => !prev)}
+              title={editMode ? 'Exit edit mode' : 'Enter edit mode'}
+              className={`text-xs px-2.5 py-1 rounded-full border transition-colors whitespace-nowrap ${
+                editMode
+                  ? 'bg-accent border-accent text-white hover:opacity-90'
+                  : 'bg-transparent border-slate-300 text-slate-500 hover:border-slate-400'
+              }`}
+            >
+              {editMode ? 'Edit mode' : 'View mode'}
+            </button>
 
+            {filter === 'all' && (!enableReorder ? (
+              <div className='text-xs cursor-pointer text-slate-500 underline'
+                onClick={() => setEnableReorder(true)}> Reorder </div>
+            ) : (
+              <div className='text-xs cursor-pointer text-slate-500 underline'
+                onClick={() => setEnableReorder(false)}> Cancel </div>
+            ))}
+          </div>
         </div>
       )}
 
