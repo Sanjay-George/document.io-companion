@@ -4,6 +4,7 @@ import { createContext } from 'react';
 import { Outlet } from 'react-router';
 import { PanelOrientation } from './models/panelOrientation';
 import { debounce } from './utils';
+import MinimizedPill from './components/MinimizedPill';
 
 export const DocumentationContext = createContext(null as string | null);
 export const PanelOrientationContext = createContext(null as object | null);
@@ -12,6 +13,7 @@ export const PanelSizeContext = createContext(null as object | null);
 function App() {
   const [documentationId, setDocumentationId] = useState(null as string | null);
   const [panelOrientation, setPanelOrientation] = useState('');
+  const [isMinimized, setIsMinimized] = useState(false);
 
   const [highlightResizeHandle, setHighlightResizeHandle] = useState(false);
 
@@ -54,8 +56,11 @@ function App() {
 
   return (
     <DocumentationContext.Provider value={documentationId}>
-      <PanelOrientationContext.Provider value={{ panelOrientation, setPanelOrientation }}>
+      <PanelOrientationContext.Provider value={{ panelOrientation, setPanelOrientation, isMinimized, setIsMinimized }}>
 
+        {isMinimized ? (
+          <MinimizedPill onRestore={() => setIsMinimized(false)} />
+        ) : (
         <div data-color-mode="light" data-light-theme="light">
           <PanelGroup
             autoSaveId="document-io-panel"
@@ -128,6 +133,7 @@ function App() {
 
           </PanelGroup>
         </div>
+        )}
       </PanelOrientationContext.Provider>
     </DocumentationContext.Provider >
 

@@ -102,7 +102,7 @@ export default function AnnotationAddView() {
         return (
             <>
                 <SidePanelHeader title="Add Annotation" canGoBack={true}
-                    showNavigationButtons={false} showOrientationButtons={true}
+                    showOrientationButtons={true}
                 />
 
                 <div className="text-xs overflow-hidden py-2 px-3 mb-3 !text-sky-800 rounded-lg !bg-sky-50 !border-1 !border-sky-200 cursor-pointer" role="alert">
@@ -123,7 +123,7 @@ export default function AnnotationAddView() {
     return (
         <>
             <SidePanelHeader title="Add Annotation" canGoBack={true}
-                showNavigationButtons={false} showOrientationButtons={true} />
+                showOrientationButtons={true} />
 
             <div className='mb-3 space-y-2'>
                 <CodeBlock title='Target' value={target} />
