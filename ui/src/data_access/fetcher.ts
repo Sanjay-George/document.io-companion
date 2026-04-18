@@ -3,7 +3,7 @@ const directFetcher = (...args: any[]) => fetch(...args).then((res) => res.json(
 
 // @ts-expect-error Todo: fix this
 // Bridged fetcher. See scripts/bridge.js
-const bridgedFetcher = (...args: any[]) => window.documentioAPI.fetch(...args).then((res) => res);
+const bridgedFetcher = (...args: any[]) => window.documentioAPI.fetch(...args);
 
 
 export const fetcher = (() => {
