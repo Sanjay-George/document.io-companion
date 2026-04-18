@@ -1,5 +1,5 @@
 const extensionFetcher = (...args: any[]) => (window as any).documentioAPI.fetch(...args);
-const directFetcher = (...args: any[]) => window.fetch(...args).then((res) => res.json());
+const directFetcher = (url: string, options?: RequestInit) => window.fetch(url, options).then((res) => res.json());
 
 export const fetcher = (window as any).documentioAPI ? extensionFetcher : directFetcher;
 

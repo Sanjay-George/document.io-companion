@@ -1,8 +1,6 @@
-# Document.io - Companion App
+# Document.io — Companion Extension
 
-> ⚠️ Migration to Chrome / Edge extensions in progress. Extensions would be easier to distribute and use compared to a dedicated app.
-
-This is a desktop application that works as a companion to [document.io](https://github.com/Sanjay-George/document.io), enabling seamless website annotation. Built with Electron, it allows you to create and manage annotations on any website while maintaining security and performance.
+The companion browser extension for [document.io](https://github.com/Sanjay-George/document.io). Install it in Chrome or Edge to annotate any website and view your documentation directly on the pages you care about.
 
 ![screely-1736026495039](https://github.com/user-attachments/assets/ce662841-0d6c-4f37-a9a9-1f901253af69)
 
@@ -10,62 +8,79 @@ More functionalities are [showcased here...](https://github.com/Sanjay-George/do
 
 ## 🚀 Quick Start
 
-#### Prerequisites
-- **Node.js** (v20 or higher preferred): [Download Node.js](https://nodejs.org/)
+### Prerequisites
+- **Node.js** v20 or higher — [Download](https://nodejs.org/)
+- A running instance of [document.io](https://github.com/Sanjay-George/document.io) (self-hosted or [the live demo](https://www.document-io.tech/))
+- Chrome or Edge (latest or previous major version)
+
+---
 
 ### For users
 
-Get started in 4 simple steps:
-
-#### 1. Download or clone the repo
+#### 1. Clone the repo
 
 ```bash
 git clone https://github.com/Sanjay-George/document.io-companion.git
+cd document.io-companion
 ```
 
-#### 2. Install dependencies
-In the application root folder, run the following:
-
-```
-npm install
-cd ui && npm install && cd ..
-```
-
-#### 3. Build the application
+#### 2. Install and build
 
 ```bash
-npm run make
+npm install
+npm run build-ext
 ```
 
-The built application can be accessed in `out/make/` folder. Install the application.
+This builds the React UI and copies the output into `extensions/dist/`.
 
-#### 4. Open a documentation for the main application
-From your hosted version of [document.io](https://github.com/Sanjay-George/document.io) (or from https://www.document-io.tech/), click on a documentation link to open it in the companion app.
+#### 3. Load the extension in your browser
+
+**Chrome:** open `chrome://extensions` → enable **Developer mode** → click **Load unpacked** → select the `extensions/` folder.
+
+**Edge:** open `edge://extensions` → enable **Developer mode** → click **Load unpacked** → select the `extensions/` folder.
+
+#### 4. Configure the server URL
+
+Click the extension icon in your toolbar and enter your document.io server URL (e.g. `http://localhost:5001` for a local instance). Click **Save**.
+
+#### 5. Open a documentation
+
+From your document.io workspace, open any documentation link. The URL will contain a `?documentation-id=` parameter — the extension detects this automatically and activates the annotation panel on the page.
+
+---
 
 ### For devs
-Follow similar steps as users, but run `npm run start` or `npm run package` to start the application. 
 
-Note: On macOS and Linux, deeplinking works [only if the app is packaged.](https://www.electronjs.org/docs/latest/tutorial/launch-app-from-url-in-another-app#packaging).
+```bash
+# Install root deps
+npm install
 
-[See here for more info about the setup for developing UI](https://github.com/Sanjay-George/document.io-companion/blob/master/ui/README.md)
+# Install UI deps and start the Vite dev server
+cd ui && npm install && npm run dev
+```
 
-<!-- 1. For now, the application needs to be built locally and used, since code-signing and notarizing is not in place. To build the application, run the following command in the root folder: -->
+The UI dev server runs on `http://localhost:5173`. To test the full extension flow, build with `npm run build-ext` from the root and load unpacked as above.
+
+[More on UI development →](https://github.com/Sanjay-George/document.io-companion/blob/master/ui/README.md)
+
+---
 
 ## 🎶 Important Notes
-- Cookies are stored locally in JSON files to persist logins without compromising security. (This is a temporary workaround for an issue where cookies are not persisted on macOS).
-- The [document.io central application](https://github.com/Sanjay-George/document.io) must be set up for the companion app to work.
-- This app must be launched via deeplink from the central application, which configures the correct server address for communication.
-- This is currently in BETA - features are constantly being improved and added!
 
+- The extension uses your existing browser session to authenticate with document.io. If you see a "not signed in" message in the panel, log in to your document.io instance in the same browser first.
+- The [document.io central application](https://github.com/Sanjay-George/document.io) must be running and reachable at the URL you configured in the extension settings.
+- This is currently in BETA — features are being actively improved.
 
 ## 🎯 Motivation
 
-Many websites implement strict CSP rules that prevent loading external resources or scripts directly into their pages. This makes it difficult to integrate the annotation interface into the [main application](https://github.com/Sanjay-George/document.io). By using this companion app, you can circumvent these restrictions and still annotate content directly on the pages you visit. 
+Many websites enforce strict CSP rules that block external scripts from loading directly. The extension sidesteps this by running in its own isolated context, injecting the annotation panel into any page without conflicting with the host site's security policy.
 
 ## ✨ Key Features
 
-- Element-level website annotations with Markdown support
-- Local session management
-- Cross-platform support (Windows & MacOS)
-- Coming soon: Image, video, and voice note annotations
+- Right-click any element to annotate it — no mode switching required
+- Markdown editor with live preview
+- Page and component annotation types
+- Drag-to-reorder annotations (saves automatically)
+- SPA-aware: panel refreshes on client-side navigation
+- Works on Chrome and Edge (latest and previous major version)
 

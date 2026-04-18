@@ -68,6 +68,3 @@ export default function AnnotationCard({ annotation, draggable = false }: { anno
         />
     )
 }
-    )
-
-}
