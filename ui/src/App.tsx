@@ -13,7 +13,7 @@ export const PanelSizeContext = createContext(null as object | null);
 function App() {
   const [documentationId, setDocumentationId] = useState(null as string | null);
   const [panelOrientation, setPanelOrientation] = useState('');
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(() => localStorage.getItem('isMinimized') === 'true');
 
   const [highlightResizeHandle, setHighlightResizeHandle] = useState(false);
 
@@ -22,6 +22,11 @@ function App() {
     if (!panelOrientation) return;
     localStorage.setItem('panelOrientation', panelOrientation as string);
   }, [panelOrientation]);
+
+  // Persist minimized state
+  useEffect(() => {
+    localStorage.setItem('isMinimized', String(isMinimized));
+  }, [isMinimized]);
 
   // On mount, get documentation id from root element
   useEffect(() => {

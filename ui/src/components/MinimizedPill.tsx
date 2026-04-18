@@ -11,7 +11,7 @@ export default function MinimizedPill({ onRestore }: Props) {
         if (saved) {
             try { return JSON.parse(saved); } catch { /* ignore */ }
         }
-        return { x: 20, y: window.innerHeight / 2 - 20 };
+        return { x: window.innerWidth - 170, y: 20 };
     });
 
     const pillRef = useRef<HTMLDivElement>(null);
