@@ -84,7 +84,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         return true; // async response
     }
 
-    // TODO: Check where these are used
     if (msg.type === "GET_API_HOST") {
         getApiHost().then((host) => sendResponse({ host }));
         return true;

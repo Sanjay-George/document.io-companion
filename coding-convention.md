@@ -71,7 +71,7 @@ export default function MyComponent({ label, onClick }: Props) {
 
 ## Styling
 
-Tailwind utility classes are the only styling mechanism. Do not use inline `style=` objects or CSS Modules unless computing a value that Tailwind cannot express (e.g., a dynamic pixel value).
+In `ui/src` (the React UI), Tailwind utility classes are the primary styling mechanism. Do not use inline `style=` objects or CSS Modules there unless computing a value that Tailwind cannot express (e.g., a dynamic pixel value).
 
 ```tsx
 // Good
