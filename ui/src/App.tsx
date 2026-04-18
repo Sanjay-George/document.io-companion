@@ -5,6 +5,13 @@ import { Outlet } from 'react-router';
 import { PanelOrientation } from './models/panelOrientation';
 import { debounce } from './utils';
 import MinimizedPill from './components/MinimizedPill';
+import ContextMenu from './components/ContextMenu';
+
+type ContextMenuCallbacks = {
+  onContextMenuOpen: () => void;
+  onContextMenuClose: () => void;
+  onContextItemClick: (e: any) => void;
+} | null;
 
 export const DocumentationContext = createContext(null as string | null);
 export const PanelOrientationContext = createContext(null as object | null);
@@ -14,6 +21,7 @@ function App() {
   const [documentationId, setDocumentationId] = useState(null as string | null);
   const [panelOrientation, setPanelOrientation] = useState('');
   const [isMinimized, setIsMinimized] = useState(() => localStorage.getItem('isMinimized') === 'true');
+  const [contextMenuCallbacks, setContextMenuCallbacks] = useState<ContextMenuCallbacks>(null);
 
   const [highlightResizeHandle, setHighlightResizeHandle] = useState(false);
 
@@ -61,12 +69,13 @@ function App() {
 
   return (
     <DocumentationContext.Provider value={documentationId}>
-      <PanelOrientationContext.Provider value={{ panelOrientation, setPanelOrientation, isMinimized, setIsMinimized }}>
+      <PanelOrientationContext.Provider value={{ panelOrientation, setPanelOrientation, isMinimized, setIsMinimized, setContextMenuCallbacks }}>
 
-        {isMinimized ? (
-          <MinimizedPill onRestore={() => setIsMinimized(false)} />
-        ) : (
-        <div data-color-mode="light" data-light-theme="light">
+        <div
+          data-color-mode="light"
+          data-light-theme="light"
+          style={{ display: isMinimized ? 'none' : 'block' }}
+        >
           <PanelGroup
             autoSaveId="document-io-panel"
             // This is not a mistake. Panel direction is how panels are split. 
@@ -138,6 +147,18 @@ function App() {
 
           </PanelGroup>
         </div>
+
+        {isMinimized && (
+          <MinimizedPill onRestore={() => setIsMinimized(false)} />
+        )}
+
+        {/* Rendered outside the hidden panel so it works even when minimized */}
+        {contextMenuCallbacks && (
+          <ContextMenu
+            onContextMenuOpen={contextMenuCallbacks.onContextMenuOpen}
+            onContextMenuClose={contextMenuCallbacks.onContextMenuClose}
+            onContextItemClick={contextMenuCallbacks.onContextItemClick}
+          />
         )}
       </PanelOrientationContext.Provider>
     </DocumentationContext.Provider >
