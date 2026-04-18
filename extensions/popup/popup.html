@@ -12,6 +12,7 @@
         --var-slate-100: #f1f5f9;
         --var-slate-200: #e2e8f0;
         --var-slate-300: #cbd5e1;
+        --var-slate-400: #94a3b8;
         --var-slate-500: #64748b;
         --var-slate-700: #334155;
         --var-slate-900: #0f172a;
@@ -58,8 +59,8 @@
         font-size: 11px;
         font-weight: 600;
         color: var(--var-slate-500);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
+        text-transform: capitalize;
+        /* letter-spacing: 0.04em; */
         margin-bottom: 6px;
       }
 
@@ -102,7 +103,8 @@
 
       .hint {
         font-size: 11px;
-        color: var(--var-slate-500);
+        font-style: italic;
+        color: var(--var-slate-400);
         margin-top: 7px;
       }
 
@@ -118,9 +120,9 @@
   <body>
     <main class="panel">
       <h1>Document.io <span>Companion</span></h1>
-      <label for="host">Server URL</label>
+      <label for="host">Connect to:</label>
       <input id="host" type="url" placeholder="http://localhost:5001" />
-      <p class="hint">The URL of your document.io server.</p>
+      <p class="hint">(The URL of your document.io server.)</p>
       <button id="save">Save</button>
       <p class="status" id="status"></p>
     </main>
