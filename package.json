@@ -1,48 +1,18 @@
 {
   "name": "document-io-companion-app",
-  "version": "1.0.0-beta.1",
-  "main": "dist/index.js",
+  "version": "1.0.0-beta.2",
   "type": "commonjs",
   "scripts": {
-    "clean": "rimraf dist",
-    "build:ui": "npm --prefix ./ui run build",
-    "copy:ui": "copyfiles -u 2 ui/dist/** ui/dist/**/* ./dist/ui",
-    "copy": "copyfiles -u 1 src/**/*.html ./dist/src",
-    "build": "npm run clean && tsc -b && npm run build:ui && npm run copy:ui && npm run copy",
-    "start": "electron-forge start",
-    "prepackage": "npm run build",
-    "package": "electron-forge package",
-    "premake": "npm run build",
-    "make": "electron-forge make",
-    "publish": "node -r dotenv/config node_modules/.bin/electron-forge publish",
     "clean-ext": "rimraf extensions/dist",
     "copy-ext:ui": "copyfiles -u 2 ui/dist/** ui/dist/**/* extensions/dist",
+    "build:ui": "npm --prefix ./ui run build",
     "build-ext": "npm run clean-ext && npm run build:ui && npm run copy-ext:ui"
   },
   "author": "",
   "license": "ISC",
   "description": "",
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.1"
-  },
   "devDependencies": {
-    "@electron-forge/cli": "^7.6.0",
-    "@electron-forge/maker-deb": "^7.6.0",
-    "@electron-forge/maker-dmg": "^7.6.0",
-    "@electron-forge/maker-rpm": "^7.6.0",
-    "@electron-forge/maker-squirrel": "^7.6.0",
-    "@electron-forge/maker-zip": "^7.6.0",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
-    "@electron-forge/plugin-fuses": "^7.6.0",
-    "@electron-forge/publisher-github": "^7.6.0",
-    "@electron/fuses": "^1.8.0",
-    "@types/electron": "^1.6.12",
-    "@types/node": "^22.10.1",
     "copyfiles": "^2.4.1",
-    "dotenv": "^16.4.7",
-    "electron": "^33.2.1",
-    "rimraf": "^6.0.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "rimraf": "^6.0.1"
   }
 }

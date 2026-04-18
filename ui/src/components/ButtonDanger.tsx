@@ -1,6 +1,6 @@
 import ButtonBase from "./ButtonBase";
 
-export default function ButtonDanger({ text, icon, onClick, href, target }: { text: string, icon: React.ReactNode, onClick?: () => void, href?: string, target?: string }) {
+export default function ButtonDanger({ text, icon, onClick, href, target }: { text: string, icon?: React.ReactNode, onClick?: () => void, href?: string, target?: string }) {
 
     return (
         <ButtonBase

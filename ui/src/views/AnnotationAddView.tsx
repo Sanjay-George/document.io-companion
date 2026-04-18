@@ -9,7 +9,6 @@ import { DocumentationContext } from '@/App';
 import { Annotation } from '@/models/annotations';
 import { ANNOTATED_ELEMENT_CLASS, ANNOTATED_ELEMENT_ICON_CLASS, HOVERED_ELEMENT_CLASS, MODAL_ROOT_ID } from '@/utils/constants';
 import ContextMenu from '@/components/ContextMenu';
-import CodeBlock from '@/components/CodeBlock';
 import { getQuerySelector } from '@/utils';
 import AnnotationTypeSelector, { AnnotationType } from '@/components/AnnotationTypeSelector';
 
@@ -125,9 +124,11 @@ export default function AnnotationAddView() {
             <SidePanelHeader title="Add Annotation" canGoBack={true}
                 showNavigationButtons={false} showOrientationButtons={true} />
 
-            <div className='mb-3 space-y-2'>
-                <CodeBlock title='Target' value={target} />
-                <CodeBlock title='URL' value={window.location.href} />
+            <div className='mb-3'>
+                <div className='inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-mono max-w-full overflow-hidden'>
+                    <span className='font-sans font-medium text-slate-400 shrink-0'>Target</span>
+                    <span className='overflow-hidden text-ellipsis whitespace-nowrap'>{target}</span>
+                </div>
             </div>
 
             <AnnotationTypeSelector

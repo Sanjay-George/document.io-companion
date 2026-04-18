@@ -4,7 +4,7 @@ import { renderTitleFromValue } from '@/utils';
 import AnnotationEditor from '@/components/AnnotationEditor';
 import { useNavigate, useParams } from 'react-router';
 import ButtonPrimary from '@/components/ButtonPrimary';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { highlight, removeHighlight } from '@/utils/annotations';
 import ButtonDanger from '@/components/ButtonDanger';
 import EditIcon from '@/components/icons/EditIcon';
@@ -20,17 +20,13 @@ export default function AnnotationDetailsView() {
     const documentationId = useContext(DocumentationContext) as string;
 
     const navigate = useNavigate();
+    const [confirmDelete, setConfirmDelete] = useState(false);
 
     const { data: annotation, isLoading, error } = annotationId
         ? useAnnotation(annotationId as string)
         : { data: null, isLoading: false, error: null };
 
     const handleDelete = async () => {
-        // show confirmation dialog
-        if (!window.confirm('Are you sure you want to delete this annotation?')) {
-            return;
-        }
-
         await deleteAnnotation(annotationId as string);
         await mutate(ALL_ANNOTATIONS_KEY(documentationId));
         navigate(-1);
@@ -95,10 +91,24 @@ export default function AnnotationDetailsView() {
 
 
             <div className='space-x-2'>
-                <ButtonPrimary text="Edit" icon={<EditIcon />}
-                    onClick={() => { navigate(`/${annotation.id}/edit`) }} />
-                <ButtonDanger text="Delete" icon={<DeleteIcon />}
-                    onClick={handleDelete} />
+                {!confirmDelete ? (
+                    <>
+                        <ButtonPrimary text="Edit" icon={<EditIcon />}
+                            onClick={() => { navigate(`/${annotation.id}/edit`) }} />
+                        <ButtonDanger text="Delete" icon={<DeleteIcon />}
+                            onClick={() => setConfirmDelete(true)} />
+                    </>
+                ) : (
+                    <div className='inline-flex items-center gap-3 py-1'>
+                        <span className='text-xs text-slate-500'>Delete this annotation?</span>
+                        <ButtonDanger text="Yes, delete" onClick={handleDelete} />
+                        <button
+                            className='text-xs text-slate-500 hover:text-slate-700 underline cursor-pointer'
+                            onClick={() => setConfirmDelete(false)}>
+                            Cancel
+                        </button>
+                    </div>
+                )}
             </div>
 
         </>

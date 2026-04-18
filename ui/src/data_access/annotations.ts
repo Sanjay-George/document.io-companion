@@ -2,10 +2,9 @@ import useSWR from "swr";
 import { fetch, fetcher } from "./fetcher";
 import { Annotation } from "@/models/annotations";
 
-// TODO: setup vite env variables
-const API_URL = (import.meta.env.VITE_APP_ENV === 'development')
-    ? 'http://localhost:5001'
-    : '';
+// API base URL is managed by the extension's background service worker.
+// Relative paths are used here; the background script prepends the configured host.
+const API_URL = '';
 
 // Keys
 export const ALL_ANNOTATIONS_KEY = (documentationId: string) =>

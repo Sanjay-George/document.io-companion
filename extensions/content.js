@@ -13,6 +13,7 @@
     injectAssets();
     injectBridge();
     setupMessageListener();
+    setupNavigationListener();
 
     // ---- Functions ----
     function getDocumentationId() {
@@ -82,5 +83,25 @@
                 resolve(resp.data);
             });
         });
+    }
+
+    // ---- SPA Navigation Detection ----
+    function setupNavigationListener() {
+        const notify = () => window.postMessage({ type: "DOCIO_NAVIGATION_UPDATED" }, "*");
+
+        const originalPushState = history.pushState.bind(history);
+        const originalReplaceState = history.replaceState.bind(history);
+
+        history.pushState = function (...args) {
+            originalPushState(...args);
+            notify();
+        };
+
+        history.replaceState = function (...args) {
+            originalReplaceState(...args);
+            notify();
+        };
+
+        window.addEventListener("popstate", notify);
     }
 })();

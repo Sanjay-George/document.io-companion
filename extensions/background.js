@@ -1,6 +1,14 @@
+const DEFAULT_API_HOST = "http://localhost:5001";
+
 chrome.runtime.onInstalled.addListener(() => {
     console.log("[Document.io Companion] Extension installed.");
 });
+
+// ---- API Host Config ----
+async function getApiHost() {
+    const data = await chrome.storage.local.get("docio_api_host");
+    return data.docio_api_host || DEFAULT_API_HOST;
+}
 
 // ---- Web Navigation Logic ----
 function makeKey(tabId, domain) {
@@ -17,12 +25,7 @@ function handleUrl(details) {
 
         if (docId) {
             const key = makeKey(details.tabId, domain);
-
-            chrome.storage.session.set({ [key]: docId }, () => {
-                console.debug(
-                    `[Document.io Companion] [Tab=${details.tabId}] [${domain}] Stored documentation-id=${docId}`
-                );
-            });
+            chrome.storage.local.set({ [key]: docId });
         }
     } catch (err) {
         console.warn("[Document.io Companion] Failed parsing URL:", err);
@@ -33,22 +36,18 @@ function handleUrl(details) {
 chrome.webNavigation.onCommitted.addListener(handleUrl);
 chrome.webNavigation.onHistoryStateUpdated.addListener(handleUrl);
 
-// Cleanup storage on tab close
-chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
-    chrome.storage.session.get(null).then((all) => {
-        for (const key of Object.keys(all)) {
-            if (key.startsWith(`docio_${tabId}_`)) {
-                chrome.storage.session.remove(key);
-            }
-        }
+// Cleanup tab-scoped keys on tab close
+chrome.tabs.onRemoved.addListener((tabId) => {
+    chrome.storage.local.get(null).then((all) => {
+        const keysToRemove = Object.keys(all).filter((k) => k.startsWith(`docio_${tabId}_`));
+        if (keysToRemove.length) chrome.storage.local.remove(keysToRemove);
     });
 });
 
 // ---- Message Handling ----
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === "GET_DOC_ID") {
-        // Use sender.tab info
-        if (!sender.tab || !sender.tab.id || !sender.tab.url) {
+        if (!sender.tab?.id || !sender.tab?.url) {
             sendResponse({ documentationId: null });
             return false;
         }
@@ -57,11 +56,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             const urlObj = new URL(sender.tab.url);
             const key = makeKey(sender.tab.id, urlObj.hostname);
 
-            chrome.storage.session.get(key).then((data) => {
+            chrome.storage.local.get(key).then((data) => {
                 sendResponse({ documentationId: data[key] || null });
             });
-        } catch (err) {
-            console.warn("[Document.io Companion] Failed extracting domain:", err);
+        } catch {
             sendResponse({ documentationId: null });
         }
 
@@ -71,18 +69,44 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === "API_FETCH") {
         doFetch(msg.url, msg.options)
             .then((data) => sendResponse({ ok: true, data }))
-            .catch((err) => sendResponse({ ok: false, error: err.message }));
+            .catch((err) => sendResponse({ ok: false, error: err.message, status: err.status }));
 
         return true; // async response
+    }
+
+    if (msg.type === "GET_API_HOST") {
+        getApiHost().then((host) => sendResponse({ host }));
+        return true;
+    }
+
+    if (msg.type === "SET_API_HOST") {
+        chrome.storage.local.set({ docio_api_host: msg.host }).then(() => sendResponse({ ok: true }));
+        return true;
     }
 });
 
 // ---- Fetch Helper ----
-async function doFetch(url, options) {
-    const base = "http://localhost:5001"; // Base URL for local API
+async function doFetch(url, options = {}) {
+    const base = await getApiHost();
     if (!/^https?:\/\//i.test(url)) url = base + url;
-    console.debug(`[Document.io Companion] Background fetching: ${url}`);
+
     const res = await fetch(url, options);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    if (res.status === 401) {
+        const err = new Error("HTTP 401");
+        err.status = 401;
+        throw err;
+    }
+    if (!res.ok) {
+        const err = new Error(`HTTP ${res.status}`);
+        err.status = res.status;
+        throw err;
+    }
+
+    const contentType = res.headers.get("content-type");
+    if (res.status === 204 || !contentType?.includes("application/json")) {
+        return null;
+    }
+
     return await res.json();
 }

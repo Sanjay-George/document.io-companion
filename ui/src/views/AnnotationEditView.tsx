@@ -8,7 +8,6 @@ import { highlight, removeHighlight } from '@/utils/annotations';
 import { DocumentationContext } from '@/App';
 import { Annotation } from '@/models/annotations';
 import { mutate } from 'swr';
-import CodeBlock from '@/components/CodeBlock';
 import Spinner from '@/components/Spinner';
 import AnnotationTypeSelector, { AnnotationType } from '@/components/AnnotationTypeSelector';
 
@@ -74,9 +73,11 @@ export default function AnnotationEditView() {
         <>
             <SidePanelHeader title={renderTitleFromValue(annotation.value, 30)} canGoBack={true} showNavigationButtons={false} showOrientationButtons={false} />
 
-            <div className='mb-3 space-y-2'>
-                <CodeBlock title='Target' value={annotation.target} />
-                <CodeBlock title='URL' value={annotation.url} />
+            <div className='mb-3'>
+                <div className='inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-mono max-w-full overflow-hidden'>
+                    <span className='font-sans font-medium text-slate-400 shrink-0'>Target</span>
+                    <span className='overflow-hidden text-ellipsis whitespace-nowrap'>{annotation.target}</span>
+                </div>
             </div>
 
             <AnnotationTypeSelector

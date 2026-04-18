@@ -24,7 +24,10 @@ export default function AnnotationListView() {
 
   const isTargetSelected = useMemo(() => !!target && target.length > 0, [target]);
   const [filter, setFilter] = useState<FilterType>(filterQS as FilterType);
-  const [enableReorder, setEnableReorder] = useState(false);
+
+  // Incremented to force re-evaluation of in-page filter (on SPA nav or DOM changes)
+  const [updateKey, setUpdateKey] = useState(0);
+  const forceUpdate = () => setUpdateKey(k => k + 1);
 
   // Update filter state when query string changes
   useEffect(() => {
@@ -33,8 +36,27 @@ export default function AnnotationListView() {
     }
   }, [filterQS]);
 
-  // A hack to force update the list when the page changes in an SPA
-  const [shouldUpdateList, setShouldUpdateList] = useState(false);
+  // Listen for SPA navigation events from content script
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data?.type !== 'DOCIO_NAVIGATION_UPDATED') return;
+      if (!isTargetSelected) forceUpdate();
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [isTargetSelected]);
+
+  // MutationObserver: re-evaluate in-page filter when DOM changes
+  useEffect(() => {
+    if (!documentationId) return;
+    let timer: ReturnType<typeof setTimeout>;
+    const observer = new MutationObserver(() => {
+      clearTimeout(timer);
+      timer = setTimeout(forceUpdate, 300);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => { observer.disconnect(); clearTimeout(timer); };
+  }, [documentationId]);
 
   // Fetch documentation details
   const { data: documentation, isLoading, error } = useDocumentation(documentationId);
@@ -50,9 +72,9 @@ export default function AnnotationListView() {
       return annotations?.filter(inPageFilter);
     }
     return annotations;
-  }, [annotations, filter, shouldUpdateList]);
+  }, [annotations, filter, updateKey]);
 
-  const pageAnnotationsCount = useMemo(() => annotations?.filter(inPageFilter).length, [annotations, filter, shouldUpdateList]);
+  const pageAnnotationsCount = useMemo(() => annotations?.filter(inPageFilter).length, [annotations, updateKey]);
   const allAnnotationsCount = useMemo(() => annotations?.length, [annotations]);
 
   function inPageFilter(item: Annotation) {
@@ -67,41 +89,25 @@ export default function AnnotationListView() {
   }
 
   const tabItems = useMemo(() => {
-    if (enableReorder) {
-      return [{ label: 'All', count: allAnnotationsCount, key: 'all' as FilterType, link: '/?filter=all' }];
-    }
     return [
       { label: 'On this page', count: pageAnnotationsCount, key: 'in-page' as FilterType, link: '/?filter=in-page' },
       { label: 'All', count: allAnnotationsCount, key: 'all' as FilterType, link: '/?filter=all' },
-    ]
-  }, [pageAnnotationsCount, allAnnotationsCount, enableReorder]);
-
+    ];
+  }, [pageAnnotationsCount, allAnnotationsCount]);
 
   // Handlers
   const handleSaveOrdering = async (values: Annotation[]) => {
     await updateAnnotations(values);
     await mutate(ALL_ANNOTATIONS_KEY(documentationId));
-    setEnableReorder(false);
   }
 
   const handleAddAnnotationClick = () => {
-    // Add annotation for existing target
     if (isTargetSelected) {
       navigate(`/add?target=${encodeURIComponent(target as any)}`);
       return;
     }
-    // Add annotation for a new target
     navigate(`/add`);
   }
-
-  window.electronAPI?.onNavigationUpdate(() => {
-    console.log('onNavigationUpdate');
-    if (isTargetSelected) {
-      return;
-    }
-    setShouldUpdateList(!shouldUpdateList);
-  });
-
 
   if (!documentationId) {
     return <Spinner text="Loading editor..." />;
@@ -115,32 +121,40 @@ export default function AnnotationListView() {
     return <div className='text-red-700'>Failed to load the editor. Error: {error?.message}</div>;
   }
 
+  // Auth error
+  if (errorAnnotations?.message?.includes('401')) {
+    return (
+      <div className='text-sm text-slate-600 py-4'>
+        You&rsquo;re not signed in.{' '}
+        <a className='underline text-indigo-600 hover:text-indigo-800'
+          href={`${window.location.origin}/login`} target='_blank' rel='noreferrer'>
+          Open document.io to sign in
+        </a>
+      </div>
+    );
+  }
+
+  // Reorderable list is always shown when viewing "All" with no target selected
+  const showReorderable = filter === 'all' && !isTargetSelected;
+
   return (
     <div className='@container'>
 
-      {/* TODO: Update title when target selected */}
       <SidePanelHeader title={documentation?.title} canGoBack={isTargetSelected} />
 
       {!isTargetSelected && (
         <div className='w-full inline-flex justify-between gap-3 mb-3 items-center'>
           <Tabs filter={filter} items={tabItems} />
-
-          {filter === 'all' && (!enableReorder ? (
-            <div className='text-xs cursor-pointer text-slate-500 underline justify-end'
-              onClick={() => setEnableReorder(true)}> Reorder </div>
-          ) : (
-            <div className='text-xs cursor-pointer text-slate-500 underline justify-end'
-              onClick={() => setEnableReorder(false)}> Cancel </div>
-          ))}
-
         </div>
       )}
 
       {isLoadingAnnotations && <Spinner text="Fetching annotations..." />}
-      {errorAnnotations && <div className='text-red-700'>Failed to load annotations. Error: {errorAnnotations?.message}</div>}
+      {errorAnnotations && !errorAnnotations?.message?.includes('401') && (
+        <div className='text-red-700'>Failed to load annotations. Error: {errorAnnotations?.message}</div>
+      )}
 
       {
-        !enableReorder && (
+        !showReorderable && (
           <AnnotationList
             annotations={filteredAnnotations}
             handleAddAnnotationClick={handleAddAnnotationClick}
@@ -149,7 +163,7 @@ export default function AnnotationListView() {
       }
 
       {
-        enableReorder &&
+        showReorderable &&
         <AnnotationListReorderable
           annotations={filteredAnnotations}
           onSaveOrder={handleSaveOrdering} />
