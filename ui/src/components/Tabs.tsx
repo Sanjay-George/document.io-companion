@@ -14,7 +14,7 @@ interface TabProps {
     onTabSelect?: (key: string) => void;
 }
 
-
+// TODO: Split this component into specific ones. This is too generic handling. Stupid AI coding.
 export default function Tabs({ filter, items, showCount = true, onTabSelect }: TabProps) {
 
     return (

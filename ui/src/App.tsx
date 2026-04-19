@@ -209,7 +209,8 @@ function App() {
 
           </PanelGroup>
         </div>
-
+        
+        {/* Minimize side panel to a pill */}
         {isMinimized && (
           <MinimizedPill
             onRestore={() => setIsMinimized(false)}
@@ -218,11 +219,15 @@ function App() {
           />
         )}
 
-        {/* Context menu always rendered — works in both view and edit mode */}
-        <ContextMenu
-          onContextMenuOpen={() => setHoverEnabled(false)}
-          onContextMenuClose={() => setHoverEnabled(true)}
-        />
+        {/* Enable context menu ONLY in edit mode */}
+        {
+          editMode && (
+            <ContextMenu
+              onContextMenuOpen={() => setHoverEnabled(false)}
+              onContextMenuClose={() => setHoverEnabled(true)}
+            />
+          )
+        }
 
         {/* Floating annotation popup — rendered outside the panel so it can overlay freely */}
         {activePopup && (

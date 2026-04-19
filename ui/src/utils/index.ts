@@ -1,8 +1,8 @@
 import { Annotation } from "@/models/annotations";
 import { HOVERED_ELEMENT_CLASS } from "./constants";
 
-export function sortAnnotations(annotations: Annotation[]) {
-    annotations?.sort((a, b) => {
+export function sortAnnotations(annotations: Annotation[]): Annotation[] {
+   return [...annotations].sort((a, b) => {
         return a.index - b.index;
     });
 };

@@ -33,9 +33,14 @@ export const useAnnotationsByTarget = (documentationId: string, target: string |
         useSWR(null);
         return { data: [], isLoading: false, error: 'Documentation ID not provided' };
     }
+    console.group('useAnnotationsByTarget', { documentationId, target });
     if (!target) {
+        console.warn('No target provided, fetching all annotations for documentation ID:', documentationId);
+        console.groupEnd();
         return useAnnotations(documentationId);
     }
+    console.log('Fetching annotations for target:', target);
+    console.groupEnd();
     return useSWR(ANNOTATIONS_BY_TARGET_KEY(documentationId, target), fetcher)
 };
 

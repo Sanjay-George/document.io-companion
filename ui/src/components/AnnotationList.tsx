@@ -10,6 +10,8 @@ type Props = {
 };
 
 export default function AnnotationList({ annotations, handleAddAnnotationClick, showAddActions = true }: Props) {
+    console.warn('Rendering AnnotationList with annotations:', annotations);
+    
     return (
         <>
             <div className='grid gap-5 grid-cols-1 @xl:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4 @8xl:grid-cols-5'>

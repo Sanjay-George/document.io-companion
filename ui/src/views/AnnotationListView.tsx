@@ -46,23 +46,33 @@ export default function AnnotationListView() {
 
   // Memoized
   const filteredAnnotations = useMemo(() => {
-    sortAnnotations(annotations);
-    if (filter === 'in-page') {
-      return annotations?.filter(inPageFilter);
+    if (!annotations) {
+      console.warn('No annotations found for documentation ID:', documentationId);
+      return [];
     }
-    return annotations;
+    let sortedAnnotations = sortAnnotations(annotations);
+    if (filter === 'in-page') {
+      console.warn('Applying in-page filter');
+      return sortedAnnotations?.filter(inPageFilter);
+    }
+    console.warn('No filter applied, showing all annotations');
+    return sortedAnnotations;
   }, [annotations, filter, shouldUpdateList]);
 
   const pageAnnotationsCount = useMemo(() => annotations?.filter(inPageFilter).length, [annotations, filter, shouldUpdateList]);
   const allAnnotationsCount = useMemo(() => annotations?.length, [annotations]);
 
   function inPageFilter(item: Annotation) {
-    if (item.type === 'page') {
-      return item.url === window.location.href &&
-        document.querySelector(item.target) !== null;
-    }
-    else if (item.type === 'component') {
-      return document.querySelector(item.target) !== null;
+    try {
+      if (item.type === 'page') {
+        return item.url === window.location.href &&
+          document.querySelector(item.target) !== null;
+      }
+      if (item.type === 'component') {
+        return document.querySelector(item.target) !== null;
+      }
+    } catch {
+      return false;
     }
     return false;
   }
@@ -95,13 +105,57 @@ export default function AnnotationListView() {
     navigate(`/add`);
   }
 
-  window.electronAPI?.onNavigationUpdate(() => {
-    console.log('onNavigationUpdate');
-    if (isTargetSelected) {
-      return;
+  // Listen for navigation updates from the content script (SPA pushState/replaceState/popstate)
+  useEffect(() => {
+    function handleMessage(event: MessageEvent) {
+      if (event.data?.type !== 'DOCIO_NAVIGATION_UPDATED') return;
+      if (isTargetSelected) return;
+      setShouldUpdateList(prev => !prev);
     }
-    setShouldUpdateList(!shouldUpdateList);
-  });
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [isTargetSelected]);
+
+  // Re-evaluate the in-page filter after annotations load.
+  // Host page dynamic elements may not exist yet when SWR resolves, so we
+  // watch the DOM via MutationObserver and re-run the filter on each batch
+  // of mutations until all targets are found or 5 s have elapsed.
+  // IMPORTANT: DO NOT REMOVE THIS CODE; I DON'T KNOW WHY/HOW IT WORKS
+  useEffect(() => {
+    if (!annotations?.length || filter !== 'in-page') return;
+
+    // Quick first pass — handles static pages immediately.
+    setShouldUpdateList(prev => !prev);
+
+    const allResolved = () => annotations.every(a => {
+      try { return document.querySelector(a.target) !== null; }
+      catch { return true; } // invalid selector — don't keep watching
+    });
+
+    if (allResolved()) return;
+
+    let debounceTimer: ReturnType<typeof setTimeout>;
+
+    const observer = new MutationObserver(() => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        setShouldUpdateList(prev => !prev);
+        if (allResolved()) observer.disconnect();
+      }, 150);
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Safety: stop observing after 5 s regardless.
+    const safetyTimer = setTimeout(() => observer.disconnect(), 5000);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(debounceTimer);
+      clearTimeout(safetyTimer);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!annotations?.length, filter]);
 
 
   if (!documentationId) {
