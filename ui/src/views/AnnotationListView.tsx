@@ -6,7 +6,7 @@ import { useContext, useEffect, useMemo, useState, } from 'react';
 import { DocumentationContext, PanelOrientationContext } from '@/App';
 import { Annotation } from '@/models/annotations';
 import { useNavigate, useSearchParams } from 'react-router';
-import Tabs from '@/components/Tabs';
+import AnnotationFilterTabs from '@/components/AnnotationFilterTabs';
 import AnnotationListReorderable from '@/components/AnnotationListReorderable';
 import { sortAnnotations } from '@/utils';
 import { mutate } from 'swr';
@@ -47,15 +47,12 @@ export default function AnnotationListView() {
   // Memoized
   const filteredAnnotations = useMemo(() => {
     if (!annotations) {
-      console.warn('No annotations found for documentation ID:', documentationId);
       return [];
     }
     let sortedAnnotations = sortAnnotations(annotations);
     if (filter === 'in-page') {
-      console.warn('Applying in-page filter');
       return sortedAnnotations?.filter(inPageFilter);
     }
-    console.warn('No filter applied, showing all annotations');
     return sortedAnnotations;
   }, [annotations, filter, shouldUpdateList]);
 
@@ -76,16 +73,6 @@ export default function AnnotationListView() {
     }
     return false;
   }
-
-  const tabItems = useMemo(() => {
-    if (enableReorder) {
-      return [{ label: 'All', count: allAnnotationsCount, key: 'all' as FilterType, link: '/?filter=all' }];
-    }
-    return [
-      { label: 'On this page', count: pageAnnotationsCount, key: 'in-page' as FilterType, link: '/?filter=in-page' },
-      { label: 'All', count: allAnnotationsCount, key: 'all' as FilterType, link: '/?filter=all' },
-    ]
-  }, [pageAnnotationsCount, allAnnotationsCount, enableReorder]);
 
 
   // Handlers
@@ -178,7 +165,7 @@ export default function AnnotationListView() {
 
       {!isTargetSelected && (
         <div className='w-full inline-flex justify-between gap-3 mb-3 items-center'>
-          <Tabs filter={filter} items={tabItems} />
+          <AnnotationFilterTabs filter={filter} inPageCount={pageAnnotationsCount} allCount={allAnnotationsCount} enableReorder={enableReorder} />
 
           <div className='flex items-center gap-2'>
             {filter === 'all' && (!enableReorder ? (
