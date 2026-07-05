@@ -1,26 +1,18 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Annotation } from "@/models/annotations";
 import Markdown from 'react-markdown';
-import { Link, useNavigate } from "react-router";
-import { highlight, removeHighlight } from "@/utils/annotations";
+import { Link } from "react-router";
+import { highlight, highlightEditMode, removeHighlight } from "@/utils/annotations";
 import Card from "./Card";
 import DragHandleIcon from "./icons/DragHandleIcon";
+import { PanelOrientationContext } from "@/App";
 
 
 export default function AnnotationCard({ annotation, draggable = false }: { annotation: Annotation, draggable?: boolean }) {
     const { target, value } = annotation;
+    const { editMode, setActivePopup } = useContext(PanelOrientationContext) as any;
 
-    const navigate = useNavigate();
-    const openInEditor = (target: string) => {
-        if (!target || !target.length) {
-            console.warn('No target provided');
-            return;
-        }
-        const t = encodeURIComponent(target);
-        navigate(`/?target=${t}`);
-    };
-
-    // Highlight annotated element
+    // Highlight annotated element and wire badge icon to open popup
     useEffect(() => {
         const element = document.querySelector(target) as HTMLElement;
         if (!element) {
@@ -28,11 +20,26 @@ export default function AnnotationCard({ annotation, draggable = false }: { anno
             return;
         }
 
-        highlight(element, true, () => openInEditor(target));
+        const openPopup = () => {
+            const elementRect = element.getBoundingClientRect();
+            setActivePopup({
+                type: 'view',
+                target,
+                elementRect,
+                initialAnnotationId: annotation.id,
+            });
+        };
+
+        if (editMode) {
+            highlightEditMode(element, openPopup);
+        } else {
+            highlight(element, true, openPopup);
+        }
+
         return () => {
             removeHighlight(element);
         }
-    }, [annotation]);
+    }, [annotation, editMode]);
 
     return (
         <Card

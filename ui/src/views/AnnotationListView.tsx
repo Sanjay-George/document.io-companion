@@ -3,10 +3,10 @@ import { useDocumentation } from '@/data_access/documentations';
 import { ALL_ANNOTATIONS_KEY, updateAnnotations, useAnnotationsByTarget } from '@/data_access/annotations';
 import SidePanelHeader from '@/components/SidePanelHeader';
 import { useContext, useEffect, useMemo, useState, } from 'react';
-import { DocumentationContext } from '@/App';
+import { DocumentationContext, PanelOrientationContext } from '@/App';
 import { Annotation } from '@/models/annotations';
 import { useNavigate, useSearchParams } from 'react-router';
-import Tabs from '@/components/Tabs';
+import AnnotationFilterTabs from '@/components/AnnotationFilterTabs';
 import AnnotationListReorderable from '@/components/AnnotationListReorderable';
 import { sortAnnotations } from '@/utils';
 import { mutate } from 'swr';
@@ -17,6 +17,7 @@ export type FilterType = 'all' | 'in-page';
 export default function AnnotationListView() {
   const navigate = useNavigate();
   const documentationId = useContext(DocumentationContext) as string;
+  const { editMode } = useContext(PanelOrientationContext) as any;
 
   const [searchParams] = useSearchParams();
   const target = searchParams.get('target');
@@ -45,36 +46,33 @@ export default function AnnotationListView() {
 
   // Memoized
   const filteredAnnotations = useMemo(() => {
-    sortAnnotations(annotations);
-    if (filter === 'in-page') {
-      return annotations?.filter(inPageFilter);
+    if (!annotations) {
+      return [];
     }
-    return annotations;
+    let sortedAnnotations = sortAnnotations(annotations);
+    if (filter === 'in-page') {
+      return sortedAnnotations?.filter(inPageFilter);
+    }
+    return sortedAnnotations;
   }, [annotations, filter, shouldUpdateList]);
 
   const pageAnnotationsCount = useMemo(() => annotations?.filter(inPageFilter).length, [annotations, filter, shouldUpdateList]);
   const allAnnotationsCount = useMemo(() => annotations?.length, [annotations]);
 
   function inPageFilter(item: Annotation) {
-    if (item.type === 'page') {
-      return item.url === window.location.href &&
-        document.querySelector(item.target) !== null;
-    }
-    else if (item.type === 'component') {
-      return document.querySelector(item.target) !== null;
+    try {
+      if (item.type === 'page') {
+        return item.url === window.location.href &&
+          document.querySelector(item.target) !== null;
+      }
+      if (item.type === 'component') {
+        return document.querySelector(item.target) !== null;
+      }
+    } catch {
+      return false;
     }
     return false;
   }
-
-  const tabItems = useMemo(() => {
-    if (enableReorder) {
-      return [{ label: 'All', count: allAnnotationsCount, key: 'all' as FilterType, link: '/?filter=all' }];
-    }
-    return [
-      { label: 'On this page', count: pageAnnotationsCount, key: 'in-page' as FilterType, link: '/?filter=in-page' },
-      { label: 'All', count: allAnnotationsCount, key: 'all' as FilterType, link: '/?filter=all' },
-    ]
-  }, [pageAnnotationsCount, allAnnotationsCount, enableReorder]);
 
 
   // Handlers
@@ -94,13 +92,57 @@ export default function AnnotationListView() {
     navigate(`/add`);
   }
 
-  window.electronAPI?.onNavigationUpdate(() => {
-    console.log('onNavigationUpdate');
-    if (isTargetSelected) {
-      return;
+  // Listen for navigation updates from the content script (SPA pushState/replaceState/popstate)
+  useEffect(() => {
+    function handleMessage(event: MessageEvent) {
+      if (event.data?.type !== 'DOCIO_NAVIGATION_UPDATED') return;
+      if (isTargetSelected) return;
+      setShouldUpdateList(prev => !prev);
     }
-    setShouldUpdateList(!shouldUpdateList);
-  });
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [isTargetSelected]);
+
+  // Re-evaluate the in-page filter after annotations load.
+  // Host page dynamic elements may not exist yet when SWR resolves, so we
+  // watch the DOM via MutationObserver and re-run the filter on each batch
+  // of mutations until all targets are found or 5 s have elapsed.
+  // IMPORTANT: DO NOT REMOVE THIS CODE; I DON'T KNOW WHY/HOW IT WORKS
+  useEffect(() => {
+    if (!annotations?.length || filter !== 'in-page') return;
+
+    // Quick first pass — handles static pages immediately.
+    setShouldUpdateList(prev => !prev);
+
+    const allResolved = () => annotations.every(a => {
+      try { return document.querySelector(a.target) !== null; }
+      catch { return true; } // invalid selector — don't keep watching
+    });
+
+    if (allResolved()) return;
+
+    let debounceTimer: ReturnType<typeof setTimeout>;
+
+    const observer = new MutationObserver(() => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        setShouldUpdateList(prev => !prev);
+        if (allResolved()) observer.disconnect();
+      }, 150);
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Safety: stop observing after 5 s regardless.
+    const safetyTimer = setTimeout(() => observer.disconnect(), 5000);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(debounceTimer);
+      clearTimeout(safetyTimer);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!annotations?.length, filter]);
 
 
   if (!documentationId) {
@@ -119,20 +161,21 @@ export default function AnnotationListView() {
     <div className='@container'>
 
       {/* TODO: Update title when target selected */}
-      <SidePanelHeader title={documentation?.title} canGoBack={isTargetSelected} />
+      <SidePanelHeader title={documentation?.title} canGoBack={isTargetSelected} showEditModeToggle={true} />
 
       {!isTargetSelected && (
         <div className='w-full inline-flex justify-between gap-3 mb-3 items-center'>
-          <Tabs filter={filter} items={tabItems} />
+          <AnnotationFilterTabs filter={filter} inPageCount={pageAnnotationsCount} allCount={allAnnotationsCount} enableReorder={enableReorder} />
 
-          {filter === 'all' && (!enableReorder ? (
-            <div className='text-xs cursor-pointer text-slate-500 underline justify-end'
-              onClick={() => setEnableReorder(true)}> Reorder </div>
-          ) : (
-            <div className='text-xs cursor-pointer text-slate-500 underline justify-end'
-              onClick={() => setEnableReorder(false)}> Cancel </div>
-          ))}
-
+          <div className='flex items-center gap-2'>
+            {filter === 'all' && (!enableReorder ? (
+              <div className='text-xs cursor-pointer text-slate-500 underline'
+                onClick={() => setEnableReorder(true)}> Reorder </div>
+            ) : (
+              <div className='text-xs cursor-pointer text-slate-500 underline'
+                onClick={() => setEnableReorder(false)}> Cancel </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -144,6 +187,7 @@ export default function AnnotationListView() {
           <AnnotationList
             annotations={filteredAnnotations}
             handleAddAnnotationClick={handleAddAnnotationClick}
+            showAddActions={editMode}
           />
         )
       }

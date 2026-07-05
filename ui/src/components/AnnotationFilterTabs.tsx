@@ -1,24 +1,23 @@
-import { FilterType } from "@/views/AnnotationListView";
 import { Link } from "react-router";
+import { FilterType } from "@/views/AnnotationListView";
 
-interface TabItem {
-    label: string;
-    count: number;
-    key: FilterType;
-    link: string;
-}
-
-interface TabProps {
+type Props = {
     filter: FilterType;
-    items: TabItem[];
-}
+    inPageCount: number | undefined;
+    allCount: number | undefined;
+    enableReorder?: boolean;
+};
 
-
-export default function Tabs({ filter, items }: TabProps) {
+export default function AnnotationFilterTabs({ filter, inPageCount, allCount, enableReorder = false }: Props) {
+    const items = enableReorder
+        ? [{ label: 'All', count: allCount, key: 'all' as FilterType, link: '/?filter=all' }]
+        : [
+            { label: 'On this page', count: inPageCount, key: 'in-page' as FilterType, link: '/?filter=in-page' },
+            { label: 'All', count: allCount, key: 'all' as FilterType, link: '/?filter=all' },
+        ];
 
     return (
-        <ul className="flex w-fit rounded-md bg-slate-100
-        cursor-pointer !list-none !m-0 !px-0 !py-0.5">
+        <ul className="flex w-fit rounded-md bg-slate-100 cursor-pointer !list-none !m-0 !px-0 !py-0.5">
             {items.map((item, index) => (
                 <li key={index} className="first:ms-1 last:me-1 !p-0 h-6 flex items-center text-xs">
                     <Link

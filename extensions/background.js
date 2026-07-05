@@ -1,6 +1,14 @@
+const DEFAULT_API_HOST = "http://localhost:5001";
+
 chrome.runtime.onInstalled.addListener(() => {
     console.log("[Document.io Companion] Extension installed.");
 });
+
+// ---- API Host Config ----
+async function getApiHost() {
+    const data = await chrome.storage.local.get("docio_api_host");
+    return data.docio_api_host || DEFAULT_API_HOST;
+}
 
 // ---- Web Navigation Logic ----
 function makeKey(tabId, domain) {
@@ -48,7 +56,7 @@ chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === "GET_DOC_ID") {
         // Use sender.tab info
-        if (!sender.tab || !sender.tab.id || !sender.tab.url) {
+        if (!sender.tab?.id || !sender.tab?.url) {
             sendResponse({ documentationId: null });
             return false;
         }
@@ -75,14 +83,37 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
         return true; // async response
     }
+
+    if (msg.type === "GET_API_HOST") {
+        getApiHost().then((host) => sendResponse({ host }));
+        return true;
+    }
+
+    if (msg.type === "SET_API_HOST") {
+        chrome.storage.local.set({ docio_api_host: msg.host }).then(() => sendResponse({ ok: true }));
+        return true;
+    }
 });
 
 // ---- Fetch Helper ----
 async function doFetch(url, options) {
-    const base = "http://localhost:5001"; // Base URL for local API
+    const base = await getApiHost();
+
     if (!/^https?:\/\//i.test(url)) url = base + url;
+
     console.debug(`[Document.io Companion] Background fetching: ${url}`);
     const res = await fetch(url, options);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    if (res.status === 401) {
+        const err = new Error("HTTP 401");
+        err.status = 401;
+        throw err;
+    }
+    if (!res.ok) {
+        const err = new Error(`HTTP ${res.status}`);
+        err.status = res.status;
+        throw err;
+    }
+
     return await res.json();
 }

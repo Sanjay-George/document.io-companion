@@ -2,12 +2,13 @@
 const directFetcher = (...args: any[]) => fetch(...args).then((res) => res.json());
 
 // @ts-expect-error Todo: fix this
-const electronFetcher = (...args: any[]) => window.documentioAPI.fetch(...args).then((res) => res);
+// Bridged fetcher. See scripts/bridge.js
+const bridgedFetcher = (...args: any[]) => window.documentioAPI.fetch(...args);
 
 
 export const fetcher = (() => {
     if (window.documentioAPI) {
-        return electronFetcher;
+        return bridgedFetcher;
     }
     return directFetcher;
 })();

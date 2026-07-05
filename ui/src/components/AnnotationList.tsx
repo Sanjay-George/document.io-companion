@@ -3,7 +3,15 @@ import AnnotationCard from "./AnnotationCard";
 import ButtonPrimary from "./ButtonPrimary";
 import AddIcon from "./icons/AddIcon";
 
-export default function AnnotationList({ annotations, handleAddAnnotationClick }: { annotations: Annotation[], handleAddAnnotationClick: () => void }) {
+type Props = {
+    annotations: Annotation[];
+    handleAddAnnotationClick: () => void;
+    showAddActions?: boolean;
+};
+
+export default function AnnotationList({ annotations, handleAddAnnotationClick, showAddActions = true }: Props) {
+    console.warn('Rendering AnnotationList with annotations:', annotations);
+    
     return (
         <>
             <div className='grid gap-5 grid-cols-1 @xl:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4 @8xl:grid-cols-5'>
@@ -12,14 +20,14 @@ export default function AnnotationList({ annotations, handleAddAnnotationClick }
                 ))}
 
                 {/* Adding an `Add` button in between for better UX */}
-                {annotations?.length >= 6 && <div className='@xl:hidden'><ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>}
+                {showAddActions && annotations?.length >= 6 && <div className='@xl:hidden'><ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>}
 
                 {annotations && annotations.slice(2).map((annotation: Annotation) => (
                     <AnnotationCard key={annotation.id} annotation={annotation} />
                 ))}
             </div>
 
-            <div className='my-5'> <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>
+            {showAddActions && <div className='my-5'> <ButtonPrimary text="Add Annotation" icon={<AddIcon />} onClick={handleAddAnnotationClick} /></div>}
         </>
     )
 }

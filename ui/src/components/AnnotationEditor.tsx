@@ -6,12 +6,14 @@ import RightArrowIcon from './icons/RightArrowIcon';
 export default function AnnotationEditor({
     content,
     handleSave,
-    preview = 'preview'
+    preview = 'preview',
+    height = 'calc(100% - 200px)',
 }
     : {
         content: string,
         handleSave?: (value: string) => void,
-        preview?: PreviewType
+        preview?: PreviewType,
+        height?: string | number,
     }) {
 
     const isPreview = preview === 'preview';
@@ -39,7 +41,7 @@ export default function AnnotationEditor({
                     'my-3 shadow-md rounded-xl bg-white'
                 }
                 value={value}
-                height={"calc(100% - 200px)"}
+                height={height}
                 onChange={(value) => setValue(value || '')}
                 commands={isPreview ? [] : commands.getCommands()}
                 extraCommands={rightToolbarBtns}
