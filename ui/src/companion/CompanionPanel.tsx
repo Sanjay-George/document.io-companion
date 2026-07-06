@@ -27,6 +27,12 @@ type Props = {
     /** Dock right (vertical) or bottom (horizontal). Defaults to vertical. */
     orientation?: PanelOrientation;
     onOrientationChange?: (orientation: PanelOrientation) => void;
+    /**
+     * Fill the parent instead of using the fixed 376px/340px dock size. Used when
+     * the panel lives inside a resizable container (react-resizable-panels) that
+     * owns the actual dimensions. Storybook leaves this unset for the fixed size.
+     */
+    fill?: boolean;
 };
 
 /**
@@ -52,11 +58,12 @@ export default function CompanionPanel({
     onCancelReanchor,
     orientation = PanelOrientation.VERTICAL,
     onOrientationChange,
+    fill = false,
 }: Props) {
     const horizontal = orientation === PanelOrientation.HORIZONTAL;
     const container = horizontal
-        ? 'h-[340px] w-full border-t shadow-dio-panel-h'
-        : 'h-full w-[376px] border-l shadow-dio-panel';
+        ? `${fill ? 'h-full w-full' : 'h-[340px] w-full'} border-t shadow-dio-panel-h`
+        : `${fill ? 'h-full w-full' : 'h-full w-[376px]'} border-l shadow-dio-panel`;
 
     return (
         <aside

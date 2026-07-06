@@ -7,15 +7,9 @@ import './App.css';
 // Shadow DOM specific styles
 import indexStyles from './index.css?inline';
 import AppStyles from './App.css?inline';
-import reactContexifyStyles from "react-contexify/dist/ReactContexify.css?inline";
-import reactMDEditorStyles from "@uiw/react-md-editor/markdown-editor.css?inline";
+import fontStyles from './companion/fonts.css?inline';
 
-import App from './App.tsx'
-import { MemoryRouter, Route, Routes } from "react-router";
-import AnnotationEditView from './views/AnnotationEditView.tsx';
-import AnnotationListView from './views/AnnotationListView.tsx';
-import AnnotationAddView from './views/AnnotationAddView.tsx';
-import AnnotationDetailsView from './views/AnnotationDetailsView.tsx';
+import CompanionContainer from './companion/CompanionContainer.tsx'
 
 // If in development mode, render the sample website for testing
 if (import.meta.env.VITE_APP_ENV === 'development') {
@@ -32,13 +26,9 @@ if (import.meta.env.VITE_APP_ENV === 'development') {
 const mountPoint = document.getElementById('document-io-root');
 const shadowRoot = mountPoint!.attachShadow({ mode: 'open' });
 
-const reactContexifyStyle = document.createElement("style");
-reactContexifyStyle.textContent = reactContexifyStyles;
-shadowRoot.appendChild(reactContexifyStyle);
-
-const reactMDEditorStyle = document.createElement("style");
-reactMDEditorStyle.textContent = reactMDEditorStyles;
-shadowRoot.appendChild(reactMDEditorStyle);
+const fontStyle = document.createElement("style");
+fontStyle.textContent = fontStyles;
+shadowRoot.appendChild(fontStyle);
 
 const indexStyle = document.createElement("style");
 indexStyle.textContent = indexStyles;
@@ -54,16 +44,6 @@ shadowRoot.appendChild(rootContainer);
 
 createRoot(rootContainer).render(
   <StrictMode>
-    <MemoryRouter>
-      <Routes>
-        <Route element={<App />}>
-          <Route path="/" element={<AnnotationListView />} />
-          <Route path="/add" element={<AnnotationAddView />} />
-          <Route path="/:id" element={<AnnotationDetailsView />} />
-          <Route path="/:id/edit" element={<AnnotationEditView />} />
-        </Route>
-      </Routes>
-    </MemoryRouter>
+    <CompanionContainer />
   </StrictMode>
 )
-
