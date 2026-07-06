@@ -124,22 +124,22 @@ export function CheckIcon(props: IconProps) {
     return <Icon strokeWidth={3} {...props}><path d="M5 12l5 5L20 7" /></Icon>;
 }
 
-/** Dock-right / vertical orientation (two columns). */
+/** Dock-right / vertical orientation — panel filled on the right edge. */
 export function LayoutVerticalIcon(props: IconProps) {
     return (
         <Icon {...props}>
             <rect x="3" y="3" width="18" height="18" rx="2" />
-            <path d="M12 3v18" />
+            <path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4z" fill="currentColor" stroke="none" />
         </Icon>
     );
 }
 
-/** Dock-bottom / horizontal orientation (two rows). */
+/** Dock-bottom / horizontal orientation — panel filled on the bottom edge. */
 export function LayoutHorizontalIcon(props: IconProps) {
     return (
         <Icon {...props}>
             <rect x="3" y="3" width="18" height="18" rx="2" />
-            <path d="M3 12h18" />
+            <path d="M4 14h16v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" fill="currentColor" stroke="none" />
         </Icon>
     );
 }
