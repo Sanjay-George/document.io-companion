@@ -1,0 +1,113 @@
+import { Fragment, type ReactNode } from 'react';
+
+/**
+ * Minimal Markdown renderer for note bodies. Supports the subset documented in
+ * design/README.md — inline **bold**, *italic*, `code`, [link](url); block
+ * `## heading`, `- list`, `> quote`, and paragraphs. Output is built as React
+ * nodes (never raw HTML), so it is safe by construction.
+ */
+
+const INLINE = /(\*\*(.+?)\*\*)|(`(.+?)`)|(\*(.+?)\*)|(\[(.+?)\]\((.+?)\))/g;
+
+function renderInline(text: string, keyPrefix: string): ReactNode[] {
+    const nodes: ReactNode[] = [];
+    let last = 0;
+    let match: RegExpExecArray | null;
+    let i = 0;
+    INLINE.lastIndex = 0;
+    while ((match = INLINE.exec(text)) !== null) {
+        if (match.index > last) {
+            nodes.push(<Fragment key={`${keyPrefix}-t${i}`}>{text.slice(last, match.index)}</Fragment>);
+        }
+        const key = `${keyPrefix}-m${i}`;
+        if (match[2] !== undefined) {
+            nodes.push(<strong key={key} className="font-semibold text-dio-primary">{match[2]}</strong>);
+        } else if (match[4] !== undefined) {
+            nodes.push(
+                <code key={key} className="rounded-dio-checkbox bg-dio-subtle px-[5px] py-px font-dio-mono text-[.86em] text-dio-accent-deep">
+                    {match[4]}
+                </code>,
+            );
+        } else if (match[6] !== undefined) {
+            nodes.push(<em key={key}>{match[6]}</em>);
+        } else if (match[8] !== undefined) {
+            nodes.push(
+                <a
+                    key={key}
+                    href={match[9]}
+                    className="border-b border-dio-accent/35 text-dio-accent no-underline"
+                    target="_blank"
+                    rel="noreferrer"
+                >
+                    {match[8]}
+                </a>,
+            );
+        }
+        last = match.index + match[0].length;
+        i += 1;
+    }
+    if (last < text.length) {
+        nodes.push(<Fragment key={`${keyPrefix}-t${i}`}>{text.slice(last)}</Fragment>);
+    }
+    return nodes;
+}
+
+export function renderMarkdown(text: string): ReactNode {
+    if (!text) return null;
+    const lines = text.split('\n');
+    const blocks: ReactNode[] = [];
+    let list: ReactNode[] | null = null;
+    let key = 0;
+
+    const flushList = () => {
+        if (list) {
+            blocks.push(<ul key={`b${key++}`} className="my-[7px] list-disc pl-[18px]">{list}</ul>);
+            list = null;
+        }
+    };
+
+    lines.forEach((line, idx) => {
+        if (/^\s*$/.test(line)) {
+            flushList();
+        } else if (/^##\s+/.test(line)) {
+            flushList();
+            blocks.push(
+                <div key={`b${key++}`} className="mb-1 mt-[10px] text-[12.5px] font-semibold text-dio-primary">
+                    {renderInline(line.replace(/^##\s+/, ''), `h${idx}`)}
+                </div>,
+            );
+        } else if (/^>\s+/.test(line)) {
+            flushList();
+            blocks.push(
+                <blockquote key={`b${key++}`} className="my-[9px] border-l-[3px] border-[#E4C4B4] py-1.5 pl-3 italic text-[#7A7266]">
+                    {renderInline(line.replace(/^>\s+/, ''), `q${idx}`)}
+                </blockquote>,
+            );
+        } else if (/^[-*]\s+/.test(line)) {
+            if (!list) list = [];
+            list.push(
+                <li key={`l${idx}`} className="my-[3px]">
+                    {renderInline(line.replace(/^[-*]\s+/, ''), `li${idx}`)}
+                </li>,
+            );
+        } else {
+            flushList();
+            blocks.push(
+                <p key={`b${key++}`} className="mb-[10px]">
+                    {renderInline(line, `p${idx}`)}
+                </p>,
+            );
+        }
+    });
+    flushList();
+    return blocks;
+}
+
+/** Strip Markdown syntax down to a single line for collapsed-card snippets. */
+export function snippet(text: string): string {
+    return (text || '')
+        .replace(/[#>*`\-]/g, '')
+        .replace(/\[(.+?)\]\(.+?\)/g, '$1')
+        .replace(/\n+/g, ' ')
+        .trim();
+}
