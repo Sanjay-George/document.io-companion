@@ -19,7 +19,9 @@ export default function NoteBody({ note, showContext = true }: Props) {
             {showContext && (
                 <div className="mb-[11px] flex items-center gap-1.5 text-[11.5px] text-dio-faint">
                     <TargetIcon size={12} className="flex-none" />
-                    <span className="break-all">{contextLabel(note)}</span>
+                    <span className="min-w-0 flex-1 truncate" title={contextLabel(note)}>
+                        {contextLabel(note)}
+                    </span>
                 </div>
             )}
             <div className="text-[13.5px] leading-[1.65] text-dio-body [&>*:last-child]:mb-0">
