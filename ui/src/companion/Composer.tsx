@@ -40,7 +40,7 @@ export default function Composer({ mode, draft, onChange, onSave, onClose }: Pro
     return (
         <div
             onClick={onClose}
-            className="fixed inset-0 z-[60] flex items-center justify-center bg-[rgba(20,23,31,.25)] p-6 pr-[400px] backdrop-blur-[1.5px]"
+            className="fixed inset-0 z-[2147483002] flex items-center justify-center bg-[rgba(20,23,31,.25)] p-6 pr-[400px] backdrop-blur-[1.5px]"
         >
             <div
                 onClick={(e) => e.stopPropagation()}
