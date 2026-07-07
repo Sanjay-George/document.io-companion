@@ -27,12 +27,25 @@ export const Expanded: Story = {
     args: { note: sampleNotes[3], selected: true },
 };
 
+/** Off-page note — distinct "not on this page" state with an Open action. */
 export const OtherPage: Story = {
-    args: { note: sampleNotes[4], selected: false },
+    args: { note: sampleNotes[4], selected: false, onOpen: noop },
 };
 
 export const Broken: Story = {
     args: { note: sampleNotes[5], selected: false },
+};
+
+/** Expanded card with the reorder (move up/down) controls. */
+export const Reorderable: Story = {
+    args: {
+        note: sampleNotes[3],
+        selected: true,
+        onMoveUp: noop,
+        onMoveDown: noop,
+        canMoveUp: true,
+        canMoveDown: true,
+    },
 };
 
 export const Interactive: Story = {

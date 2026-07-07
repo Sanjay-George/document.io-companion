@@ -20,6 +20,14 @@ type Props = {
     onEdit: (id: string) => void;
     onDelete: (id: string) => void;
     onReanchor: (id: string) => void;
+    /** Navigate to an off-page note's page. */
+    onOpen?: (id: string) => void;
+    /** Reorder controls — omit to hide the move up/down buttons. */
+    onMoveUp?: (id: string) => void;
+    onMoveDown?: (id: string) => void;
+    /** Ids at the ends of the global order, used to disable the move buttons. */
+    firstNoteId?: string | null;
+    lastNoteId?: string | null;
     /** Re-anchor pick flow is active. */
     reanchoring?: boolean;
     reanchorTitle?: string;
@@ -53,6 +61,11 @@ export default function CompanionPanel({
     onEdit,
     onDelete,
     onReanchor,
+    onOpen,
+    onMoveUp,
+    onMoveDown,
+    firstNoteId,
+    lastNoteId,
     reanchoring = false,
     reanchorTitle,
     onCancelReanchor,
@@ -105,6 +118,11 @@ export default function CompanionPanel({
                                 onEdit={() => onEdit(note.id)}
                                 onDelete={() => onDelete(note.id)}
                                 onReanchor={() => onReanchor(note.id)}
+                                onOpen={onOpen ? () => onOpen(note.id) : undefined}
+                                onMoveUp={onMoveUp ? () => onMoveUp(note.id) : undefined}
+                                onMoveDown={onMoveDown ? () => onMoveDown(note.id) : undefined}
+                                canMoveUp={!!onMoveUp && note.id !== firstNoteId}
+                                canMoveDown={!!onMoveDown && note.id !== lastNoteId}
                             />
                         ))}
                     </div>

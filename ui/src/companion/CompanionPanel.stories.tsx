@@ -65,6 +65,11 @@ function Harness({
             onEdit={noop}
             onDelete={noop}
             onReanchor={noop}
+            onOpen={noop}
+            onMoveUp={noop}
+            onMoveDown={noop}
+            firstNoteId={notes[0]?.id}
+            lastNoteId={notes[notes.length - 1]?.id}
             orientation={orientation}
             onOrientationChange={setOrientation}
         />

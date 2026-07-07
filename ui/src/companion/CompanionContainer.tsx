@@ -11,6 +11,7 @@ import {
     addAnnotation,
     deleteAnnotation,
     updateAnnotation,
+    updateAnnotations,
     useAnnotations,
 } from '@/data_access/annotations';
 import { NoteFlags, draftFromAnnotation, draftToAnnotationInput, toNotes } from '@/companion/adapter';
@@ -208,6 +209,34 @@ export default function CompanionContainer() {
         showToast('Note deleted', 'ok');
     };
 
+    // Navigate to an off-page note's page.
+    const openNote = (id: string) => {
+        const note = notes.find((n) => n.id === id);
+        if (note?.url) window.location.href = note.url;
+    };
+
+    // Reorder a note in the global step order (persisted via the `index` field).
+    // Reindexes the whole set so any legacy null/duplicate indices are normalised.
+    const moveNote = async (id: string, dir: 'up' | 'down') => {
+        if (!documentationId) return;
+        const ordered = [...notes];
+        const i = ordered.findIndex((n) => n.id === id);
+        const j = dir === 'up' ? i - 1 : i + 1;
+        if (i < 0 || j < 0 || j >= ordered.length) return;
+        [ordered[i], ordered[j]] = [ordered[j], ordered[i]];
+
+        const byId = new Map(annotations.map((a) => [a.id, a]));
+        const reindexed = ordered
+            .map((n, idx) => {
+                const a = byId.get(n.id);
+                return a ? { ...a, index: idx } : null;
+            })
+            .filter((a): a is Annotation => a !== null);
+
+        await updateAnnotations(reindexed);
+        await mutate(ALL_ANNOTATIONS_KEY(documentationId));
+    };
+
     const startReanchor = (id: string) => {
         setReanchorId(id);
         setMode('edit');
@@ -294,6 +323,8 @@ export default function CompanionContainer() {
     const debouncedHandlePanelResize = useRef(debounce(handlePanelResize, 100)).current;
 
     const reanchorTitle = reanchorId ? notes.find((n) => n.id === reanchorId)?.title : undefined;
+    const firstNoteId = notes[0]?.id ?? null;
+    const lastNoteId = notes[notes.length - 1]?.id ?? null;
     const isVertical = orientation === PanelOrientation.VERTICAL;
     const handleHighlight = highlightResizeHandle ? 'pulsing-animation' : '';
 
@@ -315,6 +346,11 @@ export default function CompanionContainer() {
             onEdit={editNote}
             onDelete={deleteNote}
             onReanchor={startReanchor}
+            onOpen={openNote}
+            onMoveUp={(id) => moveNote(id, 'up')}
+            onMoveDown={(id) => moveNote(id, 'down')}
+            firstNoteId={firstNoteId}
+            lastNoteId={lastNoteId}
             reanchoring={!!reanchorId}
             reanchorTitle={reanchorTitle}
             onCancelReanchor={cancelReanchor}
