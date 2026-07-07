@@ -22,6 +22,7 @@ import Toast from '@/companion/Toast';
 import ConfirmDialog from '@/companion/ConfirmDialog';
 import HostOverlay from '@/companion/HostOverlay';
 import { debounce } from '@/utils';
+import { safeUrl } from '@/companion/helpers';
 
 /** A freshly picked anchor target, captured from a click on the host page. */
 export type PickedTarget = {
@@ -215,14 +216,8 @@ export default function CompanionContainer() {
         if (!note?.url) return;
         // Only follow safe http(s) targets — never javascript:/data: URLs that
         // could ride in on stored note data.
-        try {
-            const target = new URL(note.url, window.location.href);
-            if (target.protocol === 'http:' || target.protocol === 'https:') {
-                window.location.assign(target.href);
-            }
-        } catch {
-            /* malformed URL — ignore */
-        }
+        const target = safeUrl(note.url, { protocols: ['http:', 'https:'] });
+        if (target) window.location.assign(target);
     };
 
     // Reorder a note in the global step order (persisted via the `index` field).

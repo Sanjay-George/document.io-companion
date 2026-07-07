@@ -1,4 +1,5 @@
 import { Fragment, type ReactNode } from 'react';
+import { safeUrl } from '@/companion/helpers';
 
 /**
  * Minimal Markdown renderer for note bodies. Supports the subset documented in
@@ -34,16 +35,21 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
         } else if (groups[6] !== undefined) {
             nodes.push(<em key={key}>{groups[6]}</em>);
         } else if (groups[8] !== undefined) {
+            const href = safeUrl(groups[9] ?? '');
             nodes.push(
-                <a
-                    key={key}
-                    href={groups[9]}
-                    className="border-b border-dio-accent/35 text-dio-accent no-underline"
-                    target="_blank"
-                    rel="noreferrer"
-                >
-                    {groups[8]}
-                </a>,
+                href !== null ? (
+                    <a
+                        key={key}
+                        href={href}
+                        className="border-b border-dio-accent/35 text-dio-accent no-underline"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        {groups[8]}
+                    </a>
+                ) : (
+                    <Fragment key={key}>{groups[8]}</Fragment>
+                ),
             );
         }
         last = match.index + match[0].length;
