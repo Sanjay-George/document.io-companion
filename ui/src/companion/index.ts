@@ -8,6 +8,7 @@ export { default as CompanionPanelHeader } from '@/companion/CompanionPanelHeade
 export { default as AnnotationCard } from '@/companion/AnnotationCard';
 export { default as AnnotationBanner } from '@/companion/AnnotationBanner';
 export { default as Composer } from '@/companion/Composer';
+export { default as ConfirmDialog } from '@/companion/ConfirmDialog';
 export { default as FormatToolbar } from '@/companion/FormatToolbar';
 export { default as Popover } from '@/companion/Popover';
 export { default as MinimizedPill } from '@/companion/MinimizedPill';

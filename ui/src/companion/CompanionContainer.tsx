@@ -18,6 +18,7 @@ import CompanionPanel from '@/companion/CompanionPanel';
 import MinimizedPill from '@/companion/MinimizedPill';
 import Composer from '@/companion/Composer';
 import Toast from '@/companion/Toast';
+import ConfirmDialog from '@/companion/ConfirmDialog';
 import HostOverlay from '@/companion/HostOverlay';
 import { debounce } from '@/utils';
 
@@ -53,6 +54,7 @@ export default function CompanionContainer() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [reanchorId, setReanchorId] = useState<string | null>(null);
     const [composer, setComposer] = useState<ComposerState>(null);
+    const [pendingDelete, setPendingDelete] = useState<string | null>(null);
     const [toast, setToast] = useState<{ text: string; tone: Tone } | null>(null);
     const [highlightResizeHandle, setHighlightResizeHandle] = useState(false);
     // Bumped to re-evaluate live-DOM on/off-page + broken flags.
@@ -193,7 +195,11 @@ export default function CompanionContainer() {
         setComposer({ editingId: id, draft: draftFromAnnotation(annotation) });
     };
 
-    const deleteNote = async (id: string) => {
+    // Ask before destroying a note — the actual delete runs on confirm.
+    const deleteNote = (id: string) => setPendingDelete(id);
+
+    const performDelete = async (id: string) => {
+        setPendingDelete(null);
         if (!documentationId) return;
         await deleteAnnotation(id);
         await mutate(ALL_ANNOTATIONS_KEY(documentationId));
@@ -390,6 +396,14 @@ export default function CompanionContainer() {
                     }
                     onSave={saveComposer}
                     onClose={() => setComposer(null)}
+                />
+            )}
+
+            {pendingDelete && (
+                <ConfirmDialog
+                    message={`“${notes.find((n) => n.id === pendingDelete)?.title ?? 'This note'}” will be permanently deleted.`}
+                    onConfirm={() => performDelete(pendingDelete)}
+                    onCancel={() => setPendingDelete(null)}
                 />
             )}
 
