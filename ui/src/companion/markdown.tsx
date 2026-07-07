@@ -20,26 +20,29 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
             nodes.push(<Fragment key={`${keyPrefix}-t${i}`}>{text.slice(last, match.index)}</Fragment>);
         }
         const key = `${keyPrefix}-m${i}`;
-        if (match[2] !== undefined) {
-            nodes.push(<strong key={key} className="font-semibold text-dio-primary">{match[2]}</strong>);
-        } else if (match[4] !== undefined) {
+        // Capture groups are typed as `string` but are `undefined` when their
+        // alternative didn't match, so widen before probing which one hit.
+        const groups: (string | undefined)[] = match;
+        if (groups[2] !== undefined) {
+            nodes.push(<strong key={key} className="font-semibold text-dio-primary">{groups[2]}</strong>);
+        } else if (groups[4] !== undefined) {
             nodes.push(
                 <code key={key} className="rounded-dio-checkbox bg-dio-subtle px-[5px] py-px font-dio-mono text-[.86em] text-dio-accent-deep">
-                    {match[4]}
+                    {groups[4]}
                 </code>,
             );
-        } else if (match[6] !== undefined) {
-            nodes.push(<em key={key}>{match[6]}</em>);
-        } else if (match[8] !== undefined) {
+        } else if (groups[6] !== undefined) {
+            nodes.push(<em key={key}>{groups[6]}</em>);
+        } else if (groups[8] !== undefined) {
             nodes.push(
                 <a
                     key={key}
-                    href={match[9]}
+                    href={groups[9]}
                     className="border-b border-dio-accent/35 text-dio-accent no-underline"
                     target="_blank"
                     rel="noreferrer"
                 >
-                    {match[8]}
+                    {groups[8]}
                 </a>,
             );
         }

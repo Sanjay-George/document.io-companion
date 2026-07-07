@@ -115,7 +115,7 @@ export default function CompanionContainer() {
             return { onPage: false, broken: false };
         };
         return toNotes(annotations, flagsFor);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line
     }, [annotations, tick]);
 
     const onPageHealthy = useMemo(() => notes.filter((n) => n.onPage !== false && !n.broken), [notes]);
@@ -157,7 +157,7 @@ export default function CompanionContainer() {
             clearTimeout(debounceTimer);
             clearTimeout(safety);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line
     }, [annotations.length]);
 
     useEffect(() => {
@@ -212,7 +212,17 @@ export default function CompanionContainer() {
     // Navigate to an off-page note's page.
     const openNote = (id: string) => {
         const note = notes.find((n) => n.id === id);
-        if (note?.url) window.location.href = note.url;
+        if (!note?.url) return;
+        // Only follow safe http(s) targets — never javascript:/data: URLs that
+        // could ride in on stored note data.
+        try {
+            const target = new URL(note.url, window.location.href);
+            if (target.protocol === 'http:' || target.protocol === 'https:') {
+                window.location.assign(target.href);
+            }
+        } catch {
+            /* malformed URL — ignore */
+        }
     };
 
     // Reorder a note in the global step order (persisted via the `index` field).
@@ -223,7 +233,8 @@ export default function CompanionContainer() {
         const i = ordered.findIndex((n) => n.id === id);
         const j = dir === 'up' ? i - 1 : i + 1;
         if (i < 0 || j < 0 || j >= ordered.length) return;
-        [ordered[i], ordered[j]] = [ordered[j], ordered[i]];
+        const [moved] = ordered.splice(i, 1);
+        ordered.splice(j, 0, moved);
 
         const byId = new Map(annotations.map((a) => [a.id, a]));
         const reindexed = ordered

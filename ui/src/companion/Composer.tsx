@@ -14,14 +14,14 @@ type Props = {
     onClose: () => void;
 };
 
-const SNIPPETS: Record<FormatToken, string> = {
-    h: '\n## Heading\n',
-    b: '**bold**',
-    i: '*italic*',
-    list: '\n- item\n',
-    quote: '\n> quote\n',
-    code: '`code`',
-};
+const SNIPPETS = new Map<FormatToken, string>([
+    ['h', '\n## Heading\n'],
+    ['b', '**bold**'],
+    ['i', '*italic*'],
+    ['list', '\n- item\n'],
+    ['quote', '\n> quote\n'],
+    ['code', '`code`'],
+]);
 
 /**
  * New / Edit note composer (README §7). Surfaces the real anchor target, a
@@ -34,7 +34,7 @@ export default function Composer({ mode, draft, onChange, onSave, onClose }: Pro
     const insert = (token: FormatToken) => {
         const body = draft.body;
         const sep = body && !body.endsWith('\n') && !body.endsWith(' ') ? ' ' : '';
-        onChange({ body: body + sep + SNIPPETS[token] });
+        onChange({ body: body + sep + (SNIPPETS.get(token) ?? '') });
     };
 
     return (

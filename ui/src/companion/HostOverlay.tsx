@@ -30,7 +30,7 @@ type RectInfo = { top: number; left: number; width: number; height: number; radi
 /** Measure a selector against the live DOM in viewport (fixed) coordinates. */
 function measure(selector: string): RectInfo | null {
     try {
-        const el = document.querySelector(selector) as HTMLElement | null;
+        const el = document.querySelector<HTMLElement>(selector);
         if (!el) return null;
         const r = el.getBoundingClientRect();
         if (r.width === 0 && r.height === 0) return null;
@@ -74,11 +74,11 @@ export default function HostOverlay({
     onDeleteNote,
     onPickTarget,
 }: Props) {
-    const [rects, setRects] = useState<Record<string, RectInfo | null>>({});
+    const [rects, setRects] = useState<Map<string, RectInfo | null>>(new Map());
 
     const recompute = useCallback(() => {
-        const next: Record<string, RectInfo | null> = {};
-        for (const n of notes) next[n.id] = measure(n.selector);
+        const next = new Map<string, RectInfo | null>();
+        for (const n of notes) next.set(n.id, measure(n.selector));
         setRects(next);
     }, [notes]);
 
@@ -125,7 +125,8 @@ export default function HostOverlay({
         const isOwn = (el: HTMLElement | null) => !el || !!el.closest(`#${MODAL_ROOT_ID}`);
 
         const onOver = (e: MouseEvent) => {
-            const el = e.target as HTMLElement;
+            if (!(e.target instanceof HTMLElement)) return;
+            const el = e.target;
             if (isOwn(el) || !isHighlightable(el)) return;
             el.classList.add(HOVERED_ELEMENT_CLASS);
         };
@@ -158,13 +159,13 @@ export default function HostOverlay({
         () => (selectedId ? notes.find((n) => n.id === selectedId) ?? null : null),
         [selectedId, notes],
     );
-    const selectedRect = selectedId ? rects[selectedId] : null;
+    const selectedRect = selectedId ? rects.get(selectedId) ?? null : null;
     const popover = selectedRect ? computePopover(selectedRect) : null;
 
     return (
         <>
             {notes.map((note) => {
-                const rect = rects[note.id];
+                const rect = rects.get(note.id);
                 if (!rect) return null;
                 const selected = note.id === selectedId;
                 return (
